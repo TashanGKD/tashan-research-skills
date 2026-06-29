@@ -2,6 +2,16 @@ name: tashan-research-skills
 display_name: Tashan Research Skills
 description: Academic research skills for literature review, evidence checking, ideation, scientific writing, slides, figures, citation audit, and long-term research workflows.
 homepage: https://github.com/Yu-Yang-Li/tashan-research-skills
+license: MIT
+supported_by: Panshi AI4Science Ecosystem and Application Model Research Project
+authors:
+  - Qiao Han
+  - Zhu Xiaomo
+  - Yu-Yang Li
+  - Cai Anping
+  - Wang Rui
+  - Fang Zerui
+  - OpenAI Codex-assisted development contributors
 skills:
   - id: giiisp-paper-search-apis
     category: literature-evidence

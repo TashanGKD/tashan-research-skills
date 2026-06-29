@@ -1,23 +1,27 @@
 # Tashan Research Skills
 
-科研助手技能库，用于托管可复用的 academic research skills: literature review, evidence checking, research ideation, scientific writing, slides, figures, citation audit, and research workflow collaboration.
+[中文 README](README.zh-CN.md)
+
+Tashan Research Skills is a bilingual academic research skills repository for literature review, evidence checking, research ideation, scientific writing, slides, figures, citation audit, and long-term research workflow collaboration.
+
+This project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
 ![Tashan Research Skills overview](assets/research-skills-overview.png)
 
-## What this is
+## Overview
 
-Tashan Research Skills is a collection of skill-native research workflows for researchers, students, writers, and AI research assistants.
+The repository currently includes **12 skills**. Each skill is a self-contained workflow directory with a `SKILL.md` entrypoint and, when needed, supporting scripts, references, templates, examples, or assets.
 
-It is organized around four practical research jobs:
+The skills are grouped around four practical research jobs:
 
-| Module | What it helps with | Representative skills |
+| Module | What it supports | Skills |
 | --- | --- | --- |
-| Literature evidence | Find candidate papers, trace claims, and mark evidence boundaries. | paper search, deep research, thesis audit |
-| Research ideation | Turn a topic or early question into hypotheses, mechanisms, data tasks, baselines, and evaluation plans. | Scispark, baseline builder |
-| Research expression | Convert research material into clearer writing, figures, decks, and explainer videos. | scientific humanization, image generation, deck builder, Manim |
-| Collaboration memory | Check citation consistency, preserve research preferences, and connect long-running work into reusable workflows. | PaperCheck, cognitive profile, world threads |
+| Literature evidence | Paper search, evidence retrieval, claim tracing, manuscript audit, and evidence boundary checks. | Paper Search, Deep Research, Thesis Audit Reviewer |
+| Research ideation | Turning topics, paper sets, or early questions into hypotheses, mechanisms, data tasks, baselines, and evaluation plans. | Scispark, Research Baseline Builder |
+| Research expression | Improving scientific writing and producing figures, slides, and technical explainer videos. | Scientific Humanization, Scientific Image Generation, Visual Deck Builder, Manim Agent |
+| Collaboration memory | Citation compliance, preference memory, and long-running research collaboration workflows. | PaperCheck, Cognitive Profile, World Threads Entry |
 
-## Included skills
+## Included Skills
 
 | Skill | Path | Purpose |
 | --- | --- | --- |
@@ -36,7 +40,23 @@ It is organized around four practical research jobs:
 
 See [`docs/skill-package-overview.md`](docs/skill-package-overview.md) for the Chinese package overview.
 
-## Repository layout
+## Authors and Support
+
+**Authors and contributors**
+
+- Qiao Han (乔晗)
+- Zhu Xiaomo (朱晓墨)
+- Yu-Yang Li
+- Cai Anping (蔡安平)
+- Wang Rui (王瑞)
+- Fang Zerui (房泽锐)
+- OpenAI Codex-assisted development contributors
+
+**Supporting project**
+
+- Panshi AI4Science Ecosystem and Application Model Research Project
+
+## Repository Layout
 
 ```text
 .
@@ -46,10 +66,12 @@ See [`docs/skill-package-overview.md`](docs/skill-package-overview.md) for the C
 ├── .github/                 # Issue and PR templates
 ├── CONTRIBUTING.md          # Collaboration rules
 ├── SECURITY.md              # Secret and vulnerability policy
-└── README.md
+├── LICENSE                  # MIT License
+├── README.md                # English README
+└── README.zh-CN.md          # Chinese README
 ```
 
-## How to use a skill
+## How to Use a Skill
 
 Each skill is self-contained. Start from its `SKILL.md`, then follow any referenced `scripts/`, `references/`, `templates/`, or `assets/` files in that same skill folder.
 
@@ -69,7 +91,7 @@ Copy-Item -Recurse .\skills\papercheck "$env:USERPROFILE\.codex\skills\paperchec
 
 Replace `papercheck` with the skill folder you want to install.
 
-## Engineering standards
+## Engineering Standards
 
 This repository should stay easy to review and hard to turn into unmaintainable code:
 
@@ -80,7 +102,7 @@ This repository should stay easy to review and hard to turn into unmaintainable 
 - For changes to scripts, include a smoke test or a documented manual verification command.
 - For changes to skill behavior, update the related `SKILL.md` and any referenced docs in the same PR.
 
-## Secret policy
+## Secret Policy
 
 Do not put API keys, access tokens, bind keys, cookies, private SSH keys, or service credentials in this repository.
 
@@ -88,4 +110,4 @@ Skills that need external services must read secrets from environment variables 
 
 ## License
 
-No open-source license has been selected yet. Until a license is added, all rights are reserved by the repository owner.
+This project is released under the [MIT License](LICENSE).
