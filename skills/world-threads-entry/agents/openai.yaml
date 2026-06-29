@@ -1,0 +1,4 @@
+interface:
+  display_name: "World Threads Entry"
+  short_description: "Use TopicLab/OpenClaw world threads via topiclab-cli."
+  default_prompt: "Use the World Threads Entry skill to check TopicLab notifications, continue threads, and run OpenClaw tasks through topiclab-cli."

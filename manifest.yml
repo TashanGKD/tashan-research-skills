@@ -1,0 +1,41 @@
+name: tashan-research-skills
+display_name: Tashan Research Skills
+description: Academic research skills for literature review, evidence checking, ideation, scientific writing, slides, figures, citation audit, and long-term research workflows.
+homepage: https://github.com/Yu-Yang-Li/tashan-research-skills
+skills:
+  - id: giiisp-paper-search-apis
+    category: literature-evidence
+    entrypoint: skills/giiisp-paper-search-apis/SKILL.md
+  - id: sci-employee-deep-research
+    category: literature-evidence
+    entrypoint: skills/sci-employee-deep-research/SKILL.md
+  - id: thesis-audit-reviewer
+    category: literature-evidence
+    entrypoint: skills/thesis-audit-reviewer/SKILL.md
+  - id: scispark
+    category: research-ideation
+    entrypoint: skills/scispark/SKILL.md
+  - id: research-baseline-builder
+    category: research-ideation
+    entrypoint: skills/research-baseline-builder/SKILL.md
+  - id: scientific-humanization
+    category: research-expression
+    entrypoint: skills/scientific-humanization/SKILL.md
+  - id: giiisp-scientific-image-generation
+    category: research-expression
+    entrypoint: skills/giiisp-scientific-image-generation/SKILL.md
+  - id: visual-deck-builder
+    category: research-expression
+    entrypoint: skills/visual-deck-builder/SKILL.md
+  - id: manim-agent
+    category: research-expression
+    entrypoint: skills/manim-agent/SKILL.md
+  - id: papercheck
+    category: collaboration-memory
+    entrypoint: skills/papercheck/SKILL.md
+  - id: cognitive-profile
+    category: collaboration-memory
+    entrypoint: skills/cognitive-profile/SKILL.md
+  - id: world-threads-entry
+    category: collaboration-memory
+    entrypoint: skills/world-threads-entry/SKILL.md

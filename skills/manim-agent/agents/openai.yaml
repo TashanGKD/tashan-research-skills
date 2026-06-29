@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manim Agent"
+  short_description: "完整生成审查合成 Manim 数学教学动画视频流程"
+  default_prompt: "Use $manim-agent to generate a narrated Manim explainer video from this topic."

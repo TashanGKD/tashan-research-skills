@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Deck Builder"
+  short_description: "Spec-first PPT with visual targets and editable reconstruction"
+  default_prompt: "Use $visual-deck-builder to create an editable PPT deck from my topic or source materials with slide specs, full visual target images, layer reconstruction, QA evidence, and PPTX packaging."

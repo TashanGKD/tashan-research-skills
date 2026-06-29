@@ -1,0 +1,34 @@
+name: Skill request
+description: Propose a new research skill or a change to an existing skill.
+title: "[skill] "
+labels: ["skill-request"]
+body:
+  - type: input
+    id: workflow
+    attributes:
+      label: Research workflow
+      description: What research job should this skill help with?
+      placeholder: "Example: audit citations in a thesis chapter"
+    validations:
+      required: true
+  - type: textarea
+    id: inputs
+    attributes:
+      label: Inputs
+      description: What files, prompts, APIs, or context should the skill use?
+    validations:
+      required: true
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Expected outputs
+      description: What should the skill produce?
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: How should maintainers know the skill works?
+    validations:
+      required: false
