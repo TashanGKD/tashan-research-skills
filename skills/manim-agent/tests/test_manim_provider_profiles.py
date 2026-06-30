@@ -70,6 +70,7 @@ def test_volcengine_regular_and_coding_plan_profiles_are_supported_and_distinct(
 
     assert regular["base_url"] == "https://ark.cn-beijing.volces.com/api/compatible"
     assert coding_plan["base_url"] == "https://ark.cn-beijing.volces.com/api/coding"
+    assert regular["model"] == "deepseek-v3-2-251201"
     assert regular["auth_token_env"] == "ARK_API_KEY"
     assert coding_plan["auth_token_env"] == "ARK_API_KEY"
     assert regular["base_url"] != coding_plan["base_url"]
@@ -125,7 +126,7 @@ def test_check_env_reports_provider_key_candidates_without_printing_values(tmp_p
         "MANIM_AGENT_LLM_PROVIDER": "volcengine",
         "ARK_API_KEY": "test-secret-value",
         "ANTHROPIC_BASE_URL": "https://ark.cn-beijing.volces.com/api/compatible",
-        "ANTHROPIC_MODEL": "doubao-seed-code-preview-latest",
+        "ANTHROPIC_MODEL": "deepseek-v3-2-251201",
     }
     completed = subprocess.run(
         [sys.executable, str(CHECK_ENV), "--repo", str(fake_repo)],

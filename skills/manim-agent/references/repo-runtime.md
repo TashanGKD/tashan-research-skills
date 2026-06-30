@@ -96,7 +96,7 @@ Provider profiles:
 | Aliyun regular | `https://dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_DASHSCOPE_API_KEY` or `DASHSCOPE_API_KEY` | `qwen3.7-plus` |
 | Aliyun Token Plan | `https://token-plan.cn-beijing.maas.aliyuncs.com/apps/anthropic` | `ALIYUN_TOKEN_PLAN_API_KEY` | `qwen3.7-plus` |
 | Aliyun Coding Plan | `https://coding.dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_CODING_PLAN_API_KEY` | `qwen3.7-plus` |
-| Volcengine Ark regular | `https://ark.cn-beijing.volces.com/api/compatible` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `doubao-seed-code-preview-latest` |
+| Volcengine Ark regular | `https://ark.cn-beijing.volces.com/api/compatible` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `deepseek-v3-2-251201` |
 | Volcengine Ark Coding Plan | `https://ark.cn-beijing.volces.com/api/coding` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `ark-code-latest` |
 
 If the provider console lists a different current model or Claude-compatible base URL, keep the same profile but override the current values:
