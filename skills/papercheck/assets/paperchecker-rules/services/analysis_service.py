@@ -58,6 +58,9 @@ class AnalysisService:
                 f"不支持的文件类型: {safe_path.suffix}. 支持的类型: .docx, .doc, .pdf"
             )
 
+        if safe_path.stat().st_size <= 0:
+            raise ServiceValidationError("文件为空（0 字节），请删除后重新上传原始文件")
+
         result = analyze_document(
             str(safe_path),
             author_format=author_format,

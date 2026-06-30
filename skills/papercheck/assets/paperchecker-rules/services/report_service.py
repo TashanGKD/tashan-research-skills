@@ -15,7 +15,6 @@ from contracts.report_contract import (
 from core.processors.citation_processor import CitationProcessor
 from services.exceptions import ServiceValidationError
 from utils.report_markdown import build_markdown_report
-from utils.report_pdf import save_markdown_as_pdf
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SUPPORTED_EXTENSIONS = {".doc", ".docx", ".pdf", ".md"}
@@ -38,6 +37,8 @@ def validate_input_file(file_path: str) -> Path:
         raise ServiceValidationError(
             f"不支持的文件类型: {resolved.suffix}. 支持类型: {', '.join(sorted(SUPPORTED_EXTENSIONS))}"
         )
+    if resolved.stat().st_size <= 0:
+        raise ServiceValidationError("输入文件为空（0 字节），请重新上传或重新下载原始文件")
     return resolved
 
 
@@ -99,6 +100,8 @@ def _dump_markdown(raw_report: Dict[str, Any], output_path: Path) -> str:
 
 
 def _dump_pdf(markdown: str, output_path: Path) -> None:
+    from utils.report_pdf import save_markdown_as_pdf
+
     save_markdown_as_pdf(markdown, str(output_path))
 
 

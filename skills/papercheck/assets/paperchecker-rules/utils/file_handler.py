@@ -28,6 +28,15 @@ def save_upload_file(file: UploadFile, upload_dir: str) -> str:
             status_code=400,
             detail=f"不支持的文件类型: {file.content_type}. 支持的类型: .docx, .doc, .pdf"
         )
+
+    file.file.seek(0, 2)
+    expected_size = file.file.tell()
+    file.file.seek(0)
+    if expected_size <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="上传文件为空（0 字节）。请重新选择可正常打开的 .docx、.doc 或 .pdf 文件。"
+        )
     
     # 生成唯一文件名
     unique_filename = f"{uuid.uuid4()}_{file.filename}"
@@ -40,6 +49,17 @@ def save_upload_file(file: UploadFile, upload_dir: str) -> str:
     with open(file_path, "wb") as f:
         content = file.file.read()
         f.write(content)
+
+    actual_size = os.path.getsize(file_path)
+    if actual_size <= 0 or actual_size != expected_size:
+        cleanup_file(file_path)
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "上传文件保存不完整。"
+                f"预期 {expected_size} 字节，实际 {actual_size} 字节；请重新上传原始文件。"
+            )
+        )
     
     return file_path
 

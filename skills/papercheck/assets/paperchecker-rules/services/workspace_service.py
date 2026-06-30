@@ -96,6 +96,11 @@ class WorkspaceService:
         file_size = file.file.tell()
         file.file.seek(0)
 
+        if file_size <= 0:
+            raise ServiceValidationError(
+                "上传文件为空（0 字节）。请重新选择可正常打开的 .docx、.doc 或 .pdf 文件。"
+            )
+
         if file_size > max_file_size:
             raise ServiceValidationError(
                 f"文件过大，最大支持 {max_file_size // (1024 * 1024)}MB"

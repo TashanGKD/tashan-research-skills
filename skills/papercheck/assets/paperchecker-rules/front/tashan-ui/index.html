@@ -632,6 +632,10 @@
       alert('不支持的文件格式，请上传 .docx、.doc 或 .pdf 文件')
       return
     }
+    if (f.size <= 0) {
+      alert('文件是 0 字节，可能下载或保存失败。请先在本地打开确认内容正常，再重新上传。')
+      return
+    }
     if (f.size > 50 * 1024 * 1024) {
       alert('文件超过 50 MB 上限')
       return
@@ -693,6 +697,11 @@
 
   async function doCheck() {
     if (!state.file) return
+    if (state.file.size <= 0) {
+      $('errorMsg').textContent = '文件是 0 字节，可能下载或保存失败。请先在本地打开确认内容正常，再重新上传。'
+      showSection('error')
+      return
+    }
 
     showSection('loading')
 

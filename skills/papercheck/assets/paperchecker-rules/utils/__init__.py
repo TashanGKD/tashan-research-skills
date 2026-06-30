@@ -1,33 +1,37 @@
-"""
-PaperChecker 工具模块
-包含各种工具函数和辅助功能
-"""
+"""PaperChecker utility package.
 
-# 导入工具模块
-from .file_handler import *
-from .mineru_pdf_converter import *
-from .report_markdown import *
-from .report_pdf import *
-from .vscode_bridge import *
+Keep package import lightweight. Import concrete submodules directly, for
+example `from utils.file_handler import save_upload_file`.
+"""
 
 __all__ = [
-    'file_handler',
-    'mineru_pdf_converter', 
-    'report_markdown',
-    'report_pdf',
-    'vscode_bridge',
-    # 从file_handler导入的函数
-    'validate_file_type',
-    'save_upload_file', 
-    'cleanup_file',
-    # 从mineru_pdf_converter导入的类和函数
-    'MineruPDFToMD',
-    'convert_pdf_to_markdown',
-    'fix_title_levels',
-    # 从report_markdown导入的函数
-    'build_markdown_report',
-    'save_markdown_report',
-    # 从report_pdf导入的函数
-    'save_markdown_as_pdf',
-    # 从vscode_bridge导入的函数
+    "validate_file_type",
+    "save_upload_file",
+    "cleanup_file",
+    "MineruPDFToMD",
+    "convert_pdf_to_markdown",
+    "fix_title_levels",
+    "build_markdown_report",
+    "save_markdown_report",
+    "save_markdown_as_pdf",
 ]
+
+
+def __getattr__(name):
+    if name in {"validate_file_type", "save_upload_file", "cleanup_file"}:
+        from . import file_handler
+
+        return getattr(file_handler, name)
+    if name in {"MineruPDFToMD", "convert_pdf_to_markdown", "fix_title_levels"}:
+        from . import mineru_pdf_converter
+
+        return getattr(mineru_pdf_converter, name)
+    if name in {"build_markdown_report", "save_markdown_report"}:
+        from . import report_markdown
+
+        return getattr(report_markdown, name)
+    if name == "save_markdown_as_pdf":
+        from . import report_pdf
+
+        return getattr(report_pdf, name)
+    raise AttributeError(name)

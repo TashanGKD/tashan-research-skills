@@ -289,6 +289,7 @@ async def upload_only(request: Request, file: UploadFile = File(...)):
                 "message": "文件上传成功",
                 "file_path": str(file_path),
                 "filename": file.filename,
+                "size": file_path.stat().st_size,
             }
         )
     except ServiceValidationError as exc:
@@ -486,7 +487,7 @@ async def v2_workspace_upload(request: Request, file: UploadFile = File(...)):
             operation="workspace.upload",
             status="succeeded",
             summary={"uploaded": 1},
-            evidence={"file": {"name": file.filename, "path": str(path)}},
+            evidence={"file": {"name": file.filename, "path": str(path), "size": path.stat().st_size}},
             started_at=started_at,
             finished_at=datetime.now().isoformat(),
         )
