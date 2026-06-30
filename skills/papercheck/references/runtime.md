@@ -55,6 +55,20 @@ curl.exe -s -X POST -F "file=@<path-to-paper.docx>" -F "author_format=full" -F "
 
 Expected success fields: `contract_version`, `run.status=succeeded`, `summary.match_rate`, and issue groups under `issues`.
 
+## PDF Extraction And MinerU
+
+For PDF uploads, the rules engine tries this order:
+
+1. MinerU API converts the PDF into Markdown with layout-aware extraction.
+2. If MinerU is missing, expired, or unavailable, PaperCheck falls back to local `PyMuPDF/fitz` and calls `page.get_text()` page by page.
+
+When `scripts/check_papercheck_env.py` reports `pdf_extraction.configured=false`, tell the user:
+
+- MinerU is not configured.
+- They can set `MINERU_API_KEY` or fill `assets/paperchecker-rules/config/config.json` under `mineru_config.api_key`.
+- Until then, PaperCheck will continue with the PyMuPDF fallback.
+- The fallback is the best no-key built-in option currently packaged here for text-layer PDFs, but it is not the optimal production parser for scanned PDFs, complex multi-column layout, tables, formulas, headers/footers, or references split across pages. MinerU or another OCR/layout parser is preferred for higher-confidence PDF audits.
+
 ## Known Limits
 
 - Evidence extraction only supports `.docx` directly.

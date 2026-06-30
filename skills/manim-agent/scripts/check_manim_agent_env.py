@@ -40,6 +40,35 @@ def check_python_package(import_name: str) -> tuple[bool, str]:
     return found, "importable" if found else "not importable"
 
 
+def repo_venv_python(repo: Path) -> Path:
+    return repo / ".venv" / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
+
+
+def run_python_probe(python_exe: Path, code: str, timeout: int = 20) -> tuple[bool, str]:
+    if not python_exe.exists():
+        return False, f"not found: {python_exe}"
+    try:
+        result = subprocess.run(
+            [str(python_exe), "-c", code],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            check=False,
+        )
+    except Exception as exc:  # pragma: no cover - defensive environment helper
+        return False, f"error: {exc}"
+    output = (result.stdout or result.stderr or "").strip().splitlines()
+    first_line = output[0] if output else f"exit {result.returncode}"
+    return result.returncode == 0, first_line
+
+
+def check_repo_venv_package(repo: Path, import_name: str) -> tuple[bool, str]:
+    return run_python_probe(
+        repo_venv_python(repo),
+        f"import {import_name}; print('importable')",
+    )
+
+
 def infer_llm_provider() -> str:
     explicit = os.getenv("MANIM_AGENT_LLM_PROVIDER")
     if explicit:
@@ -118,6 +147,19 @@ def main() -> int:
 
     py_ok = sys.version_info >= (3, 12)
     checks.append(("python>=3.12", py_ok, sys.version.split()[0]))
+    venv_python = repo_venv_python(repo)
+    venv_py_ok, venv_py_detail = run_python_probe(
+        venv_python,
+        "import sys; print('.'.join(map(str, sys.version_info[:3])))",
+    )
+    venv_version_ok = False
+    if venv_py_ok:
+        try:
+            parts = [int(part) for part in venv_py_detail.split(".")[:2]]
+            venv_version_ok = tuple(parts) >= (3, 12)
+        except ValueError:
+            venv_version_ok = False
+    checks.append(("repo_venv_python>=3.12", venv_py_ok and venv_version_ok, venv_py_detail))
 
     for name, cmd in [
         ("uv", ["uv", "--version"]),
@@ -135,6 +177,8 @@ def main() -> int:
     ]:
         ok, detail = check_python_package(package)
         checks.append((f"py:{package}", ok, detail))
+        venv_ok, venv_detail = check_repo_venv_package(repo, package)
+        checks.append((f"repo_venv:{package}", venv_ok, venv_detail))
 
     for env_name in [
         "MANIM_AGENT_LLM_PROVIDER",
@@ -163,7 +207,7 @@ def main() -> int:
         checks.append((env_name, bool(os.getenv(env_name)), "set" if os.getenv(env_name) else "not set"))
 
     max_name = max(len(name) for name, _, _ in checks)
-    failed_required = False
+    required_status: dict[str, bool] = {}
     for name, ok, detail in checks:
         print(f"{name.ljust(max_name)}  {yes_no(ok):8}  {detail}")
         if name in {
@@ -171,15 +215,27 @@ def main() -> int:
             "pyproject",
             "cli_entry",
             "production_plugin",
-            "python>=3.12",
-            "uv",
-            "manim",
             "ffmpeg",
-            "py:claude_agent_sdk",
-            "py:manim",
-            "py:httpx",
-        } and not ok:
-            failed_required = True
+        }:
+            required_status[name] = ok
+
+    python_runtime_ok = dict((name, ok) for name, ok, _ in checks).get("python>=3.12", False) or dict(
+        (name, ok) for name, ok, _ in checks
+    ).get("repo_venv_python>=3.12", False)
+    manim_runtime_ok = dict((name, ok) for name, ok, _ in checks).get("manim", False) or dict(
+        (name, ok) for name, ok, _ in checks
+    ).get("repo_venv:manim", False)
+    package_runtime_ok = all(
+        dict((name, ok) for name, ok, _ in checks).get(f"py:{package}", False)
+        or dict((name, ok) for name, ok, _ in checks).get(f"repo_venv:{package}", False)
+        for package in ["claude_agent_sdk", "manim", "httpx"]
+    )
+    failed_required = not (
+        all(required_status.values())
+        and python_runtime_ok
+        and manim_runtime_ok
+        and package_runtime_ok
+    )
 
     if os.getenv("DASHSCOPE_API_KEY"):
         print("note: DASHSCOPE_API_KEY can drive DashScope LLM and DashScope CosyVoice TTS when the matching env vars are set.")
@@ -195,6 +251,8 @@ def main() -> int:
         print("note: Volcengine TTS env is available; map it with configure_manim_provider.py --provider volcengine --purpose tts.")
     if not os.getenv("DATABASE_URL"):
         print("note: DATABASE_URL is needed for Web/backend persistence, not for direct CLI no-persistence runs.")
+    if repo_venv_python(repo).exists():
+        print("note: repo .venv is available; direct CLI runs can use .venv\\Scripts\\python.exe -m manim_agent on Windows.")
     if not (os.getenv("ANTHROPIC_AUTH_TOKEN") or os.getenv("ANTHROPIC_API_KEY")):
         print("note: Claude Agent SDK needs local Claude auth or ANTHROPIC_AUTH_TOKEN/ANTHROPIC_API_KEY for normal pipeline runs.")
     if not has_llm_key():
