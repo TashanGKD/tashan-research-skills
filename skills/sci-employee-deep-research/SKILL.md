@@ -75,6 +75,7 @@ python scripts/stream_deep_research.py `
 | `stream_final` | 本地包装器 | 本次流结束，给出 `answer_status` |
 
 如果 30-45 秒内已收到 `references_ready` 但没收到 `done`，不要丢弃结果。UI 应展示 references，并把状态标为 `incomplete` 或“answer 生成中/未完成”。
+做可用性探针或首屏体验测试时，可加 `--max-events 8`，让脚本在已有阶段/检索命中后优雅输出 `stream_interrupted` 和 `stream_final`，而不是等最终长答案。
 
 如果通过 Nginx 或其他网关转发 SSE，必须关闭响应缓冲：
 
@@ -181,6 +182,7 @@ Deep Research 接收的理想输入不是一句宽泛问题，而是 `paper-sear
 - answer 只返回澄清问题：把它作为需求澄清，不要包装成调研结论。
 - references 很多但混杂：退回 `paper-search` 做候选过滤，不要让 answer 引用不贴题论文。
 - answer 超时或没有 `done`：保留 references 和已生成片段，标为 `incomplete`，不要当最终报告。
+- 前端或托管层收到 `answer_status=incomplete` 时，先展示已返回 references 和 answer 片段，并把用户动作设为继续等待、收窄问题或回到候选论文过滤；不要让用户长时间只看到加载中。
 
 ## 最小实测记录格式
 

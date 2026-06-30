@@ -76,10 +76,10 @@ PROFILES: dict[tuple[str, str], ProviderProfile] = {
         route="regular",
         label="Volcengine Ark regular API",
         base_url="https://ark.cn-beijing.volces.com/api/compatible",
-        model="deepseek-v3-2-251201",
-        default_haiku_model="deepseek-v3-2-251201",
-        default_sonnet_model="deepseek-v3-2-251201",
-        default_opus_model="deepseek-v3-2-251201",
+        model="deepseek-v4-pro-260425",
+        default_haiku_model="deepseek-v4-pro-260425",
+        default_sonnet_model="deepseek-v4-pro-260425",
+        default_opus_model="deepseek-v4-pro-260425",
         auth_env_candidates=("ARK_API_KEY", "VOLCENGINE_API_KEY", "ANTHROPIC_AUTH_TOKEN"),
         notes=(
             "This profile targets Ark's Claude/Anthropic-compatible route, not the OpenAI-compatible /api/v3 route.",
@@ -151,6 +151,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, object]:
         "default_opus_model": args.opus_model or model or profile.default_opus_model,
         "auth_token_env": auth_env,
         "auth_env_candidates": list(profile.auth_env_candidates),
+        "force_claude_settings": "1",
         "notes": list(profile.notes),
         "secret_policy": "The script prints env-var references only and never prints API key values.",
     }
@@ -175,6 +176,7 @@ def render_powershell(payload: dict[str, object]) -> str:
         "$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = " + quote_ps(str(payload["default_haiku_model"])),
         "$env:ANTHROPIC_DEFAULT_SONNET_MODEL = " + quote_ps(str(payload["default_sonnet_model"])),
         "$env:ANTHROPIC_DEFAULT_OPUS_MODEL = " + quote_ps(str(payload["default_opus_model"])),
+        "$env:MANIM_AGENT_FORCE_CLAUDE_SETTINGS = " + quote_ps(str(payload["force_claude_settings"])),
     ]
     notes = payload.get("notes") or []
     lines.extend(f"# note: {note}" for note in notes)
@@ -195,6 +197,7 @@ def render_shell(payload: dict[str, object]) -> str:
         f"export ANTHROPIC_DEFAULT_HAIKU_MODEL={str(payload['default_haiku_model'])!r}",
         f"export ANTHROPIC_DEFAULT_SONNET_MODEL={str(payload['default_sonnet_model'])!r}",
         f"export ANTHROPIC_DEFAULT_OPUS_MODEL={str(payload['default_opus_model'])!r}",
+        f"export MANIM_AGENT_FORCE_CLAUDE_SETTINGS={str(payload['force_claude_settings'])!r}",
     ]
     notes = payload.get("notes") or []
     lines.extend(f"# note: {note}" for note in notes)

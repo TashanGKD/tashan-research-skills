@@ -55,6 +55,21 @@ def infer_llm_provider() -> str:
     return "unknown"
 
 
+def has_llm_key() -> bool:
+    return any(
+        os.getenv(name)
+        for name in [
+            "ANTHROPIC_AUTH_TOKEN",
+            "ANTHROPIC_API_KEY",
+            "ARK_API_KEY",
+            "VOLCENGINE_API_KEY",
+            "ALIYUN_DASHSCOPE_API_KEY",
+            "ALIYUN_TOKEN_PLAN_API_KEY",
+            "ALIYUN_CODING_PLAN_API_KEY",
+        ]
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check manim-agent local runtime.")
     parser.add_argument(
@@ -141,6 +156,10 @@ def main() -> int:
         print("note: DATABASE_URL is needed for Web/backend persistence, not for direct CLI no-persistence runs.")
     if not (os.getenv("ANTHROPIC_AUTH_TOKEN") or os.getenv("ANTHROPIC_API_KEY")):
         print("note: Claude Agent SDK needs local Claude auth or ANTHROPIC_AUTH_TOKEN/ANTHROPIC_API_KEY for normal pipeline runs.")
+    if not has_llm_key():
+        print("action: For Manim LLM access, apply for or refresh a key in the Volcengine Ark console or Aliyun DashScope/Bailian console, then run configure_manim_provider.py.")
+    if not os.getenv("DASHSCOPE_API_KEY"):
+        print("action: For narrated Manim videos, apply for or refresh Aliyun DashScope CosyVoice access and set DASHSCOPE_API_KEY; otherwise run with --no-tts.")
 
     return 1 if failed_required else 0
 

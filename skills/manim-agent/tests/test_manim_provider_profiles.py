@@ -40,6 +40,7 @@ def test_aliyun_regular_profile_outputs_anthropic_env_without_secret_value():
     assert '$env:ANTHROPIC_AUTH_TOKEN = $env:ALIYUN_DASHSCOPE_API_KEY' in stdout
     assert '$env:ANTHROPIC_BASE_URL = "https://dashscope.aliyuncs.com/apps/anthropic"' in stdout
     assert '$env:ANTHROPIC_MODEL = "qwen3.7-plus"' in stdout
+    assert '$env:MANIM_AGENT_FORCE_CLAUDE_SETTINGS = "1"' in stdout
     assert "test-secret-value" not in stdout
 
 
@@ -70,8 +71,9 @@ def test_volcengine_regular_and_coding_plan_profiles_are_supported_and_distinct(
 
     assert regular["base_url"] == "https://ark.cn-beijing.volces.com/api/compatible"
     assert coding_plan["base_url"] == "https://ark.cn-beijing.volces.com/api/coding"
-    assert regular["model"] == "deepseek-v3-2-251201"
+    assert regular["model"] == "deepseek-v4-pro-260425"
     assert regular["auth_token_env"] == "ARK_API_KEY"
+    assert regular["force_claude_settings"] == "1"
     assert coding_plan["auth_token_env"] == "ARK_API_KEY"
     assert regular["base_url"] != coding_plan["base_url"]
     assert "test-secret-value" not in json.dumps(regular)
@@ -126,7 +128,7 @@ def test_check_env_reports_provider_key_candidates_without_printing_values(tmp_p
         "MANIM_AGENT_LLM_PROVIDER": "volcengine",
         "ARK_API_KEY": "test-secret-value",
         "ANTHROPIC_BASE_URL": "https://ark.cn-beijing.volces.com/api/compatible",
-        "ANTHROPIC_MODEL": "deepseek-v3-2-251201",
+        "ANTHROPIC_MODEL": "deepseek-v4-pro-260425",
     }
     completed = subprocess.run(
         [sys.executable, str(CHECK_ENV), "--repo", str(fake_repo)],
@@ -142,3 +144,36 @@ def test_check_env_reports_provider_key_candidates_without_printing_values(tmp_p
     assert "volcengine" in completed.stdout.lower()
     assert "test-secret-value" not in completed.stdout
     assert "test-secret-value" not in completed.stderr
+
+
+def test_check_env_guides_user_to_provider_consoles_when_llm_key_is_missing(tmp_path):
+    fake_repo = tmp_path / "manim-agent"
+    (fake_repo / "src" / "manim_agent").mkdir(parents=True)
+    (fake_repo / "plugins" / "manim-production").mkdir(parents=True)
+    (fake_repo / "pyproject.toml").write_text("[project]\nname = 'manim-agent'\n", encoding="utf-8")
+    (fake_repo / "src" / "manim_agent" / "__main__.py").write_text("", encoding="utf-8")
+
+    env = os.environ.copy()
+    for name in [
+        "ANTHROPIC_AUTH_TOKEN",
+        "ANTHROPIC_API_KEY",
+        "ARK_API_KEY",
+        "VOLCENGINE_API_KEY",
+        "ALIYUN_DASHSCOPE_API_KEY",
+        "ALIYUN_TOKEN_PLAN_API_KEY",
+        "ALIYUN_CODING_PLAN_API_KEY",
+    ]:
+        env.pop(name, None)
+
+    completed = subprocess.run(
+        [sys.executable, str(CHECK_ENV), "--repo", str(fake_repo)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=env,
+        check=False,
+    )
+
+    assert "Volcengine Ark console" in completed.stdout
+    assert "Aliyun DashScope/Bailian console" in completed.stdout
+    assert "configure_manim_provider.py" in completed.stdout

@@ -8,9 +8,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "stream_deep_research.py"
 
 
-def run_stream(log_path):
+def run_stream(log_path, *extra_args):
     completed = subprocess.run(
-        [sys.executable, str(SCRIPT), "--from-log", str(log_path)],
+        [sys.executable, str(SCRIPT), "--from-log", str(log_path), *extra_args],
         check=True,
         capture_output=True,
         text=True,
@@ -58,6 +58,7 @@ def test_sse_log_is_forwarded_as_progress_events_before_final_summary(tmp_path):
     assert events[4]["references_count"] == 1
     assert events[4]["first_references"][0]["title"] == "Paper A"
     assert events[-1]["answer_status"] == "incomplete"
+    assert events[-1]["user_action"] == "先展示已返回 references 和 answer 片段；继续等待、收窄问题或改走候选论文过滤"
 
 
 def test_done_event_marks_stream_complete(tmp_path):
@@ -84,3 +85,37 @@ def test_done_event_marks_stream_complete(tmp_path):
     assert events[-1]["event"] == "stream_final"
     assert events[-1]["answer_status"] == "complete"
     assert events[-1]["has_done"] is True
+
+
+def test_max_events_interrupts_stream_but_keeps_final_summary(tmp_path):
+    log_path = tmp_path / "long.sse"
+    log_path.write_text(
+        "\n".join(
+            [
+                "event: references",
+                'data: {"references":[{"title":"Paper A"}]}',
+                "",
+                "event: delta",
+                'data: {"content":"first chunk"}',
+                "",
+                "event: delta",
+                'data: {"content":"second chunk"}',
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    events = run_stream(log_path, "--max-events", "2")
+
+    assert [event["event"] for event in events] == [
+        "stream_started",
+        "references_ready",
+        "answer_delta",
+        "stream_interrupted",
+        "stream_final",
+    ]
+    assert events[-2]["reason"] == "max_events"
+    assert events[-1]["interrupted"]["reason"] == "max_events"
+    assert events[-1]["answer_status"] == "incomplete"
+    assert events[-1]["user_action"] == "先展示已返回 references 和 answer 片段；继续等待、收窄问题或改走候选论文过滤"

@@ -139,7 +139,7 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 
 ## 访问码
 
-真实生图必须测试结果。如果接口返回 `ACCESS_TOKEN_REQUIRED`，记录 blocker，不要伪造图片。
+真实生图必须测试结果。如果接口返回 `ACCESS_TOKEN_REQUIRED`，记录 blocker，不要伪造图片，并提示用户到 `https://giiisp.com/#/mcp/authenticate` 申请或刷新 Giiisp MCP 认证。
 
 如果用户提供访问码或浏览器会话中已有 token：
 
@@ -147,6 +147,7 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 - 不要把 token 写入文件、日志或最终回复。
 - 只记录“已使用访问码 token”。
 - 命令行测试只从环境变量 `GIIISP_AUTH_TOKEN` 读取 token。
+- 无 `GIIISP_AUTH_TOKEN` 或 token 过期时，`blocker.json` 必须包含认证页和用户动作，便于前端直接提示用户处理。
 
 ## 结果检查
 

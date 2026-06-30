@@ -80,7 +80,19 @@ def answer_status(references: list[dict[str, Any]], answer_text: str, done: dict
     return "unknown"
 
 
-def forward_events(events: Iterable[tuple[str | None, str]], source: str) -> int:
+def user_action_for_status(status: str, failures: list[Any]) -> str:
+    if status == "incomplete":
+        return "先展示已返回 references 和 answer 片段；继续等待、收窄问题或改走候选论文过滤"
+    if status == "references_only":
+        return "先展示 references；继续等待 answer 或把候选论文交给报告整理"
+    if status in {"no_evidence", "clarification_or_no_evidence"}:
+        return "不要包装成研究报告；收窄问题、换关键词或先走论文检索"
+    if failures:
+        return "保留失败 endpoint 和关键词；必要时提示用户完成 Giiisp 认证或改用开放源回退"
+    return ""
+
+
+def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_events: int | None = None) -> int:
     started_at = time.time()
     phases: list[dict[str, Any]] = []
     keywords: list[str] = []
@@ -91,6 +103,7 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str) -> int
     done: dict[str, Any] | None = None
     usage: Any = None
     raw_event_count = 0
+    interrupted: dict[str, Any] | None = None
 
     emit({"event": "stream_started", "source": source})
     for raw_event, data in events:
@@ -141,8 +154,21 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str) -> int
         else:
             emit({"event": "raw_event", "raw_event": event, "payload": payload if payload is not None else data[:500]})
 
+        if max_events is not None and raw_event_count >= max_events:
+            interrupted = {
+                "reason": "max_events",
+                "max_events": max_events,
+                "message": "Stopped after the requested number of SSE events; preserve partial evidence for the UI.",
+            }
+            emit({"event": "stream_interrupted", **interrupted})
+            break
+
     answer_text = "".join(answer_chunks)
     total_results = private_search_summary.get("totalResults") if private_search_summary else None
+    status = answer_status(references, answer_text, done, total_results)
+    user_action = user_action_for_status(status, failures)
+    if interrupted and not user_action:
+        user_action = "已输出阶段进度；继续等待更多事件，或收窄问题后重试"
     emit(
         {
             "event": "stream_final",
@@ -156,10 +182,12 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str) -> int
                 "failures": failures[:10],
             },
             "references_count": len(references),
-            "answer_status": answer_status(references, answer_text, done, total_results),
+            "answer_status": status,
+            "user_action": user_action,
             "answer_chars": len(answer_text or (done or {}).get("answer", "")),
             "has_done": done is not None,
             "has_usage": usage is not None,
+            "interrupted": interrupted,
             "elapsed_ms": int((time.time() - started_at) * 1000),
         }
     )
@@ -224,13 +252,14 @@ def main() -> int:
     )
     parser.add_argument("--include-raw", action="store_true")
     parser.add_argument("--timeout", type=float, default=300)
+    parser.add_argument("--max-events", type=int, help="Stop after N SSE events and emit a partial final summary.")
     args = parser.parse_args()
 
     if args.from_log:
-        return forward_events(iter_sse_lines(lines_from_log(args.from_log)), str(args.from_log))
+        return forward_events(iter_sse_lines(lines_from_log(args.from_log)), str(args.from_log), args.max_events)
     if not args.prompt:
         raise SystemExit("--prompt is required unless --from-log is used")
-    return forward_events(iter_sse_lines(lines_from_http(args.endpoint_url, request_body(args), args.timeout)), args.endpoint_url)
+    return forward_events(iter_sse_lines(lines_from_http(args.endpoint_url, request_body(args), args.timeout)), args.endpoint_url, args.max_events)
 
 
 if __name__ == "__main__":

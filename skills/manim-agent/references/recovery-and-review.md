@@ -83,7 +83,7 @@ For Volcengine Ark, distinguish the regular Claude-compatible route from the Cod
 ```powershell
 # Regular Ark API route for Claude/Anthropic-compatible tools
 $env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/compatible"
-$env:ANTHROPIC_MODEL = "deepseek-v3-2-251201"
+$env:ANTHROPIC_MODEL = "deepseek-v4-pro-260425"
 
 # Ark Coding Plan route
 $env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/coding"

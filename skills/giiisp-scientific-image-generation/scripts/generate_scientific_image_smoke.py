@@ -18,6 +18,8 @@ ROOT = "http://images.sitianai.com/"
 GENERATE_ENDPOINT = urljoin(ROOT, "api/generate-async")
 JOB_ENDPOINT_TEMPLATE = urljoin(ROOT, "api/generate-jobs/{job_id}")
 DEFAULT_NEGATIVE_PROMPT = "水印，模糊文字，错乱标签，低清晰度，广告风格"
+GIIISP_AUTH_URL = "https://giiisp.com/#/mcp/authenticate"
+GIIISP_AUTH_ACTION = "申请或刷新 Giiisp MCP 认证后设置 GIIISP_AUTH_TOKEN"
 
 
 def stable_root():
@@ -400,6 +402,9 @@ def normalize_extension(image_path, check):
 
 def write_blocker(run_dir, reason, details=None):
     blocker = {"blocked": True, "reason": reason, "details": details or {}}
+    if reason == "missing GIIISP_AUTH_TOKEN" or "ACCESS_TOKEN_REQUIRED" in reason:
+        blocker["auth_url"] = GIIISP_AUTH_URL
+        blocker["user_action"] = GIIISP_AUTH_ACTION
     write_json(run_dir / "blocker.json", blocker)
     print("BLOCKED: " + reason)
     print("Run directory: " + str(run_dir))
