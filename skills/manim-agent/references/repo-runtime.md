@@ -74,34 +74,38 @@ FFmpeg is a system dependency, not just a Python package. On Windows it must be 
 
 Normal CLI runs need an LLM provider because the repository calls Claude Agent SDK during Phase 1 planning and Phase 2 implementation. If the SDK cannot call a model, the pipeline stops before Manim rendering.
 
-For Aliyun DashScope / Model Studio pay-as-you-go model API, use the Anthropic-compatible route for this repository. This is the correct path for the normal Bailian model page such as the `qwen3.7-plus` text-generation model:
+Use the profile helper to map a provider key that is already in an environment variable into the Claude Agent SDK env contract. The helper prints commands only; it never prints key values.
 
 ```powershell
-$env:ANTHROPIC_AUTH_TOKEN = "<DashScope or Bailian API key>"
-$env:ANTHROPIC_BASE_URL = "https://dashscope.aliyuncs.com/apps/anthropic"
-$env:ANTHROPIC_MODEL = "qwen3.7-plus"
-$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = "qwen3.6-flash"
-$env:ANTHROPIC_DEFAULT_SONNET_MODEL = "qwen3.7-plus"
-$env:ANTHROPIC_DEFAULT_OPUS_MODEL = "qwen3.7-plus"
+# Aliyun regular DashScope/Bailian API
+python ".\scripts\configure_manim_provider.py" --provider aliyun --route regular --format powershell
+
+# Aliyun plan routes
+python ".\scripts\configure_manim_provider.py" --provider aliyun --route token-plan --format powershell
+python ".\scripts\configure_manim_provider.py" --provider aliyun --route coding-plan --format powershell
+
+# Volcengine Ark regular API and Coding Plan
+python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --format powershell
+python ".\scripts\configure_manim_provider.py" --provider volcengine --route coding-plan --format powershell
 ```
 
-If the key is a Token Plan team key, do not use the normal DashScope base URL. Use the Token Plan Anthropic endpoint and the model list supported by that subscription:
+Provider profiles:
+
+| Provider route | Base URL | Preferred source key env | Default model |
+| --- | --- | --- | --- |
+| Aliyun regular | `https://dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_DASHSCOPE_API_KEY` or `DASHSCOPE_API_KEY` | `qwen3.7-plus` |
+| Aliyun Token Plan | `https://token-plan.cn-beijing.maas.aliyuncs.com/apps/anthropic` | `ALIYUN_TOKEN_PLAN_API_KEY` | `qwen3.7-plus` |
+| Aliyun Coding Plan | `https://coding.dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_CODING_PLAN_API_KEY` | `qwen3.7-plus` |
+| Volcengine Ark regular | `https://ark.cn-beijing.volces.com/api/compatible` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `doubao-seed-code-preview-latest` |
+| Volcengine Ark Coding Plan | `https://ark.cn-beijing.volces.com/api/coding` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `ark-code-latest` |
+
+If the provider console lists a different current model or Claude-compatible base URL, keep the same profile but override the current values:
 
 ```powershell
-$env:ANTHROPIC_AUTH_TOKEN = "<Token Plan API key>"
-$env:ANTHROPIC_BASE_URL = "https://token-plan.cn-beijing.maas.aliyuncs.com/apps/anthropic"
-$env:ANTHROPIC_MODEL = "qwen3.7-plus"
+python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --base-url "<console Claude-compatible base URL>" --model "<console model>" --format powershell
 ```
 
-If the key is a Coding Plan key rather than pay-as-you-go, use the Coding Plan base URL and supported model set:
-
-```powershell
-$env:ANTHROPIC_AUTH_TOKEN = "<Coding Plan API key>"
-$env:ANTHROPIC_BASE_URL = "https://coding.dashscope.aliyuncs.com/apps/anthropic"
-$env:ANTHROPIC_MODEL = "qwen3.7-plus"
-```
-
-Do not mix key families and endpoints. A normal `sk-...` DashScope/Bailian API key, a Token Plan key, and a Coding Plan key may all look similar in examples, but their valid base URLs and model lists are different.
+Do not mix key families and endpoints. A normal DashScope/Bailian key, a Token Plan key, a Coding Plan key, and a Volcengine Ark key may all look similar in examples, but their valid base URLs and model lists are different.
 
 Check these first when Phase 1 fails:
 

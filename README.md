@@ -106,7 +106,7 @@ This repository should stay easy to review and hard to turn into unmaintainable 
 
 Do not put API keys, access tokens, bind keys, cookies, private SSH keys, or service credentials in this repository.
 
-Skills that need external services must read secrets from environment variables or local user configuration. Examples include `GIIISP_AUTH_TOKEN`, `DASHSCOPE_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, and `MINERU_API_TOKEN`.
+Skills that need external services must read secrets from environment variables or local user configuration. Examples include `GIIISP_AUTH_TOKEN`, `DASHSCOPE_API_KEY`, `ALIYUN_DASHSCOPE_API_KEY`, `ARK_API_KEY`, `VOLCENGINE_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, and `MINERU_API_TOKEN`.
 
 ## License
 

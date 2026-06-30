@@ -106,7 +106,7 @@ Copy-Item -Recurse .\skills\papercheck "$env:USERPROFILE\.codex\skills\paperchec
 
 不要把 API key、access token、bind key、cookie、SSH 私钥或服务凭证写入仓库。
 
-需要外部服务的 skill 必须从环境变量或本地用户配置读取密钥。常见环境变量包括 `GIIISP_AUTH_TOKEN`、`DASHSCOPE_API_KEY`、`OPENAI_API_KEY`、`ANTHROPIC_AUTH_TOKEN` 和 `MINERU_API_TOKEN`。
+需要外部服务的 skill 必须从环境变量或本地用户配置读取密钥。常见环境变量包括 `GIIISP_AUTH_TOKEN`、`DASHSCOPE_API_KEY`、`ALIYUN_DASHSCOPE_API_KEY`、`ARK_API_KEY`、`VOLCENGINE_API_KEY`、`OPENAI_API_KEY`、`ANTHROPIC_AUTH_TOKEN` 和 `MINERU_API_TOKEN`。
 
 ## 许可证
 

@@ -52,6 +52,13 @@ Typical fixes:
 - Wrong base URL/token pair: align `ANTHROPIC_BASE_URL` with the matching auth token.
 - Structured output incompatibility: use a provider/model known to work with Claude Agent SDK structured output.
 
+For provider setup, prefer the helper so the key value stays in its source env var:
+
+```powershell
+python ".\scripts\configure_manim_provider.py" --provider aliyun --route regular --format powershell
+python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --format powershell
+```
+
 For Aliyun DashScope, Claude Agent SDK should use the Anthropic-compatible endpoint:
 
 ```powershell
@@ -70,6 +77,20 @@ $env:ANTHROPIC_BASE_URL = "https://token-plan.cn-beijing.maas.aliyuncs.com/apps/
 # Coding Plan
 $env:ANTHROPIC_BASE_URL = "https://coding.dashscope.aliyuncs.com/apps/anthropic"
 ```
+
+For Volcengine Ark, distinguish the regular Claude-compatible route from the Coding Plan route:
+
+```powershell
+# Regular Ark API route for Claude/Anthropic-compatible tools
+$env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/compatible"
+$env:ANTHROPIC_MODEL = "doubao-seed-code-preview-latest"
+
+# Ark Coding Plan route
+$env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/coding"
+$env:ANTHROPIC_MODEL = "ark-code-latest"
+```
+
+If the Ark console shows a newer Claude-compatible base URL or model, pass it through `configure_manim_provider.py --base-url ... --model ...` instead of editing secrets into docs.
 
 `model not found`, `模型不存在`, or `Incorrect API key provided` often means the key family and base URL are mismatched, not that Manim failed.
 

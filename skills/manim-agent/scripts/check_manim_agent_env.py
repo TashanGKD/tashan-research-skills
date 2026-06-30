@@ -40,6 +40,21 @@ def check_python_package(import_name: str) -> tuple[bool, str]:
     return found, "importable" if found else "not importable"
 
 
+def infer_llm_provider() -> str:
+    explicit = os.getenv("MANIM_AGENT_LLM_PROVIDER")
+    if explicit:
+        return explicit
+
+    base_url = (os.getenv("ANTHROPIC_BASE_URL") or "").lower()
+    if "dashscope" in base_url or "aliyuncs" in base_url:
+        return "aliyun"
+    if "volces" in base_url or "volcengine" in base_url or "byteplus" in base_url:
+        return "volcengine"
+    if base_url:
+        return "custom"
+    return "unknown"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check manim-agent local runtime.")
     parser.add_argument(
@@ -78,7 +93,14 @@ def main() -> int:
         checks.append((f"py:{package}", ok, detail))
 
     for env_name in [
+        "MANIM_AGENT_LLM_PROVIDER",
+        "MANIM_AGENT_LLM_ROUTE",
         "DASHSCOPE_API_KEY",
+        "ALIYUN_DASHSCOPE_API_KEY",
+        "ALIYUN_TOKEN_PLAN_API_KEY",
+        "ALIYUN_CODING_PLAN_API_KEY",
+        "ARK_API_KEY",
+        "VOLCENGINE_API_KEY",
         "DATABASE_URL",
         "ANTHROPIC_BASE_URL",
         "ANTHROPIC_AUTH_TOKEN",
@@ -110,6 +132,11 @@ def main() -> int:
         print("note: DASHSCOPE_API_KEY can drive DashScope LLM and DashScope CosyVoice TTS when the matching env vars are set.")
     if not os.getenv("DASHSCOPE_API_KEY"):
         print("note: DASHSCOPE_API_KEY is needed for Aliyun DashScope CosyVoice TTS and DashScope direct checks.")
+    print(f"note: inferred LLM provider profile: {infer_llm_provider()}")
+    if os.getenv("ALIYUN_DASHSCOPE_API_KEY") or os.getenv("ALIYUN_TOKEN_PLAN_API_KEY") or os.getenv("ALIYUN_CODING_PLAN_API_KEY"):
+        print("note: Aliyun key env is available; map it with configure_manim_provider.py --provider aliyun --route regular|token-plan|coding-plan.")
+    if os.getenv("ARK_API_KEY") or os.getenv("VOLCENGINE_API_KEY"):
+        print("note: Volcengine Ark key env is available; map it with configure_manim_provider.py --provider volcengine --route regular|coding-plan.")
     if not os.getenv("DATABASE_URL"):
         print("note: DATABASE_URL is needed for Web/backend persistence, not for direct CLI no-persistence runs.")
     if not (os.getenv("ANTHROPIC_AUTH_TOKEN") or os.getenv("ANTHROPIC_API_KEY")):
