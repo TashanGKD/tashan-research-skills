@@ -54,6 +54,8 @@ Check environment:
 python ".\scripts\check_manim_agent_env.py" --repo "<path-to-manim-agent>"
 ```
 
+Use `references/env-template.ps1` as the local Windows environment template. It contains only variable names and placeholders; keep real API keys in a private shell, user environment, or deployment secret store.
+
 ## Install
 
 From the repo:
