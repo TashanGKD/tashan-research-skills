@@ -54,10 +54,14 @@ app.include_router(auth_router)
 
 
 # 挂载静态文件目录到 /frontend 路径（旧前端）
-app.mount("/frontend", StaticFiles(directory="front/web", html=True), name="frontend")
+FRONT_WEB_DIR = os.path.join(PROJECT_ROOT, "front", "web")
+if os.path.isdir(FRONT_WEB_DIR):
+    app.mount("/frontend", StaticFiles(directory=FRONT_WEB_DIR, html=True), name="frontend")
 
 # 他山设计系统前端（guofeng 主题，单文件 HTML + CSS）
-app.mount("/ui", StaticFiles(directory="front/tashan-ui", html=True), name="frontend-tashan")
+TASHAN_UI_DIR = os.path.join(PROJECT_ROOT, "front", "tashan-ui")
+if os.path.isdir(TASHAN_UI_DIR):
+    app.mount("/ui", StaticFiles(directory=TASHAN_UI_DIR, html=True), name="frontend-tashan")
 
 # 新前端双轨：仅在构建产物存在时挂载
 FRONTEND_V2_DIST = os.path.join(PROJECT_ROOT, "frontend", "dist")
