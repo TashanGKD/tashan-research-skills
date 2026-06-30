@@ -46,7 +46,49 @@ POST http://123.56.218.60:18000/api/research/ask
 }
 ```
 
-响应是 `text/event-stream`。需要持续消费事件并拼接最终报告。
+响应是 `text/event-stream`。必须持续消费事件并拼接最终报告，不能在后端等完整 `done` 后一次性返回。
+
+## 实时进度转发
+
+Deep Research 接口本身会中途返回 SSE。调用层必须把这些事件实时透出给用户，至少展示阶段、关键词、检索汇总、references 和 answer 生成片段。
+
+推荐使用 `scripts/stream_deep_research.py` 消费 SSE 并输出 JSONL：
+
+```powershell
+python scripts/stream_deep_research.py `
+  --prompt "large language models for scientific discovery survey"
+```
+
+每一行都是一个进度事件，可由服务端转成 SSE 或 WebSocket 消息：
+
+| JSONL 事件 | 来源 SSE | 用户侧含义 |
+|---|---|---|
+| `stream_started` | 本地包装器 | 请求已开始 |
+| `phase` | `phase` | 进入关键词规划、私有检索、写作等阶段 |
+| `keywords_ready` | `keywords` | 关键词已生成 |
+| `private_search_hit` | `private_search_hit` | 某个检索接口有命中或失败 |
+| `private_search_summary` | `private_search_summary` | 检索总命中、失败接口已汇总 |
+| `references_ready` | `references` | 候选 references 已可提前展示 |
+| `answer_delta` | `delta` | answer 正在生成，可逐步展示 |
+| `done` | `done` | 服务端完成 |
+| `usage` | `usage` | token/用量信息 |
+| `stream_final` | 本地包装器 | 本次流结束，给出 `answer_status` |
+
+如果 30-45 秒内已收到 `references_ready` 但没收到 `done`，不要丢弃结果。UI 应展示 references，并把状态标为 `incomplete` 或“answer 生成中/未完成”。
+
+如果通过 Nginx 或其他网关转发 SSE，必须关闭响应缓冲：
+
+```nginx
+proxy_buffering off;
+```
+
+后端响应头建议包含：
+
+```text
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+```
 
 ## 已实测状态
 
@@ -60,6 +102,7 @@ POST http://123.56.218.60:18000/api/research/ask
 - 第二次测试主题“large language models for scientific discovery survey”返回 `totalResults=82`，解析到 50 条 references，并开始生成 answer；但 45 秒限制内未等到 `done`，标为 `references 已返回，answer 未完成`。
 - 第三次测试主题“agentic scientific discovery deterministic data access benchmark”返回 `totalResults=31`，解析到 31 条 references，并开始生成 answer；35 秒限制内未等到 `done`，标为 `incomplete`。更聚焦的问题减少了混杂，但摘要检索仍会引入弱相关论文。
 - 已新增 `scripts/parse_deep_research_sse.py`，可从 SSE 文本日志提取关键词、检索命中、references 数、answer 状态和前 10 条 references。
+- 已新增 `scripts/stream_deep_research.py`，可实时转发 SSE 事件为 JSONL，避免调用层等最终 answer。
 
 硬规则：
 
@@ -164,6 +207,12 @@ python outputs\ai_scientist_open_source_research\deep_dive\scientific-digital-em
   --out outputs\ai_scientist_open_source_research\deep_dive\api_tests\round4_deep_research_summary.json
 ```
 
+实时转发或回放 SSE 日志：
+
+```powershell
+python scripts/stream_deep_research.py --from-log outputs\api_tests\round4_deep_research_sse.txt
+```
+
 输出字段：
 
 - `phases`
@@ -175,6 +224,12 @@ python outputs\ai_scientist_open_source_research\deep_dive\scientific-digital-em
 - `answer_status`
 - `answer_chars`
 - `answer_preview`
+
+进度事件脚本测试：
+
+```powershell
+python -m pytest tests/test_stream_deep_research.py
+```
 
 `answer_status` 判定：
 

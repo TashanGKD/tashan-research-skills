@@ -16,7 +16,9 @@
 
 ```powershell
 python -m pytest tests/test_dry_run_paper_search.py
+python -m pytest tests/test_progressive_paper_search.py
 python scripts/dry_run_paper_search.py --mode oa --query "科研图像生成 文献检索 skill" --format end-to-end-example
+python scripts/progressive_paper_search.py --mode arxiv-title --query "科研图像生成 文献检索 skill" --expand arxiv-abstract,oa --max-pages 2 --dry-run
 ```
 
 预期：
@@ -31,7 +33,9 @@ python scripts/dry_run_paper_search.py --mode oa --query "科研图像生成 文
 - `SKILL.md`
 - `agents/openai.yaml`
 - `scripts/dry_run_paper_search.py`
+- `scripts/progressive_paper_search.py`
 - `tests/test_dry_run_paper_search.py`
+- `tests/test_progressive_paper_search.py`
 - `examples/request_matrix.json`
 - `examples/normalized_result_example.json`
 - `examples/failure_response_examples.json`
