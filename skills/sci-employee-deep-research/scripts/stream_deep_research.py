@@ -12,12 +12,18 @@ import json
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
 
 DEFAULT_ENDPOINT = "http://123.56.218.60:18000/api/research/ask"
+AUTH_URL = "https://giiisp.com/#/mcp/authenticate"
+INTERFACE_UNAVAILABLE_ACTION = (
+    "Deep Research 接口不可用或未配置；请检查服务地址/网络/后端状态。"
+    f" 如果失败来自 Giiisp 认证或 key 过期，请到 {AUTH_URL} 申请或刷新认证后重试。"
+)
 
 
 def emit(event: dict[str, Any]) -> None:
@@ -81,6 +87,8 @@ def answer_status(references: list[dict[str, Any]], answer_text: str, done: dict
 
 
 def user_action_for_status(status: str, failures: list[Any]) -> str:
+    if status == "interface_unavailable":
+        return INTERFACE_UNAVAILABLE_ACTION
     if status == "incomplete":
         return "先展示已返回 references 和 answer 片段；继续等待、收窄问题或改走候选论文过滤"
     if status == "references_only":
@@ -90,6 +98,55 @@ def user_action_for_status(status: str, failures: list[Any]) -> str:
     if failures:
         return "保留失败 endpoint 和关键词；必要时提示用户完成 Giiisp 认证或改用开放源回退"
     return ""
+
+
+def infer_health_url(endpoint_url: str) -> str:
+    parsed = urllib.parse.urlparse(endpoint_url)
+    if not parsed.scheme or not parsed.netloc:
+        return ""
+    return urllib.parse.urlunparse((parsed.scheme, parsed.netloc, "/health", "", "", ""))
+
+
+def interface_unavailable_event(reason: str, **details: Any) -> dict[str, Any]:
+    return {
+        "event": "interface_unavailable",
+        "reason": reason,
+        "user_action": INTERFACE_UNAVAILABLE_ACTION,
+        **details,
+    }
+
+
+def check_health(health_url: str, timeout: float) -> tuple[bool, dict[str, Any]]:
+    if not health_url:
+        return False, interface_unavailable_event("missing_health_url")
+    request = urllib.request.Request(health_url, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            status = getattr(response, "status", response.getcode())
+            body = response.read(500).decode("utf-8", errors="replace")
+            if 200 <= status < 300:
+                return True, {"event": "interface_status", "ok": True, "health_url": health_url, "http_status": status}
+            return False, interface_unavailable_event(
+                "health_check_non_2xx",
+                health_url=health_url,
+                http_status=status,
+                raw_excerpt=body,
+            )
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")[:500]
+        return False, interface_unavailable_event(
+            "health_check_http_error",
+            health_url=health_url,
+            http_status=exc.code,
+            raw_excerpt=body,
+        )
+    except OSError as exc:
+        return False, interface_unavailable_event(
+            "health_check_failed",
+            health_url=health_url,
+            error=type(exc).__name__,
+            message=str(exc),
+        )
 
 
 def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_events: int | None = None) -> int:
@@ -104,6 +161,7 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_ev
     usage: Any = None
     raw_event_count = 0
     interrupted: dict[str, Any] | None = None
+    interface_error: dict[str, Any] | None = None
 
     emit({"event": "stream_started", "source": source})
     for raw_event, data in events:
@@ -151,6 +209,9 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_ev
         elif event == "usage" and isinstance(payload, dict):
             usage = payload.get("usage") or payload
             emit({"event": "usage", "usage": usage})
+        elif event in {"stream_error", "interface_unavailable"} and isinstance(payload, dict):
+            interface_error = payload
+            emit({"event": "interface_unavailable", **payload})
         else:
             emit({"event": "raw_event", "raw_event": event, "payload": payload if payload is not None else data[:500]})
 
@@ -165,7 +226,11 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_ev
 
     answer_text = "".join(answer_chunks)
     total_results = private_search_summary.get("totalResults") if private_search_summary else None
-    status = answer_status(references, answer_text, done, total_results)
+    status = (
+        "interface_unavailable"
+        if interface_error and not references and not answer_text and done is None
+        else answer_status(references, answer_text, done, total_results)
+    )
     user_action = user_action_for_status(status, failures)
     if interrupted and not user_action:
         user_action = "已输出阶段进度；继续等待更多事件，或收窄问题后重试"
@@ -188,10 +253,11 @@ def forward_events(events: Iterable[tuple[str | None, str]], source: str, max_ev
             "has_done": done is not None,
             "has_usage": usage is not None,
             "interrupted": interrupted,
+            "interface_error": interface_error,
             "elapsed_ms": int((time.time() - started_at) * 1000),
         }
     )
-    return 0
+    return 2 if status == "interface_unavailable" else 0
 
 
 def lines_from_log(path: Path) -> Iterator[str]:
@@ -212,16 +278,18 @@ def lines_from_http(endpoint: str, body: dict[str, Any], timeout: float) -> Iter
                 yield raw.decode("utf-8", errors="replace")
     except urllib.error.HTTPError as exc:
         body_excerpt = exc.read().decode("utf-8", errors="replace")[:500]
-        emit(
-            {
-                "event": "stream_error",
-                "http_status": exc.code,
-                "content_type": exc.headers.get("Content-Type", ""),
-                "raw_excerpt": body_excerpt,
-            }
+        payload = interface_unavailable_event(
+            "stream_http_error",
+            http_status=exc.code,
+            content_type=exc.headers.get("Content-Type", ""),
+            raw_excerpt=body_excerpt,
         )
+        yield "event: interface_unavailable\n"
+        yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
     except OSError as exc:
-        emit({"event": "stream_error", "error": type(exc).__name__, "message": str(exc)})
+        payload = interface_unavailable_event("stream_request_failed", error=type(exc).__name__, message=str(exc))
+        yield "event: interface_unavailable\n"
+        yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
 
 def request_body(args: argparse.Namespace) -> dict[str, Any]:
@@ -252,6 +320,9 @@ def main() -> int:
     )
     parser.add_argument("--include-raw", action="store_true")
     parser.add_argument("--timeout", type=float, default=300)
+    parser.add_argument("--health-url", help="Override the Deep Research health-check URL.")
+    parser.add_argument("--health-timeout", type=float, default=10)
+    parser.add_argument("--skip-health-check", action="store_true")
     parser.add_argument("--max-events", type=int, help="Stop after N SSE events and emit a partial final summary.")
     args = parser.parse_args()
 
@@ -259,6 +330,32 @@ def main() -> int:
         return forward_events(iter_sse_lines(lines_from_log(args.from_log)), str(args.from_log), args.max_events)
     if not args.prompt:
         raise SystemExit("--prompt is required unless --from-log is used")
+    if not args.endpoint_url:
+        missing_event = interface_unavailable_event("missing_endpoint_url")
+        return forward_events(
+            iter_sse_lines(
+                [
+                    "event: interface_unavailable\n",
+                    f"data: {json.dumps(missing_event, ensure_ascii=False)}\n\n",
+                ]
+            ),
+            "<missing endpoint>",
+            args.max_events,
+        )
+    if not args.skip_health_check:
+        ok, health_event = check_health(args.health_url or infer_health_url(args.endpoint_url), args.health_timeout)
+        emit(health_event)
+        if not ok:
+            return forward_events(
+                iter_sse_lines(
+                    [
+                        "event: interface_unavailable\n",
+                        f"data: {json.dumps(health_event, ensure_ascii=False)}\n\n",
+                    ]
+                ),
+                args.endpoint_url,
+                args.max_events,
+            )
     return forward_events(iter_sse_lines(lines_from_http(args.endpoint_url, request_body(args), args.timeout)), args.endpoint_url, args.max_events)
 
 

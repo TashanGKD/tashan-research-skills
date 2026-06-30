@@ -19,6 +19,7 @@ DEFAULT_RULES_REPO = Path(
 PYTHON_IMPORTS = (
     "docx",
     "fastapi",
+    "fitz",
     "uvicorn",
     "requests",
     "pymupdf4llm",

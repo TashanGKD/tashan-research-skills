@@ -23,6 +23,18 @@ class ProviderProfile:
     notes: tuple[str, ...] = ()
 
 
+@dataclass(frozen=True)
+class TTSProfile:
+    provider: str
+    route: str
+    label: str
+    model: str
+    voice: str
+    auth_env_candidates: tuple[str, ...]
+    extra_env: dict[str, str]
+    notes: tuple[str, ...] = ()
+
+
 PROFILES: dict[tuple[str, str], ProviderProfile] = {
     (
         "aliyun",
@@ -102,6 +114,41 @@ PROFILES: dict[tuple[str, str], ProviderProfile] = {
     ),
 }
 
+TTS_PROFILES: dict[tuple[str, str], TTSProfile] = {
+    (
+        "aliyun",
+        "regular",
+    ): TTSProfile(
+        provider="aliyun",
+        route="regular",
+        label="Aliyun DashScope CosyVoice TTS",
+        model="cosyvoice-v3-flash",
+        voice="longanyang",
+        auth_env_candidates=("DASHSCOPE_API_KEY", "ALIYUN_DASHSCOPE_API_KEY"),
+        extra_env={"DASHSCOPE_API_BASE_URL": "https://dashscope.aliyuncs.com/api/v1"},
+        notes=("Current upstream adapter natively supports DashScope CosyVoice.",),
+    ),
+    (
+        "volcengine",
+        "regular",
+    ): TTSProfile(
+        provider="volcengine",
+        route="regular",
+        label="Volcengine Speech Synthesis TTS",
+        model="volcengine-tts",
+        voice="zh_female_wanwanxiaohe_moon_bigtts",
+        auth_env_candidates=("VOLCENGINE_TTS_API_KEY", "VOLCENGINE_TTS_ACCESS_TOKEN"),
+        extra_env={
+            "VOLCENGINE_TTS_APP_ID": "$env:VOLCENGINE_TTS_APP_ID",
+            "VOLCENGINE_TTS_CLUSTER": "volcano_tts",
+        },
+        notes=(
+            "Use a Volcengine speech-synthesis credential for narration; do not reuse an expired LLM-only key silently.",
+            "If the upstream repo still has only the CosyVoice adapter, keep --no-tts or add the Volcengine adapter before production narration.",
+        ),
+    ),
+}
+
 ROUTE_ALIASES = {
     "ordinary": "regular",
     "normal": "regular",
@@ -126,6 +173,15 @@ def select_auth_env(profile: ProviderProfile, explicit_auth_env: str | None) -> 
         if os.getenv(env_name):
             return env_name
     return provider_specific[0] if provider_specific else profile.auth_env_candidates[0]
+
+
+def select_tts_auth_env(profile: TTSProfile, explicit_auth_env: str | None) -> str:
+    if explicit_auth_env:
+        return explicit_auth_env
+    for env_name in profile.auth_env_candidates:
+        if os.getenv(env_name):
+            return env_name
+    return profile.auth_env_candidates[0]
 
 
 def build_payload(args: argparse.Namespace) -> dict[str, object]:
@@ -157,12 +213,46 @@ def build_payload(args: argparse.Namespace) -> dict[str, object]:
     }
 
 
+def build_tts_payload(args: argparse.Namespace) -> dict[str, object]:
+    route = canonical_route(args.route)
+    if route in {"token-plan", "coding-plan"}:
+        route = "regular"
+    key = (args.provider, route)
+    if key not in TTS_PROFILES:
+        known = ", ".join(f"{provider}:{profile_route}" for provider, profile_route in sorted(TTS_PROFILES))
+        raise SystemExit(f"unsupported TTS profile {args.provider}:{args.route}; known profiles: {known}")
+
+    profile = TTS_PROFILES[key]
+    auth_env = select_tts_auth_env(profile, args.auth_env)
+    return {
+        "purpose": "tts",
+        "provider": profile.provider,
+        "route": profile.route,
+        "label": profile.label,
+        "model": args.model or profile.model,
+        "voice": args.voice or profile.voice,
+        "auth_token_env": auth_env,
+        "auth_env_candidates": list(profile.auth_env_candidates),
+        "extra_env": profile.extra_env,
+        "notes": list(profile.notes),
+        "secret_policy": "The script prints env-var references only and never prints API key values.",
+    }
+
+
 def quote_ps(value: str) -> str:
     escaped = value.replace("`", "``").replace('"', '`"')
     return f'"{escaped}"'
 
 
+def render_env_ref_powershell(value: str) -> str:
+    if value.startswith("$env:"):
+        return value
+    return quote_ps(value)
+
+
 def render_powershell(payload: dict[str, object]) -> str:
+    if payload.get("purpose") == "tts":
+        return render_tts_powershell(payload)
     auth_env = str(payload["auth_token_env"])
     lines = [
         f"# Manim Agent LLM provider: {payload['label']}",
@@ -183,7 +273,27 @@ def render_powershell(payload: dict[str, object]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def render_tts_powershell(payload: dict[str, object]) -> str:
+    auth_env = str(payload["auth_token_env"])
+    lines = [
+        f"# Manim Agent TTS provider: {payload['label']}",
+        "# Put the provider TTS key in the referenced source env var first; no key value is printed here.",
+        "$env:MANIM_AGENT_TTS_PROVIDER = " + quote_ps(str(payload["provider"])),
+        "$env:MANIM_AGENT_TTS_ROUTE = " + quote_ps(str(payload["route"])),
+        "$env:MANIM_AGENT_TTS_AUTH_TOKEN = " + f"$env:{auth_env}",
+        "$env:MANIM_AGENT_TTS_MODEL = " + quote_ps(str(payload["model"])),
+        "$env:MANIM_AGENT_TTS_VOICE = " + quote_ps(str(payload["voice"])),
+    ]
+    for name, value in dict(payload.get("extra_env") or {}).items():
+        lines.append(f"$env:{name} = " + render_env_ref_powershell(str(value)))
+    notes = payload.get("notes") or []
+    lines.extend(f"# note: {note}" for note in notes)
+    return "\n".join(lines) + "\n"
+
+
 def render_shell(payload: dict[str, object]) -> str:
+    if payload.get("purpose") == "tts":
+        return render_tts_shell(payload)
     auth_env = str(payload["auth_token_env"])
     lines = [
         f"# Manim Agent LLM provider: {payload['label']}",
@@ -204,11 +314,36 @@ def render_shell(payload: dict[str, object]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def render_env_ref_shell(value: str) -> str:
+    if value.startswith("$env:"):
+        return f"${value.split(':', 1)[1]}"
+    return repr(value)
+
+
+def render_tts_shell(payload: dict[str, object]) -> str:
+    auth_env = str(payload["auth_token_env"])
+    lines = [
+        f"# Manim Agent TTS provider: {payload['label']}",
+        "# Put the provider TTS key in the referenced source env var first; no key value is printed here.",
+        f"export MANIM_AGENT_TTS_PROVIDER={str(payload['provider'])!r}",
+        f"export MANIM_AGENT_TTS_ROUTE={str(payload['route'])!r}",
+        f"export MANIM_AGENT_TTS_AUTH_TOKEN=\"${auth_env}\"",
+        f"export MANIM_AGENT_TTS_MODEL={str(payload['model'])!r}",
+        f"export MANIM_AGENT_TTS_VOICE={str(payload['voice'])!r}",
+    ]
+    for name, value in dict(payload.get("extra_env") or {}).items():
+        lines.append(f"export {name}={render_env_ref_shell(str(value))}")
+    notes = payload.get("notes") or []
+    lines.extend(f"# note: {note}" for note in notes)
+    return "\n".join(lines) + "\n"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Print Manim Agent Claude Agent SDK provider env without printing secrets."
     )
     parser.add_argument("--provider", choices=["aliyun", "volcengine"], required=True)
+    parser.add_argument("--purpose", choices=["llm", "tts"], default="llm")
     parser.add_argument(
         "--route",
         choices=["regular", "ordinary", "normal", "payg", "api", "token-plan", "coding-plan"],
@@ -218,13 +353,14 @@ def main() -> int:
     parser.add_argument("--model", help="Override ANTHROPIC_MODEL.")
     parser.add_argument("--base-url", help="Override ANTHROPIC_BASE_URL from the provider console.")
     parser.add_argument("--auth-env", help="Source environment variable name that already holds the API key.")
+    parser.add_argument("--voice", help="Override TTS voice.")
     parser.add_argument("--haiku-model", help="Override ANTHROPIC_DEFAULT_HAIKU_MODEL.")
     parser.add_argument("--sonnet-model", help="Override ANTHROPIC_DEFAULT_SONNET_MODEL.")
     parser.add_argument("--opus-model", help="Override ANTHROPIC_DEFAULT_OPUS_MODEL.")
     parser.add_argument("--format", choices=["powershell", "shell", "json"], default="powershell")
     args = parser.parse_args()
 
-    payload = build_payload(args)
+    payload = build_tts_payload(args) if args.purpose == "tts" else build_payload(args)
     if args.format == "json":
         print(json.dumps(payload, ensure_ascii=False, indent=2))
     elif args.format == "shell":

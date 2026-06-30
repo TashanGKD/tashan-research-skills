@@ -27,8 +27,8 @@ Use this skill to run the full Manim Agent production workflow, not a simplified
 - If a requested Volcengine model alias returns `InvalidEndpointOrModel.NotFound` or `UnsupportedModel`, report that the endpoint/model is not enabled for the account and ask the user to create or choose an enabled Ark endpoint/model in the Volcengine console.
 - If Phase 1 fails before rendering, check the LLM provider first: expired plan, invalid model name, missing auth token, or incompatible structured-output behavior.
 - If provider calls work but rendering fails on `Tex` or `MathTex`, treat it as a local Manim/LaTeX dependency or generated-scene compatibility issue, not as an LLM credential failure.
-- TTS is optional. Use `--no-tts` for smoke tests. For narrated output, configure DashScope CosyVoice with `DASHSCOPE_API_KEY`; do not expect the skill package to contain an API key.
-- The speech route is Aliyun DashScope CosyVoice. Default model: `cosyvoice-v3-flash`; default voice: `longanyang`. The adapter downloads the returned audio URL and measures real duration before muxing.
+- TTS is optional. Use `--no-tts` for smoke tests. For narrated output, configure Aliyun DashScope CosyVoice with `DASHSCOPE_API_KEY`, or configure Volcengine speech synthesis with `configure_manim_provider.py --provider volcengine --purpose tts`; do not expect the skill package to contain an API key.
+- The native upstream speech route is Aliyun DashScope CosyVoice. Default model: `cosyvoice-v3-flash`; default voice: `longanyang`. Volcengine TTS is treated as a separate narration provider profile and must use a speech-synthesis credential, not a stale LLM-only key. The adapter downloads the returned audio URL and measures real duration before muxing.
 - Database and R2 credentials are not required for direct CLI MP4 generation; they are only needed for the Web/backend persistence path.
 
 ## Reference Routing

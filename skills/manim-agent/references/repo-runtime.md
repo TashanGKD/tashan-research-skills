@@ -41,6 +41,7 @@ Required Python packages in the repo environment:
 Required for narrated production:
 
 - Aliyun DashScope CosyVoice TTS route: `DASHSCOPE_API_KEY`, endpoint `https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer`, default model `cosyvoice-v3-flash`, default voice `longanyang`
+- Volcengine speech synthesis route when selected: `VOLCENGINE_TTS_API_KEY` or `VOLCENGINE_TTS_ACCESS_TOKEN`, plus provider-required fields such as `VOLCENGINE_TTS_APP_ID`. Configure it with `configure_manim_provider.py --provider volcengine --purpose tts`. Do not assume an Ark LLM key is valid for TTS unless the provider console explicitly grants that capability; in that case pass `--auth-env ARK_API_KEY` explicitly.
 
 Required for Web backend persistence:
 
@@ -134,6 +135,15 @@ $env:DASHSCOPE_API_KEY = "<secret>"
 ```
 
 The repository adapter calls DashScope CosyVoice, downloads the returned audio URL to `audio.mp3`, and measures real audio duration with FFmpeg/ffprobe before beat-level alignment. CosyVoice is the normal narration route for this skill.
+
+Print Aliyun or Volcengine TTS environment mappings without exposing the key value:
+
+```powershell
+python ".\scripts\configure_manim_provider.py" --provider aliyun --purpose tts --format powershell
+python ".\scripts\configure_manim_provider.py" --provider volcengine --purpose tts --format powershell
+```
+
+If narration fails with missing, expired, or unauthorized credentials, tell the user to apply for or refresh Aliyun DashScope CosyVoice or Volcengine speech synthesis access. For non-narrated smoke tests, run with `--no-tts`.
 
 ## CLI Commands
 

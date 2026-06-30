@@ -119,3 +119,31 @@ def test_max_events_interrupts_stream_but_keeps_final_summary(tmp_path):
     assert events[-1]["interrupted"]["reason"] == "max_events"
     assert events[-1]["answer_status"] == "incomplete"
     assert events[-1]["user_action"] == "先展示已返回 references 和 answer 片段；继续等待、收窄问题或改走候选论文过滤"
+
+
+def test_missing_endpoint_url_reports_interface_unavailable_without_hanging():
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--endpoint-url",
+            "",
+            "--prompt",
+            "test question",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+
+    events = [json.loads(line) for line in completed.stdout.splitlines() if line.strip()]
+
+    assert completed.returncode == 2
+    assert [event["event"] for event in events] == [
+        "stream_started",
+        "interface_unavailable",
+        "stream_final",
+    ]
+    assert events[-1]["answer_status"] == "interface_unavailable"
+    assert "https://giiisp.com/#/mcp/authenticate" in events[-1]["user_action"]

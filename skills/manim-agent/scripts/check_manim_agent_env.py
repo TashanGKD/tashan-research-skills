@@ -55,6 +55,21 @@ def infer_llm_provider() -> str:
     return "unknown"
 
 
+def infer_tts_provider() -> str:
+    explicit = os.getenv("MANIM_AGENT_TTS_PROVIDER")
+    if explicit:
+        return explicit
+    if os.getenv("DASHSCOPE_API_KEY") or os.getenv("ALIYUN_DASHSCOPE_API_KEY"):
+        return "aliyun"
+    if (
+        os.getenv("VOLCENGINE_TTS_API_KEY")
+        or os.getenv("VOLCENGINE_TTS_ACCESS_TOKEN")
+        or os.getenv("VOLCENGINE_TTS_APP_ID")
+    ):
+        return "volcengine"
+    return "unknown"
+
+
 def has_llm_key() -> bool:
     return any(
         os.getenv(name)
@@ -66,6 +81,20 @@ def has_llm_key() -> bool:
             "ALIYUN_DASHSCOPE_API_KEY",
             "ALIYUN_TOKEN_PLAN_API_KEY",
             "ALIYUN_CODING_PLAN_API_KEY",
+        ]
+    )
+
+
+def has_tts_key() -> bool:
+    return any(
+        os.getenv(name)
+        for name in [
+            "DASHSCOPE_API_KEY",
+            "ALIYUN_DASHSCOPE_API_KEY",
+            "VOLCENGINE_TTS_API_KEY",
+            "VOLCENGINE_TTS_ACCESS_TOKEN",
+            "VOLCENGINE_TTS_APP_ID",
+            "MANIM_AGENT_TTS_AUTH_TOKEN",
         ]
     )
 
@@ -121,6 +150,15 @@ def main() -> int:
         "ANTHROPIC_AUTH_TOKEN",
         "ANTHROPIC_API_KEY",
         "ANTHROPIC_MODEL",
+        "MANIM_AGENT_TTS_PROVIDER",
+        "MANIM_AGENT_TTS_ROUTE",
+        "MANIM_AGENT_TTS_MODEL",
+        "MANIM_AGENT_TTS_VOICE",
+        "MANIM_AGENT_TTS_AUTH_TOKEN",
+        "VOLCENGINE_TTS_API_KEY",
+        "VOLCENGINE_TTS_ACCESS_TOKEN",
+        "VOLCENGINE_TTS_APP_ID",
+        "VOLCENGINE_TTS_CLUSTER",
     ]:
         checks.append((env_name, bool(os.getenv(env_name)), "set" if os.getenv(env_name) else "not set"))
 
@@ -148,18 +186,21 @@ def main() -> int:
     if not os.getenv("DASHSCOPE_API_KEY"):
         print("note: DASHSCOPE_API_KEY is needed for Aliyun DashScope CosyVoice TTS and DashScope direct checks.")
     print(f"note: inferred LLM provider profile: {infer_llm_provider()}")
+    print(f"note: inferred TTS provider profile: {infer_tts_provider()}")
     if os.getenv("ALIYUN_DASHSCOPE_API_KEY") or os.getenv("ALIYUN_TOKEN_PLAN_API_KEY") or os.getenv("ALIYUN_CODING_PLAN_API_KEY"):
         print("note: Aliyun key env is available; map it with configure_manim_provider.py --provider aliyun --route regular|token-plan|coding-plan.")
     if os.getenv("ARK_API_KEY") or os.getenv("VOLCENGINE_API_KEY"):
         print("note: Volcengine Ark key env is available; map it with configure_manim_provider.py --provider volcengine --route regular|coding-plan.")
+    if os.getenv("VOLCENGINE_TTS_API_KEY") or os.getenv("VOLCENGINE_TTS_ACCESS_TOKEN") or os.getenv("VOLCENGINE_TTS_APP_ID"):
+        print("note: Volcengine TTS env is available; map it with configure_manim_provider.py --provider volcengine --purpose tts.")
     if not os.getenv("DATABASE_URL"):
         print("note: DATABASE_URL is needed for Web/backend persistence, not for direct CLI no-persistence runs.")
     if not (os.getenv("ANTHROPIC_AUTH_TOKEN") or os.getenv("ANTHROPIC_API_KEY")):
         print("note: Claude Agent SDK needs local Claude auth or ANTHROPIC_AUTH_TOKEN/ANTHROPIC_API_KEY for normal pipeline runs.")
     if not has_llm_key():
         print("action: For Manim LLM access, apply for or refresh a key in the Volcengine Ark console or Aliyun DashScope/Bailian console, then run configure_manim_provider.py.")
-    if not os.getenv("DASHSCOPE_API_KEY"):
-        print("action: For narrated Manim videos, apply for or refresh Aliyun DashScope CosyVoice access and set DASHSCOPE_API_KEY; otherwise run with --no-tts.")
+    if not has_tts_key():
+        print("action: For narrated Manim videos, apply for or refresh Aliyun DashScope CosyVoice access or Volcengine speech synthesis access, then run configure_manim_provider.py --purpose tts; otherwise run with --no-tts.")
 
     return 1 if failed_required else 0
 

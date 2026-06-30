@@ -116,6 +116,41 @@ def test_volcengine_regular_profile_accepts_current_console_overrides():
     assert profile["auth_token_env"] == "VOLCENGINE_API_KEY"
 
 
+def test_volcengine_tts_profile_outputs_voice_env_without_secret_value():
+    stdout = run_configure(
+        "--provider",
+        "volcengine",
+        "--purpose",
+        "tts",
+        "--format",
+        "powershell",
+        env={"VOLCENGINE_TTS_API_KEY": "test-secret-value"},
+    )
+
+    assert '$env:MANIM_AGENT_TTS_PROVIDER = "volcengine"' in stdout
+    assert "$env:MANIM_AGENT_TTS_AUTH_TOKEN = $env:VOLCENGINE_TTS_API_KEY" in stdout
+    assert '$env:MANIM_AGENT_TTS_MODEL = "volcengine-tts"' in stdout
+    assert "$env:VOLCENGINE_TTS_APP_ID = $env:VOLCENGINE_TTS_APP_ID" in stdout
+    assert "test-secret-value" not in stdout
+
+
+def test_aliyun_tts_profile_keeps_cosyvoice_defaults():
+    profile = run_configure_json(
+        "--provider",
+        "aliyun",
+        "--purpose",
+        "tts",
+        env={"DASHSCOPE_API_KEY": "test-secret-value"},
+    )
+
+    assert profile["purpose"] == "tts"
+    assert profile["provider"] == "aliyun"
+    assert profile["model"] == "cosyvoice-v3-flash"
+    assert profile["voice"] == "longanyang"
+    assert profile["auth_token_env"] == "DASHSCOPE_API_KEY"
+    assert "test-secret-value" not in json.dumps(profile)
+
+
 def test_check_env_reports_provider_key_candidates_without_printing_values(tmp_path):
     fake_repo = tmp_path / "manim-agent"
     (fake_repo / "src" / "manim_agent").mkdir(parents=True)
@@ -146,6 +181,34 @@ def test_check_env_reports_provider_key_candidates_without_printing_values(tmp_p
     assert "test-secret-value" not in completed.stderr
 
 
+def test_check_env_reports_volcengine_tts_without_printing_values(tmp_path):
+    fake_repo = tmp_path / "manim-agent"
+    (fake_repo / "src" / "manim_agent").mkdir(parents=True)
+    (fake_repo / "plugins" / "manim-production").mkdir(parents=True)
+    (fake_repo / "pyproject.toml").write_text("[project]\nname = 'manim-agent'\n", encoding="utf-8")
+    (fake_repo / "src" / "manim_agent" / "__main__.py").write_text("", encoding="utf-8")
+
+    env = {
+        **os.environ,
+        "MANIM_AGENT_TTS_PROVIDER": "volcengine",
+        "VOLCENGINE_TTS_API_KEY": "test-secret-value",
+        "VOLCENGINE_TTS_APP_ID": "test-app-id",
+    }
+    completed = subprocess.run(
+        [sys.executable, str(CHECK_ENV), "--repo", str(fake_repo)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=env,
+        check=False,
+    )
+
+    assert "inferred TTS provider profile: volcengine" in completed.stdout
+    assert "configure_manim_provider.py --provider volcengine --purpose tts" in completed.stdout
+    assert "test-secret-value" not in completed.stdout
+    assert "test-secret-value" not in completed.stderr
+
+
 def test_check_env_guides_user_to_provider_consoles_when_llm_key_is_missing(tmp_path):
     fake_repo = tmp_path / "manim-agent"
     (fake_repo / "src" / "manim_agent").mkdir(parents=True)
@@ -162,6 +225,11 @@ def test_check_env_guides_user_to_provider_consoles_when_llm_key_is_missing(tmp_
         "ALIYUN_DASHSCOPE_API_KEY",
         "ALIYUN_TOKEN_PLAN_API_KEY",
         "ALIYUN_CODING_PLAN_API_KEY",
+        "DASHSCOPE_API_KEY",
+        "VOLCENGINE_TTS_API_KEY",
+        "VOLCENGINE_TTS_ACCESS_TOKEN",
+        "VOLCENGINE_TTS_APP_ID",
+        "MANIM_AGENT_TTS_AUTH_TOKEN",
     ]:
         env.pop(name, None)
 
@@ -177,3 +245,4 @@ def test_check_env_guides_user_to_provider_consoles_when_llm_key_is_missing(tmp_
     assert "Volcengine Ark console" in completed.stdout
     assert "Aliyun DashScope/Bailian console" in completed.stdout
     assert "configure_manim_provider.py" in completed.stdout
+    assert "Volcengine speech synthesis access" in completed.stdout
