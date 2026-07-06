@@ -412,6 +412,8 @@ def write_blocker(run_dir, reason, details=None):
     blocker = {"blocked": True, "reason": reason, "details": details or {}}
     write_json(run_dir / "blocker.json", blocker)
     print("BLOCKED: " + reason)
+    if "GIIISP_AUTH_TOKEN" in reason or "ACCESS_TOKEN_REQUIRED" in reason:
+        print("Apply for or refresh Giiisp authentication at https://giiisp.com/#/mcp/authenticate")
     print("Run directory: " + str(run_dir))
 
 

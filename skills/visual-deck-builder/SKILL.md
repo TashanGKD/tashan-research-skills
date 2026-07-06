@@ -371,7 +371,7 @@ When using any public example as a reference, inherit only layout density, hiera
 Use the best available backend in the current environment:
 
 - Codex `image_gen` if available in chat.
-- Giiisp/SiTian Imagine when `GIIISP_AUTH_TOKEN` is set.
+- Giiisp/SiTian Imagine when `GIIISP_AUTH_TOKEN` is set. If the user has no token, point them to `https://giiisp.com/#/mcp/authenticate` to apply for or refresh Giiisp authentication.
 - Project-specific image provider if working inside an app.
 
 Read [references/image-runtime.md](references/image-runtime.md) before calling Giiisp or another HTTP image API.

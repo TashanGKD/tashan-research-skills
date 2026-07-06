@@ -2,6 +2,7 @@ import argparse
 import base64
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -214,6 +215,10 @@ def main():
 
     api_key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
     if not api_key:
+        print(
+            "Apply for a DashScope/Bailian API key at https://help.aliyun.com/zh/model-studio/get-api-key",
+            file=sys.stderr,
+        )
         review = blocked("missing DASHSCOPE_API_KEY")
         if out_path:
             write_json(out_path, review)

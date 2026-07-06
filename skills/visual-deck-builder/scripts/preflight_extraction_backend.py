@@ -49,7 +49,11 @@ def preflight(target: Path, run_root: Path | None, slide_id: str, allow_chat_ima
     if not target_info.get("readable"):
         blockers.append("visual target is missing or unreadable")
     if not giiisp_set and not openai_set and not allow_chat_imagegen:
-        blockers.append("no auditable image-editing backend is available in the local runtime")
+        blockers.append(
+            "no auditable image-editing backend is available in the local runtime; "
+            "apply for GIIISP_AUTH_TOKEN at https://giiisp.com/#/mcp/authenticate "
+            "or OPENAI_API_KEY at https://platform.openai.com/api-keys"
+        )
     if allow_chat_imagegen:
         blockers.append(
             "chat imagegen may require the current target image to be attached or visible as an edit target; a local file path alone is not evidence of image input"

@@ -6,7 +6,7 @@ This skill can use different image backends. Keep the deck workflow stable and o
 
 Never hardcode or save API tokens. Use environment variables:
 
-- `GIIISP_AUTH_TOKEN` for Giiisp/SiTian Imagine.
+- `GIIISP_AUTH_TOKEN` for Giiisp/SiTian Imagine (apply or refresh at `https://giiisp.com/#/mcp/authenticate`).
 - Project-specific env vars only when working inside a repo that already defines them.
 
 Manifests may record `token_used: true`, but never the token value.
