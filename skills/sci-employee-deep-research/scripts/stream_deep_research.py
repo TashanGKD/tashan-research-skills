@@ -14,6 +14,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
@@ -25,8 +26,12 @@ INTERFACE_UNAVAILABLE_ACTION = (
     f" 如果失败来自 Giiisp 认证或 key 过期，请到 {AUTH_URL} 申请或刷新认证后重试。"
 )
 
+STARTED_AT = time.monotonic()
+
 
 def emit(event: dict[str, Any]) -> None:
+    event.setdefault("ts", datetime.now().astimezone().isoformat(timespec="milliseconds"))
+    event.setdefault("elapsed_ms", int((time.monotonic() - STARTED_AT) * 1000))
     print(json.dumps(event, ensure_ascii=False, separators=(",", ":")), flush=True)
 
 

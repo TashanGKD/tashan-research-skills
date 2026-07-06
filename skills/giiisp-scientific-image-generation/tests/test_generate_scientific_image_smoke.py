@@ -34,6 +34,7 @@ def test_no_token_input_json_writes_structured_run_contract(tmp_path):
     )
     env = os.environ.copy()
     env.pop("GIIISP_AUTH_TOKEN", None)
+    env.pop("SITIANAI_IMAGE_TOKEN", None)
 
     completed = subprocess.run(
         [sys.executable, str(SCRIPT), "--input-json", str(params), "--output-dir", str(out_dir)],
@@ -56,11 +57,9 @@ def test_no_token_input_json_writes_structured_run_contract(tmp_path):
     assert figure_spec["layout_brief"] == "横向三步流程，每步一个卡片，箭头单向连接"
     assert figure_spec["reference_role"] == "preserve_structure"
     assert run_input["figure_spec"] == figure_spec
-    assert run_input["token_policy"] == "read from GIIISP_AUTH_TOKEN environment variable; token is not written to files"
+    assert run_input["token_policy"] == "read from GIIISP_AUTH_TOKEN or SITIANAI_IMAGE_TOKEN environment variable; token is not written to files"
     assert metadata["status"] == "blocked"
-    assert metadata["error"] == "missing GIIISP_AUTH_TOKEN"
-    assert metadata["blocker"]["auth_url"] == "https://giiisp.com/#/mcp/authenticate"
-    assert metadata["blocker"]["user_action"] == "申请或刷新 Giiisp MCP 认证后设置 GIIISP_AUTH_TOKEN"
+    assert metadata["error"] == "missing GIIISP_AUTH_TOKEN or SITIANAI_IMAGE_TOKEN"
     assert manifest["run_id"] == run_dir.name
     assert manifest["task"]["layout_brief"] == "横向三步流程，每步一个卡片，箭头单向连接"
     assert manifest["task"]["reference_role"] == "preserve_structure"

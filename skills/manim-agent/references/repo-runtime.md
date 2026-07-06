@@ -5,7 +5,7 @@ Use this file for installation, environment checks, commands, and runtime surfac
 ## Source
 
 - Upstream: `https://github.com/gqy20/manim-agent.git`
-- Default local repo: `<path-to-manim-agent>`
+- Local repo: use `MANIM_AGENT_HOME`, the current workspace, or a user-provided path.
 - Python package: `manim-agent`
 - Python entrypoint: `python -m manim_agent`
 - Core code: `src/manim_agent/`
@@ -16,10 +16,10 @@ Use this file for installation, environment checks, commands, and runtime surfac
 If the repo is missing:
 
 ```powershell
-git clone https://github.com/gqy20/manim-agent.git "<path-to-manim-agent>"
+git clone https://github.com/gqy20/manim-agent.git manim-agent
 ```
 
-If the user asks for the latest upstream behavior, run `git -C "<path-to-manim-agent>" pull --ff-only` and inspect the changed files before making claims.
+If the user asks for the latest upstream behavior, run `git -C <path-to-manim-agent> pull --ff-only` and inspect the changed files before making claims.
 
 ## Dependencies
 
@@ -29,7 +29,7 @@ Required for CLI video generation:
 - `uv`
 - Manim 0.20.1+
 - FFmpeg in `PATH`
-- Claude Agent SDK access, normally through local Claude auth, official Anthropic credentials, or an Anthropic-compatible provider
+- SDK model access through Aliyun DashScope / Bailian Model Studio's Claude Code compatible route
 
 Required Python packages in the repo environment:
 
@@ -41,7 +41,6 @@ Required Python packages in the repo environment:
 Required for narrated production:
 
 - Aliyun DashScope CosyVoice TTS route: `DASHSCOPE_API_KEY`, endpoint `https://dashscope.aliyuncs.com/api/v1/services/audio/tts/SpeechSynthesizer`, default model `cosyvoice-v3-flash`, default voice `longanyang`
-- Volcengine speech synthesis route when selected: `VOLCENGINE_TTS_API_KEY` or `VOLCENGINE_TTS_ACCESS_TOKEN`, plus provider-required fields such as `VOLCENGINE_TTS_APP_ID`. Configure it with `configure_manim_provider.py --provider volcengine --purpose tts`. Do not assume an Ark LLM key is valid for TTS unless the provider console explicitly grants that capability; in that case pass `--auth-env ARK_API_KEY` explicitly.
 
 Required for Web backend persistence:
 
@@ -51,10 +50,8 @@ Required for Web backend persistence:
 Check environment:
 
 ```powershell
-python ".\scripts\check_manim_agent_env.py" --repo "<path-to-manim-agent>"
+python scripts/check_manim_agent_env.py --repo <path-to-manim-agent>
 ```
-
-Use `references/env-template.ps1` as the local Windows environment template. It contains only variable names and placeholders; keep real API keys in a private shell, user environment, or deployment secret store.
 
 ## Install
 
@@ -77,38 +74,24 @@ FFmpeg is a system dependency, not just a Python package. On Windows it must be 
 
 Normal CLI runs need an LLM provider because the repository calls Claude Agent SDK during Phase 1 planning and Phase 2 implementation. If the SDK cannot call a model, the pipeline stops before Manim rendering.
 
-Use the profile helper to map a provider key that is already in an environment variable into the Claude Agent SDK env contract. The helper prints commands only; it never prints key values.
+For Aliyun DashScope / Model Studio pay-as-you-go model API, use the Claude Code compatible DashScope route for this repository. This is the correct path for the normal Bailian model page such as the `qwen3.7-plus` text-generation model:
 
 ```powershell
-# Aliyun regular DashScope/Bailian API
-python ".\scripts\configure_manim_provider.py" --provider aliyun --route regular --format powershell
-
-# Aliyun plan routes
-python ".\scripts\configure_manim_provider.py" --provider aliyun --route token-plan --format powershell
-python ".\scripts\configure_manim_provider.py" --provider aliyun --route coding-plan --format powershell
-
-# Volcengine Ark regular API and Coding Plan
-python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --format powershell
-python ".\scripts\configure_manim_provider.py" --provider volcengine --route coding-plan --format powershell
+$env:ANTHROPIC_AUTH_TOKEN = "<DashScope or Bailian API key>"
+$env:ANTHROPIC_BASE_URL = "https://dashscope.aliyuncs.com/apps/anthropic"
+$env:ANTHROPIC_MODEL = "qwen3.7-plus"
+$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = "qwen3.6-flash"
+$env:ANTHROPIC_DEFAULT_SONNET_MODEL = "qwen3.7-plus"
+$env:ANTHROPIC_DEFAULT_OPUS_MODEL = "qwen3.7-plus"
 ```
 
-Provider profiles:
+Use this default DashScope/Bailian compatible route. Do not mix OpenAI-compatible endpoints into this repository's SDK path.
 
-| Provider route | Base URL | Preferred source key env | Default model |
-| --- | --- | --- | --- |
-| Aliyun regular | `https://dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_DASHSCOPE_API_KEY` or `DASHSCOPE_API_KEY` | `qwen3.7-plus` |
-| Aliyun Token Plan | `https://token-plan.cn-beijing.maas.aliyuncs.com/apps/anthropic` | `ALIYUN_TOKEN_PLAN_API_KEY` | `qwen3.7-plus` |
-| Aliyun Coding Plan | `https://coding.dashscope.aliyuncs.com/apps/anthropic` | `ALIYUN_CODING_PLAN_API_KEY` | `qwen3.7-plus` |
-| Volcengine Ark regular | `https://ark.cn-beijing.volces.com/api/compatible` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `deepseek-v4-pro-260425` |
-| Volcengine Ark Coding Plan | `https://ark.cn-beijing.volces.com/api/coding` | `ARK_API_KEY` or `VOLCENGINE_API_KEY` | `ark-code-latest` |
+Apply for a DashScope/Bailian API key at:
 
-If the provider console lists a different current model or Claude-compatible base URL, keep the same profile but override the current values:
-
-```powershell
-python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --base-url "<console Claude-compatible base URL>" --model "<console model>" --format powershell
+```text
+https://help.aliyun.com/zh/model-studio/get-api-key
 ```
-
-Do not mix key families and endpoints. A normal DashScope/Bailian key, a Token Plan key, a Coding Plan key, and a Volcengine Ark key may all look similar in examples, but their valid base URLs and model lists are different.
 
 Check these first when Phase 1 fails:
 
@@ -120,13 +103,13 @@ $env:ANTHROPIC_MODEL
 
 Known failure patterns:
 
-- `模型不存在`: the configured `ANTHROPIC_MODEL` is not accepted by the current provider.
+- `模型不存在`: the configured `ANTHROPIC_MODEL` is not accepted by DashScope/Bailian, or Claude Code CLI sent an internal fallback model not supported by the provider.
 - `plan 套餐已到期` or `429`: provider account or subscription is unavailable.
 - No structured output: provider/model may not support the SDK structured-output contract used by the pipeline.
 
 The TTS key cannot replace this LLM interface. It only affects narration synthesis after the visual video has already been planned and rendered.
 
-Direct `anthropic.Anthropic(...)` calls and Manim Agent's `claude_agent_sdk` path are not identical. The direct SDK only uses the values passed in code; `claude_agent_sdk` starts Claude Code CLI, which can also read `~/.claude/settings.json`. If local Claude settings point to another provider, pass explicit settings or set `MANIM_AGENT_FORCE_CLAUDE_SETTINGS=1` in this repo's patched runtime.
+Direct provider smoke tests and Manim Agent's `claude_agent_sdk` path are not identical. The repository path starts a CLI subprocess, which can also read local settings. If local settings point to another provider, pass explicit settings or set `MANIM_AGENT_FORCE_CLAUDE_SETTINGS=1` in this repo's patched runtime.
 
 ## TTS Route
 
@@ -138,45 +121,30 @@ $env:DASHSCOPE_API_KEY = "<secret>"
 
 The repository adapter calls DashScope CosyVoice, downloads the returned audio URL to `audio.mp3`, and measures real audio duration with FFmpeg/ffprobe before beat-level alignment. CosyVoice is the normal narration route for this skill.
 
-Print Aliyun or Volcengine TTS environment mappings without exposing the key value:
-
-```powershell
-python ".\scripts\configure_manim_provider.py" --provider aliyun --purpose tts --format powershell
-python ".\scripts\configure_manim_provider.py" --provider volcengine --purpose tts --format powershell
-```
-
-If narration fails with missing, expired, or unauthorized credentials, tell the user to apply for or refresh Aliyun DashScope CosyVoice or Volcengine speech synthesis access. For non-narrated smoke tests, run with `--no-tts`.
-
 ## CLI Commands
 
 Silent smoke run:
 
 ```powershell
-uv run python -m manim_agent "讲解二叉树的遍历方式" --no-tts --quality medium --target-duration 60 -o outputs/tree.mp4
+uv run python -m manim_agent "讲解二叉树的遍历方式" --no-tts --quality high --target-duration 30 -o outputs/tree.mp4
 ```
 
 Narrated production:
 
 ```powershell
-uv run python -m manim_agent "解释傅里叶变换的原理" --voice longanyang --quality high --target-duration 60 -o outputs/fourier.mp4
+uv run python -m manim_agent "解释傅里叶变换的原理" --voice longanyang --quality high --target-duration 30 -o outputs/fourier.mp4
 ```
 
 Strict visual review:
 
 ```powershell
-uv run python -m manim_agent "证明勾股定理" --render-review --quality high --target-duration 60 -o outputs/proof.mp4
+uv run python -m manim_agent "证明勾股定理" --render-review --quality high --target-duration 30 -o outputs/proof.mp4
 ```
 
 Segment rendering:
 
 ```powershell
 uv run python -m manim_agent "解释梯度下降" --render-mode segments --target-duration 180 -o outputs/gradient.mp4
-```
-
-Optional BGM:
-
-```powershell
-uv run python -m manim_agent "解释神经网络反向传播" --bgm-enabled --bgm-volume 0.10 -o outputs/backprop.mp4
 ```
 
 ## CLI Options To Remember
@@ -187,7 +155,6 @@ uv run python -m manim_agent "解释神经网络反向传播" --bgm-enabled --bg
 - `--model`: CosyVoice TTS model; default `cosyvoice-v3-flash`
 - `--quality`: `high`, `medium`, or `low`
 - `--no-tts`: skip TTS
-- `--bgm-enabled`, `--bgm-prompt`, `--bgm-volume`
 - `--cwd`: working directory
 - `--prompt-file`: custom prompt file
 - `--max-turns`: default 80 in current code

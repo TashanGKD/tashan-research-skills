@@ -19,6 +19,14 @@ def run_stream(log_path, *extra_args):
     return [json.loads(line) for line in completed.stdout.splitlines() if line.strip()]
 
 
+def assert_timestamped(events):
+    assert events
+    for event in events:
+        assert "T" in event["ts"]
+        assert isinstance(event["elapsed_ms"], int)
+        assert event["elapsed_ms"] >= 0
+
+
 def test_sse_log_is_forwarded_as_progress_events_before_final_summary(tmp_path):
     log_path = tmp_path / "deep_research.sse"
     log_path.write_text(
@@ -46,6 +54,7 @@ def test_sse_log_is_forwarded_as_progress_events_before_final_summary(tmp_path):
 
     events = run_stream(log_path)
 
+    assert_timestamped(events)
     assert [event["event"] for event in events] == [
         "stream_started",
         "phase",
@@ -82,6 +91,7 @@ def test_done_event_marks_stream_complete(tmp_path):
 
     events = run_stream(log_path)
 
+    assert_timestamped(events)
     assert events[-1]["event"] == "stream_final"
     assert events[-1]["answer_status"] == "complete"
     assert events[-1]["has_done"] is True
@@ -108,6 +118,7 @@ def test_max_events_interrupts_stream_but_keeps_final_summary(tmp_path):
 
     events = run_stream(log_path, "--max-events", "2")
 
+    assert_timestamped(events)
     assert [event["event"] for event in events] == [
         "stream_started",
         "references_ready",
@@ -139,6 +150,7 @@ def test_missing_endpoint_url_reports_interface_unavailable_without_hanging():
 
     events = [json.loads(line) for line in completed.stdout.splitlines() if line.strip()]
 
+    assert_timestamped(events)
     assert completed.returncode == 2
     assert [event["event"] for event in events] == [
         "stream_started",

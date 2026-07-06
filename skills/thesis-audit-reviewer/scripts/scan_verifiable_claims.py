@@ -20,15 +20,26 @@ NS = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
 
 PATTERNS = [
     ("percent", re.compile(r"\d+(?:\.\d+)?\s*%")),
+    ("metric_score", re.compile(r"\d+(?:\.\d+)?\s*(?:BLEU|F1|ROUGE|AUC|AP|mAP|accuracy|acc\\.?|precision|recall|perplexity|PPL)\\b", re.IGNORECASE)),
     (
         "money",
         re.compile(
             r"(?:[$¥￥]\s*\d+(?:\.\d+)?\s*(?:万|亿|百万|千万|百亿|万亿)?\s*(?:美元|人民币|元|亿元|亿美元|万元)?|\d+(?:\.\d+)?\s*(?:万|亿|百万|千万|百亿|万亿)?\s*(?:美元|人民币|元|亿元|亿美元|万元))"
         ),
     ),
-    ("date", re.compile(r"\d{4}[年/-]\d{1,2}(?:[月/-]\d{1,2}日?)?|\d{4}年")),
+    ("date", re.compile(r"\d{4}[年/-]\d{1,2}(?:[月/-]\d{1,2}日?)?|\d{4}年|\b(?:19|20)\d{2}\b")),
     ("sample", re.compile(r"\d+(?:\.\d+)?\s*(?:个年份|年观测|个|家|人|份|条|篇|组|次|名|项|天|个月|季度|样本|观测值)")),
+    (
+        "sample",
+        re.compile(
+            r"\d+(?:\.\d+)?\s*(?:k|K|m|M|b|B|thousand|million|billion)?\s*"
+            r"(?:samples?|examples?|instances?|sentences?|tokens?|words?|documents?|images?|classes?|categories?|"
+            r"layers?|heads?|GPUs?|TPUs?|CPUs?|parameters?|steps?|epochs?|hours?|days?|models?|tasks?|datasets?)\b",
+            re.IGNORECASE,
+        ),
+    ),
     ("cross_reference", re.compile(r"第[一二三四五六七八九十百\d]+章|表\s*\d+(?:[-－]\d+)?|图\s*\d+(?:[-－]\d+)?|公式\s*\(?\d+(?:[-－]\d+)?\)?|附录\s*[A-Za-z一二三四五六七八九十\d]+")),
+    ("cross_reference", re.compile(r"\b(?:Table|Fig\\.?|Figure|Equation|Eq\\.?|Appendix|Section|Sec\\.?)\s*[A-Za-z]?\d+(?:[.-]\d+)?\b", re.IGNORECASE)),
 ]
 
 FIELDS = [
@@ -102,7 +113,14 @@ def status_for(action: str) -> str:
 
 
 def unit_for(value: str) -> str:
-    match = re.search(r"(美元|人民币|亿元|亿美元|万元|元|%|个|家|人|份|条|篇|年|组|次|名|项|天|个月|季度|样本|观测值)", value)
+    match = re.search(
+        r"(美元|人民币|亿元|亿美元|万元|元|%|个|家|人|份|条|篇|年|组|次|名|项|天|个月|季度|样本|观测值|"
+        r"BLEU|F1|ROUGE|AUC|AP|mAP|accuracy|acc\\.?|precision|recall|perplexity|PPL|"
+        r"samples?|examples?|instances?|sentences?|tokens?|words?|documents?|images?|classes?|categories?|"
+        r"layers?|heads?|GPUs?|TPUs?|CPUs?|parameters?|steps?|epochs?|hours?|days?|models?|tasks?|datasets?)",
+        value,
+        re.IGNORECASE,
+    )
     return match.group(1) if match else ""
 
 

@@ -40,6 +40,7 @@ def preflight(target: Path, run_root: Path | None, slide_id: str, allow_chat_ima
     openai_set = bool(os.environ.get("OPENAI_API_KEY"))
     backend_candidates = {
         "giiisp_env_token": giiisp_set,
+        "giiisp_env_token_name": "GIIISP_AUTH_TOKEN",
         "openai_env_token": openai_set,
         "chat_imagegen_available_to_agent": allow_chat_imagegen,
     }

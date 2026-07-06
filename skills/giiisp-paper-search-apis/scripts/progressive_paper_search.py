@@ -14,6 +14,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime
 from typing import Any
 
 
@@ -29,8 +30,12 @@ MODES = {
     "arxiv-title": ("/first/paper/searchArxivByTitle", lambda q, p, s: {"key": q, "pageNum": p, "pageSize": s}),
 }
 
+STARTED_AT = time.monotonic()
+
 
 def emit(event: dict[str, Any]) -> None:
+    event.setdefault("ts", datetime.now().astimezone().isoformat(timespec="milliseconds"))
+    event.setdefault("elapsed_ms", int((time.monotonic() - STARTED_AT) * 1000))
     print(json.dumps(event, ensure_ascii=False, separators=(",", ":")), flush=True)
 
 

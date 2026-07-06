@@ -11,6 +11,9 @@ SCRIPT = ROOT / "scripts" / "progressive_paper_search.py"
 
 def run_progressive(*args, env=None):
     merged_env = {**os.environ, **(env or {})}
+    # Keep the no-token scenario hermetic on machines that have a real token configured.
+    if not (env and "GIIISP_AUTH_TOKEN" in env):
+        merged_env.pop("GIIISP_AUTH_TOKEN", None)
     completed = subprocess.run(
         [sys.executable, str(SCRIPT), *args],
         check=True,
@@ -22,9 +25,18 @@ def run_progressive(*args, env=None):
     return [json.loads(line) for line in completed.stdout.splitlines() if line.strip()]
 
 
+def assert_timestamped(events):
+    assert events
+    for event in events:
+        assert "T" in event["ts"]
+        assert isinstance(event["elapsed_ms"], int)
+        assert event["elapsed_ms"] >= 0
+
+
 def test_dry_run_emits_start_request_and_complete_events_without_network():
     events = run_progressive("--query", "test query", "--mode", "arxiv-title", "--dry-run")
 
+    assert_timestamped(events)
     assert [event["event"] for event in events] == [
         "search_started",
         "auth_status",
@@ -53,6 +65,7 @@ def test_expansion_plan_emits_each_expanded_route_and_page_in_order():
         "--dry-run",
     )
 
+    assert_timestamped(events)
     request_events = [event for event in events if event["event"] == "request_prepared"]
     assert [event["route"]["mode"] for event in request_events] == [
         "arxiv-title",
@@ -76,6 +89,7 @@ def test_auth_status_reports_configured_token_without_leaking_value():
         env={"GIIISP_AUTH_TOKEN": "test-token-not-leaked"},
     )
 
+    assert_timestamped(events)
     auth_event = next(event for event in events if event["event"] == "auth_status")
     assert auth_event["ok"] is True
     assert auth_event["env_var"] == "GIIISP_AUTH_TOKEN"

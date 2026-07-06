@@ -19,7 +19,7 @@ Prefer precise terms over broad buzzwords. If the first query returns low releva
 Run:
 
 ```powershell
-python .\scripts\search_arxiv.py "retrieval augmented generation scientific literature" --max-results 20 --out arxiv_results.json
+python C:\Users\16571\.codex\skills\scispark\scripts\search_arxiv.py "retrieval augmented generation scientific literature" --max-results 20 --out arxiv_results.json
 ```
 
 The script outputs normalized records compatible with `literature.csv`:

@@ -12,6 +12,8 @@
 - 若用户明确说明论文保密、未发表、涉密、不得外传，立即切换到本地解析或先确认处理方式。
 - 若上传平台、学校或机构有特别限制，以用户说明为准。
 
+如果 MinerU online VLM 不可用或不应上传，运行 `scripts/pdf_local_fallback_extract.py`。该脚本不需要 key，先用 `pymupdf4llm` 保留 Markdown 式结构，再用 `PyMuPDF/fitz` 分页文本兜底。对本地文本抽取无法覆盖的页面或对象，记录为 blocked/residual risk，或改用更强解析方式。
+
 ## 输入类型与默认输出
 
 | 用户上传类型 | 默认输出 | 说明 |

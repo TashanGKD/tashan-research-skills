@@ -9,11 +9,20 @@ import re
 from pathlib import Path
 
 
-def slugify(text: str) -> str:
-    text = text.strip().lower()
-    text = re.sub(r"[^\w\u4e00-\u9fff]+", "-", text, flags=re.UNICODE)
-    text = re.sub(r"-+", "-", text).strip("-")
-    return text or "scispark-topic"
+def topic_slug(text: str) -> str:
+    # P2-6: 关键词取前20字符做slug，空格替换为-，其他非字母数字/中文/下划线/短横线去除
+    if not text:
+        return "scispark-topic"
+    head = str(text).strip()[:20]
+    head = re.sub(r"\s+", "-", head)
+    head = re.sub(r"[^\w\u4e00-\u9fff\-]+", "", head, flags=re.UNICODE)
+    head = re.sub(r"-+", "-", head).strip("-")
+    return head or "scispark-topic"
+
+
+def default_root(keyword: str) -> Path:
+    # P2-6: 默认root改为当前目录下 ./scispark/<topic-slug>
+    return Path(".") / "scispark" / topic_slug(keyword)
 
 
 STAGE_FILES = [
@@ -48,12 +57,18 @@ CSV_HEADER = [
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("keyword")
-    parser.add_argument("--root", default="03-AI笔记/scispark")
+    parser.add_argument("--root", default=None,
+                        help="输出根目录，默认为 ./scispark/<topic-slug>")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
-    out = Path(args.root) / slugify(args.keyword)
-    out.mkdir(parents=True, exist_ok=True)
+    # P2-6: 默认root不再依赖硬编码中文路径；--root显式传则用传入值
+    if args.root:
+        out = Path(args.root) / topic_slug(args.keyword)
+    else:
+        out = default_root(args.keyword)
+
+    out.mkdir(parents=True, exist_ok=True)  # P2-6: 自动mkdir -p
     (out / "experts").mkdir(exist_ok=True)
     (out / "slides").mkdir(exist_ok=True)
 

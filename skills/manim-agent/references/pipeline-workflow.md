@@ -10,7 +10,7 @@ Use this file to preserve the full Manim Agent workflow.
 4. Resolve real output files and optionally run render review.
 5. Generate narration if TTS is enabled.
 6. Synthesize voice with DashScope CosyVoice TTS.
-7. Mux video, voice, optional subtitles, and optional BGM into the final MP4.
+7. Mux video, voice, and optional subtitles into the final MP4.
 8. Return artifact paths and a short run summary.
 
 Do not skip directly to writing Manim code for normal video requests. The repository's value is the structured pipeline and review loop.
@@ -54,7 +54,7 @@ Phase 4 TTS:
 
 Phase 5 mux:
 
-- Combine visual video, voice, optional subtitle timing, optional BGM, and intro/outro if requested.
+- Combine visual video, voice, optional subtitle timing, and intro/outro if requested.
 - Final success requires the target MP4 file to exist.
 
 ## Choosing Runtime Path
@@ -83,7 +83,7 @@ For completed runs, report:
 
 - Command used.
 - Output MP4 absolute path.
-- Whether TTS, BGM, render review, intro/outro, and segment mode were used.
+- Whether TTS, render review, intro/outro, and segment mode were used.
 - Relevant task directory or generated code path.
 - Any skipped feature and why.
 

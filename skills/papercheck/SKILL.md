@@ -29,6 +29,20 @@ Do not package or print private configs, uploaded papers, generated reports, dep
 python .\scripts\extract_citation_evidence.py "<path-to-paper.docx>" --out "<path-to-evidence.json>"
 ```
 
+For user-visible progress, prefer the JSONL wrapper:
+
+```powershell
+python .\scripts\progressive_papercheck.py "<path-to-paper.docx-or-pdf>" --mode subjective --out "<path-to-evidence.json>" --report "<path-to-report.md>"
+```
+
+Modes:
+
+- `quick`: structural evidence extraction plus bundled UCAS/GB/T rules checks; skips semantic review.
+- `subjective`: default; rules checks plus a current-model review queue for citation support.
+- `full`: subjective mode plus explicit source-verification limits for supplied source PDFs, DOI/OA evidence, or other verified source content.
+
+It emits `mode_selected`, `env_check_started`, `env_check_complete`, `parser_selected`, `evidence_extract_started` or `pdf_extract_started`, `evidence_ready`, `rules_check_started`, `rules_check_complete`, `model_review_ready` or `semantic_review_skipped`, optional `source_verification_ready`, `report_ready`, and `papercheck_complete`. For PDF, it also reports whether MinerU is configured, whether local `pymupdf4llm` / `PyMuPDF` fallback is available, and how to fix missing keys or dependencies.
+
 3. Read the evidence JSON and let the current Codex model judge high-value citations. For each judgment, cite the extracted reference entry and context. Mark weak or ambiguous cases as `待人工确认`; do not invent paper content beyond the provided evidence.
 4. For format and matching rules, run the bundled rules server from `assets/paperchecker-rules` and call `/api/v2/analysis/report`, or inspect its JSON report if already produced.
 5. If using a web UI, start the bundled rules version. Prefer CLI/evidence files when the user only needs a report.

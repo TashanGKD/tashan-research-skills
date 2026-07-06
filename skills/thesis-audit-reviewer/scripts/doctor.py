@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "scripts/scan_verifiable_claims.py",
     "scripts/mineru_vlm_extract.py",
     "scripts/split_mineru_vlm_pages.py",
+    "scripts/pdf_local_fallback_extract.py",
     "scripts/render_md_report_pdf.py",
     "scripts/validate_audit_report.py",
 ]
@@ -37,6 +38,10 @@ PYTHON_MODULES = [
     ("requests", "requests"),
     ("PyMuPDF", "fitz"),
     ("reportlab", "reportlab"),
+]
+
+OPTIONAL_PYTHON_MODULES = [
+    ("pymupdf4llm", "pymupdf4llm", "higher-quality local PDF Markdown fallback"),
 ]
 
 OPTIONAL_COMMANDS = [
@@ -58,6 +63,10 @@ def main() -> None:
 
     files = [{"path": item, "ok": (SKILL_DIR / item).exists()} for item in REQUIRED_FILES]
     modules = [{"name": name, "import": import_name, "ok": module_ok(import_name)} for name, import_name in PYTHON_MODULES]
+    optional_modules = [
+        {"name": name, "import": import_name, "ok": module_ok(import_name), "purpose": purpose}
+        for name, import_name, purpose in OPTIONAL_PYTHON_MODULES
+    ]
     commands = [{"name": name, "purpose": purpose, "ok": shutil.which(name) is not None} for name, purpose in OPTIONAL_COMMANDS]
     errors = [f"missing_file:{item['path']}" for item in files if not item["ok"]]
     errors += [f"missing_module:{item['import']}" for item in modules if not item["ok"]]
@@ -67,6 +76,7 @@ def main() -> None:
         "python": sys.version.split()[0],
         "files": files,
         "modules": modules,
+        "optional_modules": optional_modules,
         "optional_commands": commands,
         "errors": errors,
     }
@@ -77,6 +87,8 @@ def main() -> None:
         print("ok", result["ok"])
         for error in errors:
             print("error", error)
+        for item in optional_modules:
+            print("optional_module", item["name"], item["ok"], "-", item["purpose"])
         for item in commands:
             print("optional", item["name"], item["ok"], "-", item["purpose"])
 

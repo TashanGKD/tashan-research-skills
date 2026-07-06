@@ -57,15 +57,20 @@ def mineru_status(rules_repo: Path) -> dict:
         "config_mineru_api_key_set": config_present,
         "config_path": str(config_path),
         "primary": "MinerU API converts PDF to Markdown with layout-aware extraction.",
-        "fallback": "PyMuPDF/fitz page.get_text() extracts local per-page plain text when MinerU is unavailable.",
+        "fallback": (
+            "Local fallback first tries pymupdf4llm.to_markdown() for Markdown-like layout text, then "
+            "falls back to PyMuPDF/fitz page.get_text(sort=True) per page when MinerU is unavailable."
+        ),
         "fallback_quality": (
-            "Good for text-layer PDFs; weak for scanned PDFs, complex multi-column layout, heavy headers/footers, "
-            "tables, formulas, and reference lists broken across pages. It is the best no-key built-in fallback here, "
+            "Good for text-layer PDFs and usually better with pymupdf4llm than raw page text because headings, lists, "
+            "and some table structure are retained. Still weak for scanned PDFs, complex multi-column layout, heavy "
+            "headers/footers, formulas, and reference lists broken across pages. It is the best no-key built-in fallback here, "
             "but not the best overall extraction path; MinerU or another OCR/layout parser is preferred for production PDF audits."
         ),
         "user_action": (
             "Set MINERU_API_KEY or fill assets/paperchecker-rules/config/config.json mineru_config.api_key "
-            f"after applying for MinerU access at {MINERU_AUTH_URL}. If no key is available, PaperCheck will continue with the PyMuPDF fallback and should label PDF findings as fallback/needs-review."
+            f"after applying for MinerU access at {MINERU_AUTH_URL}. If no key is available, install PyMuPDF and pymupdf4llm "
+            "from assets/paperchecker-rules/requirements.txt; PaperCheck will continue with local fallback and should label PDF findings as fallback/needs-review."
         ),
     }
 
@@ -110,7 +115,7 @@ def main() -> int:
         )
     if not report["pdf_extraction"]["configured"]:
         report["warnings"].append(
-            "MinerU API key is not configured. PDF uploads will fall back to local PyMuPDF/fitz text extraction; "
+            "MinerU API key is not configured. PDF uploads will fall back to local pymupdf4llm/PyMuPDF extraction if installed; "
             "tell the user this is usable for text PDFs but less accurate than MinerU/OCR layout extraction."
         )
 

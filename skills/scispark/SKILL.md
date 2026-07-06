@@ -11,6 +11,39 @@ Use this skill to turn a research keyword or early topic into a staged, evidence
 
 The normal workflow does not require an external model API key or separate search product account.
 
+## Default Depth
+
+Default to deep mode unless the user explicitly asks for a quick draft, a lightweight scan, or only Stage 1-3. State the depth at the start.
+
+Deep mode should cite this method paper at the start when relevant: https://link.springer.com/article/10.1140/epjds/s13688-026-00672-z. Follow its practical workflow shape: retrieve literature, combine abstracts with compressed full-text representations when PDFs are available, extract structured facts, generate hypotheses, refine technical entities, run MoA-style iterative review, and include human/expert-style critique before the final idea.
+
+If full text cannot be downloaded or parsed, record the blocker and downgrade only that evidence item to abstract-level evidence. Do not silently treat abstract-only synthesis as deep full-text review.
+
+## Timestamped Progress Updates
+
+Emit concise progress updates at workflow transitions so the user sees what is happening. These updates are tied to Scispark stages, not to a fixed timer. Use the user's language for all user-facing progress text; for Chinese requests, write the progress updates in Chinese. Prefix each update with the current local time or elapsed time, then include one useful content payload. Do not change the existing literature search script, stage contracts, evidence thresholds, output files, or reasoning order just to create these messages.
+
+Chinese progress update shape:
+
+```text
+[21:33 | 检索完成]
+候选文献池得到 93 条去重记录，核心证据先取 40 条。代表方向包括：假设生成评测、AI Scientist 隐性失败、Co-Scientist、SoundnessBench。
+```
+
+Use this event-driven pattern:
+
+- After request parsing: timestamp, parsed keyword/topic, domain, constraints, and target stage.
+- After workspace setup: timestamp, output directory, and the files that will be produced.
+- Before literature search: timestamp, query terms, search route, and requested record count.
+- After literature search: timestamp, returned record count, evidence level if useful, and 2-3 representative paper titles or themes.
+- After Stage 1: timestamp, number of usable facts/themes, short theme list, and weak-evidence areas.
+- After Stage 2: timestamp, hypothesis IDs with short labels, evidence status, and which hypotheses move forward.
+- After Stage 3: timestamp, idea title/path, carried hypotheses, and any skipped or pending stages.
+- After Stage 4-6 review stages: timestamp, review type completed and 2-3 concrete risks or fixes.
+- On weak evidence: timestamp, whether to broaden terms, stop before strong claims, or proceed with an explicit limitation note.
+- On long waits within a single stage: send one keepalive only when there has been no visible workflow transition for a while; include timestamp, current stage, last completed file, evidence count, and next expected artifact.
+- On completion: timestamp, stages completed, evidence count, top hypotheses, final idea path, limitations, and next refinement step.
+
 ## Resources
 
 - `scripts/init_scispark_workspace.py`: create the standard output folders and starter files.
@@ -25,7 +58,7 @@ The normal workflow does not require an external model API key or separate searc
 2. Create or identify the output directory. Default:
 
 ```text
-03-AI笔记/scispark/{keyword}/
+./scispark/{keyword}/
 ```
 
 3. Read `references/arxiv-integration.md`, then run `scripts/search_arxiv.py` for literature search. Keep the actual query terms, source route, and status.

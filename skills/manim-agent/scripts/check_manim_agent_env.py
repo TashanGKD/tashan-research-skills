@@ -1,5 +1,10 @@
 #!/usr/bin/env python
-"""Check the local manim-agent runtime without printing secrets."""
+"""Check the local manim-agent runtime without printing secrets.
+
+Cross-platform behavior:
+- Resolve repo from --repo, then MANIM_AGENT_HOME, then common local clone paths.
+- Report missing dependencies clearly; never print secret values.
+"""
 
 from __future__ import annotations
 
@@ -10,6 +15,35 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+DASHSCOPE_API_KEY_HELP_URL = "https://help.aliyun.com/zh/model-studio/get-api-key"
+
+
+def _candidate_default_repo() -> Path:
+    cwd_repo = Path.cwd() / "manim-agent"
+    if cwd_repo.exists():
+        return cwd_repo
+
+    home = Path.home()
+    home_repo = home / "manim-agent"
+    if home_repo.exists():
+        return home_repo
+
+    workspace_repo = home / "workspace" / "manim-agent"
+    if workspace_repo.exists():
+        return workspace_repo
+
+    return home_repo
+
+
+def _resolve_repo(cli_repo: str | None) -> Path:
+    if cli_repo:
+        repo = Path(cli_repo).expanduser()
+    elif os.getenv("MANIM_AGENT_HOME"):
+        repo = Path(os.environ["MANIM_AGENT_HOME"]).expanduser()
+    else:
+        repo = _candidate_default_repo()
+    return repo.resolve() if repo.exists() else repo
 
 
 def run_version(command: list[str], timeout: int = 12) -> tuple[bool, str]:
@@ -40,104 +74,20 @@ def check_python_package(import_name: str) -> tuple[bool, str]:
     return found, "importable" if found else "not importable"
 
 
-def repo_venv_python(repo: Path) -> Path:
-    return repo / ".venv" / ("Scripts" if os.name == "nt" else "bin") / ("python.exe" if os.name == "nt" else "python")
-
-
-def run_python_probe(python_exe: Path, code: str, timeout: int = 20) -> tuple[bool, str]:
-    if not python_exe.exists():
-        return False, f"not found: {python_exe}"
-    try:
-        result = subprocess.run(
-            [str(python_exe), "-c", code],
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            check=False,
-        )
-    except Exception as exc:  # pragma: no cover - defensive environment helper
-        return False, f"error: {exc}"
-    output = (result.stdout or result.stderr or "").strip().splitlines()
-    first_line = output[0] if output else f"exit {result.returncode}"
-    return result.returncode == 0, first_line
-
-
-def check_repo_venv_package(repo: Path, import_name: str) -> tuple[bool, str]:
-    return run_python_probe(
-        repo_venv_python(repo),
-        f"import {import_name}; print('importable')",
-    )
-
-
-def infer_llm_provider() -> str:
-    explicit = os.getenv("MANIM_AGENT_LLM_PROVIDER")
-    if explicit:
-        return explicit
-
-    base_url = (os.getenv("ANTHROPIC_BASE_URL") or "").lower()
-    if "dashscope" in base_url or "aliyuncs" in base_url:
-        return "aliyun"
-    if "volces" in base_url or "volcengine" in base_url or "byteplus" in base_url:
-        return "volcengine"
-    if base_url:
-        return "custom"
-    return "unknown"
-
-
-def infer_tts_provider() -> str:
-    explicit = os.getenv("MANIM_AGENT_TTS_PROVIDER")
-    if explicit:
-        return explicit
-    if os.getenv("DASHSCOPE_API_KEY") or os.getenv("ALIYUN_DASHSCOPE_API_KEY"):
-        return "aliyun"
-    if (
-        os.getenv("VOLCENGINE_TTS_API_KEY")
-        or os.getenv("VOLCENGINE_TTS_ACCESS_TOKEN")
-        or os.getenv("VOLCENGINE_TTS_APP_ID")
-    ):
-        return "volcengine"
-    return "unknown"
-
-
-def has_llm_key() -> bool:
-    return any(
-        os.getenv(name)
-        for name in [
-            "ANTHROPIC_AUTH_TOKEN",
-            "ANTHROPIC_API_KEY",
-            "ARK_API_KEY",
-            "VOLCENGINE_API_KEY",
-            "ALIYUN_DASHSCOPE_API_KEY",
-            "ALIYUN_TOKEN_PLAN_API_KEY",
-            "ALIYUN_CODING_PLAN_API_KEY",
-        ]
-    )
-
-
-def has_tts_key() -> bool:
-    return any(
-        os.getenv(name)
-        for name in [
-            "DASHSCOPE_API_KEY",
-            "ALIYUN_DASHSCOPE_API_KEY",
-            "VOLCENGINE_TTS_API_KEY",
-            "VOLCENGINE_TTS_ACCESS_TOKEN",
-            "VOLCENGINE_TTS_APP_ID",
-            "MANIM_AGENT_TTS_AUTH_TOKEN",
-        ]
-    )
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check manim-agent local runtime.")
     parser.add_argument(
         "--repo",
-        default=".",
-        help="Path to the local gqy20/manim-agent repository.",
+        default=None,
+        help=(
+            "Path to the local gqy20/manim-agent repository. Defaults to "
+            "$MANIM_AGENT_HOME, then ./manim-agent, then ~/manim-agent, then "
+            "~/workspace/manim-agent."
+        ),
     )
     args = parser.parse_args()
 
-    repo = Path(args.repo)
+    repo = _resolve_repo(args.repo)
     checks: list[tuple[str, bool, str]] = []
 
     checks.append(("repo", repo.exists(), str(repo)))
@@ -147,19 +97,6 @@ def main() -> int:
 
     py_ok = sys.version_info >= (3, 12)
     checks.append(("python>=3.12", py_ok, sys.version.split()[0]))
-    venv_python = repo_venv_python(repo)
-    venv_py_ok, venv_py_detail = run_python_probe(
-        venv_python,
-        "import sys; print('.'.join(map(str, sys.version_info[:3])))",
-    )
-    venv_version_ok = False
-    if venv_py_ok:
-        try:
-            parts = [int(part) for part in venv_py_detail.split(".")[:2]]
-            venv_version_ok = tuple(parts) >= (3, 12)
-        except ValueError:
-            venv_version_ok = False
-    checks.append(("repo_venv_python>=3.12", venv_py_ok and venv_version_ok, venv_py_detail))
 
     for name, cmd in [
         ("uv", ["uv", "--version"]),
@@ -174,91 +111,82 @@ def main() -> int:
         "claude_agent_sdk",
         "manim",
         "httpx",
+        "manim_agent",
     ]:
         ok, detail = check_python_package(package)
         checks.append((f"py:{package}", ok, detail))
-        venv_ok, venv_detail = check_repo_venv_package(repo, package)
-        checks.append((f"repo_venv:{package}", venv_ok, venv_detail))
 
     for env_name in [
-        "MANIM_AGENT_LLM_PROVIDER",
-        "MANIM_AGENT_LLM_ROUTE",
         "DASHSCOPE_API_KEY",
-        "ALIYUN_DASHSCOPE_API_KEY",
-        "ALIYUN_TOKEN_PLAN_API_KEY",
-        "ALIYUN_CODING_PLAN_API_KEY",
-        "ARK_API_KEY",
-        "VOLCENGINE_API_KEY",
         "DATABASE_URL",
         "ANTHROPIC_BASE_URL",
         "ANTHROPIC_AUTH_TOKEN",
         "ANTHROPIC_API_KEY",
         "ANTHROPIC_MODEL",
-        "MANIM_AGENT_TTS_PROVIDER",
-        "MANIM_AGENT_TTS_ROUTE",
-        "MANIM_AGENT_TTS_MODEL",
-        "MANIM_AGENT_TTS_VOICE",
-        "MANIM_AGENT_TTS_AUTH_TOKEN",
-        "VOLCENGINE_TTS_API_KEY",
-        "VOLCENGINE_TTS_ACCESS_TOKEN",
-        "VOLCENGINE_TTS_APP_ID",
-        "VOLCENGINE_TTS_CLUSTER",
+        "MANIM_AGENT_HOME",
     ]:
         checks.append((env_name, bool(os.getenv(env_name)), "set" if os.getenv(env_name) else "not set"))
 
     max_name = max(len(name) for name, _, _ in checks)
-    required_status: dict[str, bool] = {}
+    failed_required = False
+    required = {
+        "python>=3.12",
+        "uv",
+        "ffmpeg",
+        "py:claude_agent_sdk",
+        "py:httpx",
+        "py:manim_agent",
+    }
+    soft_required = {
+        "repo",
+        "pyproject",
+        "cli_entry",
+        "production_plugin",
+        "manim",
+        "py:manim",
+    }
+
     for name, ok, detail in checks:
-        print(f"{name.ljust(max_name)}  {yes_no(ok):8}  {detail}")
-        if name in {
-            "repo",
-            "pyproject",
-            "cli_entry",
-            "production_plugin",
-            "ffmpeg",
-        }:
-            required_status[name] = ok
+        marker = yes_no(ok)
+        if name in soft_required and not ok:
+            marker = "missing*"
+        print(f"{name.ljust(max_name)}  {marker:8}  {detail}")
+        if name in required and not ok:
+            failed_required = True
 
-    python_runtime_ok = dict((name, ok) for name, ok, _ in checks).get("python>=3.12", False) or dict(
-        (name, ok) for name, ok, _ in checks
-    ).get("repo_venv_python>=3.12", False)
-    manim_runtime_ok = dict((name, ok) for name, ok, _ in checks).get("manim", False) or dict(
-        (name, ok) for name, ok, _ in checks
-    ).get("repo_venv:manim", False)
-    package_runtime_ok = all(
-        dict((name, ok) for name, ok, _ in checks).get(f"py:{package}", False)
-        or dict((name, ok) for name, ok, _ in checks).get(f"repo_venv:{package}", False)
-        for package in ["claude_agent_sdk", "manim", "httpx"]
-    )
-    failed_required = not (
-        all(required_status.values())
-        and python_runtime_ok
-        and manim_runtime_ok
-        and package_runtime_ok
-    )
-
+    print()
+    if not (repo / "pyproject.toml").exists():
+        print(
+            f"note: manim-agent repo not found at {repo}. "
+            "Clone it with: git clone https://github.com/gqy20/manim-agent.git "
+            f"\"{repo}\""
+        )
+        print("note: override the repo path with MANIM_AGENT_HOME=/path/to/manim-agent or --repo /path/to/manim-agent.")
+    if not shutil.which("uv"):
+        print("note: 'uv' is required. Install from https://docs.astral.sh/uv/.")
+    if not shutil.which("manim") and importlib.util.find_spec("manim") is None:
+        print("note: 'manim' CLI not found. Install system deps (cairo/pango/ffmpeg), then install manim.")
+    if importlib.util.find_spec("claude_agent_sdk") is None:
+        print("note: 'claude_agent_sdk' is not importable; install claude-agent-sdk in the repo environment.")
+    if importlib.util.find_spec("manim_agent") is None:
+        print("note: 'manim_agent' is not importable; run `uv pip install -e .` from the repo.")
     if os.getenv("DASHSCOPE_API_KEY"):
-        print("note: DASHSCOPE_API_KEY can drive DashScope LLM and DashScope CosyVoice TTS when the matching env vars are set.")
-    if not os.getenv("DASHSCOPE_API_KEY"):
-        print("note: DASHSCOPE_API_KEY is needed for Aliyun DashScope CosyVoice TTS and DashScope direct checks.")
-    print(f"note: inferred LLM provider profile: {infer_llm_provider()}")
-    print(f"note: inferred TTS provider profile: {infer_tts_provider()}")
-    if os.getenv("ALIYUN_DASHSCOPE_API_KEY") or os.getenv("ALIYUN_TOKEN_PLAN_API_KEY") or os.getenv("ALIYUN_CODING_PLAN_API_KEY"):
-        print("note: Aliyun key env is available; map it with configure_manim_provider.py --provider aliyun --route regular|token-plan|coding-plan.")
-    if os.getenv("ARK_API_KEY") or os.getenv("VOLCENGINE_API_KEY"):
-        print("note: Volcengine Ark key env is available; map it with configure_manim_provider.py --provider volcengine --route regular|coding-plan.")
-    if os.getenv("VOLCENGINE_TTS_API_KEY") or os.getenv("VOLCENGINE_TTS_ACCESS_TOKEN") or os.getenv("VOLCENGINE_TTS_APP_ID"):
-        print("note: Volcengine TTS env is available; map it with configure_manim_provider.py --provider volcengine --purpose tts.")
+        print("note: DASHSCOPE_API_KEY can drive DashScope CosyVoice TTS when narration is enabled.")
+    else:
+        print(
+            "note: DASHSCOPE_API_KEY is needed for Aliyun DashScope CosyVoice TTS. "
+            f"Apply at {DASHSCOPE_API_KEY_HELP_URL}"
+        )
     if not os.getenv("DATABASE_URL"):
         print("note: DATABASE_URL is needed for Web/backend persistence, not for direct CLI no-persistence runs.")
-    if repo_venv_python(repo).exists():
-        print("note: repo .venv is available; direct CLI runs can use .venv\\Scripts\\python.exe -m manim_agent on Windows.")
-    if not (os.getenv("ANTHROPIC_AUTH_TOKEN") or os.getenv("ANTHROPIC_API_KEY")):
-        print("note: Claude Agent SDK needs local Claude auth or ANTHROPIC_AUTH_TOKEN/ANTHROPIC_API_KEY for normal pipeline runs.")
-    if not has_llm_key():
-        print("action: For Manim LLM access, apply for or refresh a key in the Volcengine Ark console or Aliyun DashScope/Bailian console, then run configure_manim_provider.py.")
-    if not has_tts_key():
-        print("action: For narrated Manim videos, apply for or refresh Aliyun DashScope CosyVoice access or Volcengine speech synthesis access, then run configure_manim_provider.py --purpose tts; otherwise run with --no-tts.")
+    if not (
+        os.getenv("DASHSCOPE_API_KEY")
+        or os.getenv("ANTHROPIC_AUTH_TOKEN")
+        or os.getenv("ANTHROPIC_API_KEY")
+    ):
+        print("note: Manim Agent needs a DashScope/Bailian API key for normal model runs.")
+    if not sys.platform.startswith("win"):
+        print("note: PowerShell examples in this skill can be translated to bash; `uv run python -m manim_agent ...` is the same.")
 
     return 1 if failed_required else 0
 

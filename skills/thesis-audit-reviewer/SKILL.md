@@ -63,8 +63,9 @@ Adopt the mature-skill pattern from prior document-audit work:
 3. **Parse Paper**
    - Default scenario is ordinary thesis material that may be parsed by third-party tools; for PDF, prefer MinerU online VLM parsing when available.
    - If the user marks the paper confidential, unpublished, restricted, or not uploadable, do not use online parsing; switch to local parsing or ask for permission.
-   - Use `scripts/mineru_vlm_extract.py` to upload the full PDF and download results.
-   - Use `scripts/split_mineru_vlm_pages.py` to create page-level object files.
+   - Use `scripts/mineru_vlm_extract.py` to upload the full PDF and download results when MinerU is available and upload is allowed.
+   - If MinerU is unavailable, unconfigured, timed out, or upload is not allowed, run `scripts/pdf_local_fallback_extract.py` first. It tries local `pymupdf4llm` Markdown extraction, then local `PyMuPDF/fitz` page text extraction.
+   - Use `scripts/split_mineru_vlm_pages.py` to create page-level object files after MinerU parsing.
    - Always verify high-risk findings against the original PDF image or rendered page; parsed text is evidence support, not final truth.
    - For DOCX, use the Documents skill or direct OOXML inspection when comments/redlines are requested.
    - For DOC/DOCX, run `scripts/docx_integrity_scan.py` and read `references/docx_integrity_gate.md`; do not rely on `python-docx paragraph.text` or long command-output previews as full-text coverage.
@@ -150,11 +151,12 @@ python scripts/docx_integrity_scan.py --docx paper.docx --markdown-output work/p
 python scripts/scan_verifiable_claims.py --input work/paper01/extracted_text.md --output work/paper01/05_verifiable_claims.csv
 python scripts/mineru_vlm_extract.py --file paper.pdf --out work/mineru_vlm --model-version vlm
 python scripts/split_mineru_vlm_pages.py --content-list work/mineru_vlm/<extract_dir>/content_list_v2.json --out work/vlm_pages
+python scripts/pdf_local_fallback_extract.py --file paper.pdf --out work/pdf_fallback
 python scripts/render_md_report_pdf.py --input outputs/paper01/审查报告.md --output outputs/paper01/审查报告.pdf
 python scripts/validate_audit_report.py --report outputs/paper01/审查报告.md --strict
 ```
 
-The MinerU script reads the token from `MINERU_API_TOKEN`, hidden TTY input, or stdin. Never write the token into a command, report, or repository file.
+The MinerU script reads the token from `MINERU_API_TOKEN`, hidden TTY input, or stdin. Never write the token into a command, report, or repository file. The local PDF fallback script does not need a token; treat its output as lower confidence than MinerU for scanned PDFs, formulas, complex tables, multi-column layout, headers/footers, and split reference lists.
 
 ## Completion Definition
 

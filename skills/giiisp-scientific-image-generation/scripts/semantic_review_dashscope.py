@@ -22,7 +22,9 @@ def read_json(path):
 
 
 def write_json(path, data):
-    Path(path).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def infer_mime(path):
@@ -75,7 +77,7 @@ def first_choice_content(response_json):
     return message.get("content")
 
 
-def build_review_prompt(figure_spec, check, manifest):
+def build_review_prompt(figure_spec, check, manifest, run_input=None):
     compact_manifest = {}
     if isinstance(manifest, dict):
         compact_manifest = {
@@ -84,8 +86,23 @@ def build_review_prompt(figure_spec, check, manifest):
             "task": manifest.get("task"),
             "output": manifest.get("output"),
         }
+    run_input = run_input if isinstance(run_input, dict) else {}
+    detailed_description = run_input.get("prompt") or (compact_manifest.get("task") or {}).get("prompt")
+    methodology_section = run_input.get("source_context") or (compact_manifest.get("task") or {}).get("source_context_excerpt")
+    figure_caption = figure_spec.get("caption") if isinstance(figure_spec, dict) else None
+    figure_caption = figure_caption or run_input.get("caption") or (compact_manifest.get("task") or {}).get("caption")
     return (
-        "你是科研配图审查员。请只根据图片和下面的结构化要求审查，不要猜测未显示内容。\n"
+        "你是顶级 AI 会议标准的科研图 Critic，任务是对目标科研图做 sanity check，并基于内容和呈现质量给出修订后的详细描述。\n"
+        "请严格对齐这条工作流：Critic 先看目标图、Detailed Description、Methodology Section 和 Figure Caption；"
+        "如果发现问题，输出具体 critique，并给出合并修正后的 revised_description；如果不需要修改，critic_suggestions 和 revised_description 都写 No changes needed.\n"
+        "审查规则：\n"
+        "1. Fidelity & Alignment：图必须忠实反映 Methodology Section，并符合 Figure Caption；允许合理简化，但不能遗漏关键组件、误表述或幻觉新增内容。\n"
+        "2. Text QA：检查图内错字、伪英文、无意义文字、标签不清；需要给出具体修正。\n"
+        "3. Validation of Examples：如有分子式、公式、示例、注意力图等例子，检查事实和逻辑一致性。\n"
+        "4. Caption Exclusion：不要把 Figure Caption 原文放进图片内部。\n"
+        "5. Clarity & Readability：检查布局是否拥挤、流程是否混乱、层级是否清晰。\n"
+        "6. Legend Management：如果图内出现冗余文字图例或色彩说明，建议删除或简化。\n"
+        "revised_description 必须主要基于原 Detailed Description 修改，不要无故从头重写；需要重写局部时，要清楚描述元素、连接关系、背景、颜色、线条、图标风格和文字约束。\n"
         "输出必须是严格 JSON，不要 Markdown，不要解释性前后缀。JSON schema:\n"
         "{"
         "\"schema\":\"giiisp_semantic_review_v1\","
@@ -95,9 +112,18 @@ def build_review_prompt(figure_spec, check, manifest):
         "\"missing_required_labels\":[\"...\"],"
         "\"forbidden_labels_seen\":[\"...\"],"
         "\"issues\":[\"...\"],"
+        "\"critic_suggestions\":\"... or No changes needed.\","
+        "\"revised_description\":\"... or No changes needed.\","
         "\"recommended_next_action\":\"deliver|edit|regenerate|manual_review\","
         "\"next_edit_prompt\":\"...\""
         "}\n\n"
+        "Detailed Description:\n"
+        + json.dumps(detailed_description or "", ensure_ascii=False, indent=2)
+        + "\n\nMethodology Section:\n"
+        + json.dumps(methodology_section or "", ensure_ascii=False, indent=2)
+        + "\n\nFigure Caption:\n"
+        + json.dumps(figure_caption or "", ensure_ascii=False, indent=2)
+        + "\n\n"
         "figure_spec:\n"
         + json.dumps(figure_spec or {}, ensure_ascii=False, indent=2)
         + "\n\nmachine_check:\n"
@@ -200,7 +226,8 @@ def main():
     figure_spec = read_json(figure_spec_path)
     check = read_json(check_path)
     manifest = read_json(manifest_path)
-    prompt = build_review_prompt(figure_spec, check, manifest)
+    run_input = read_json(run_dir / "run_input.json") if run_dir else None
+    prompt = build_review_prompt(figure_spec, check, manifest, run_input)
     response = call_dashscope(args.model, api_key, image_path, prompt, args.timeout)
 
     review = {

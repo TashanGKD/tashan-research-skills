@@ -14,6 +14,8 @@ class PDFExtractor(BaseExtractor):
         """提取PDF文档内容"""
         # 尝试使用MinerU API进行转换
         md_content = None
+        extraction_method = "mineru"
+        extraction_warning = None
         try:
             from utils.mineru_pdf_converter import convert_pdf_to_markdown
 
@@ -27,10 +29,11 @@ class PDFExtractor(BaseExtractor):
                 md_content = f.read()
 
         except Exception as e:
-            print(f"MinerU API转换失败: {e}")
-            print("切换到本地PDF提取方法...")
+            extraction_warning = f"MinerU API转换失败，已切换到本地PDF提取: {e}"
+            print(extraction_warning)
             # 使用本地方法提取PDF内容
             md_content = self._extract_pdf_locally(file_path)
+            extraction_method = getattr(self, "_last_pdf_extraction_method", "local_pymupdf")
 
         # 提取正文内容（按行分割）
         paragraphs = md_content.split('\n') if md_content else []
@@ -53,31 +56,95 @@ class PDFExtractor(BaseExtractor):
             tables=tables_content,
             citations=citations,
             references=references,
-            metadata={'file_type': 'pdf', 'file_path': file_path}
+            metadata={
+                'file_type': 'pdf',
+                'file_path': file_path,
+                'pdf_extraction_method': extraction_method,
+                'pdf_extraction_warning': extraction_warning,
+            }
         )
 
     def _extract_pdf_locally(self, file_path: str) -> str:
-        """使用本地库提取PDF内容"""
-        import fitz  # PyMuPDF
+        """使用本地库提取PDF内容。
 
-        # 打开PDF文档
-        doc = fitz.open(file_path)
-        text_content = []
+        优先用 pymupdf4llm 转 Markdown，保留标题、列表和表格等版式线索；
+        若不可用或返回空文本，再回退到 PyMuPDF/fitz 的逐页文本抽取。
+        """
+        errors = []
 
-        # 提取每一页的文本
-        for page_num in range(len(doc)):
-            page = doc.load_page(page_num)
-            text = page.get_text()
-            text_content.append(text)
+        try:
+            import pymupdf4llm
 
-        doc.close()
+            markdown = pymupdf4llm.to_markdown(file_path)
+            if isinstance(markdown, list):
+                markdown = "\n\n".join(str(part) for part in markdown if part)
+            markdown = self._normalize_local_pdf_text(str(markdown or ""))
+            if self._has_usable_pdf_text(markdown):
+                self._last_pdf_extraction_method = "pymupdf4llm"
+                return markdown
+            errors.append("pymupdf4llm returned empty or unusable text")
+        except ImportError:
+            errors.append("pymupdf4llm is not installed")
+        except Exception as exc:
+            errors.append(f"pymupdf4llm failed: {exc}")
 
-        # 将所有页面的文本合并
-        full_text = "\n".join(text_content)
+        try:
+            import fitz  # PyMuPDF
+        except ImportError as exc:
+            errors.append("PyMuPDF/fitz is not installed")
+            raise RuntimeError(self._local_pdf_error_message(errors)) from exc
 
-        # 将PDF文本转换为类似markdown的格式
-        # 这里可以进一步处理格式，但现在先返回纯文本
-        return full_text
+        doc = None
+        try:
+            doc = fitz.open(file_path)
+            page_texts = []
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
+                try:
+                    text = page.get_text("text", sort=True)
+                except TypeError:
+                    text = page.get_text("text")
+                text = self._normalize_local_pdf_text(text)
+                if text:
+                    page_texts.append(f"\n\n<!-- page {page_num + 1} -->\n{text}")
+
+            full_text = "\n".join(page_texts).strip()
+            if not self._has_usable_pdf_text(full_text):
+                errors.append("PyMuPDF/fitz extracted no usable text")
+                raise RuntimeError(self._local_pdf_error_message(errors))
+            self._last_pdf_extraction_method = "pymupdf_fitz"
+            return full_text
+        except Exception as exc:
+            if isinstance(exc, RuntimeError) and "Local PDF extraction failed" in str(exc):
+                raise
+            errors.append(f"PyMuPDF/fitz failed: {exc}")
+            raise RuntimeError(self._local_pdf_error_message(errors)) from exc
+        finally:
+            if doc is not None:
+                doc.close()
+
+    def _normalize_local_pdf_text(self, text: str) -> str:
+        """Normalize local PDF text without destroying paragraph boundaries."""
+        if not text:
+            return ""
+        normalized_lines = []
+        for line in str(text).replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+            normalized_lines.append(re.sub(r"[ \t]+", " ", line).strip())
+        normalized = "\n".join(normalized_lines)
+        normalized = re.sub(r"\n{4,}", "\n\n\n", normalized)
+        return normalized.strip()
+
+    def _has_usable_pdf_text(self, text: str) -> bool:
+        compact = re.sub(r"\s+", "", text or "")
+        return len(compact) >= 20
+
+    def _local_pdf_error_message(self, errors: list) -> str:
+        detail = "; ".join(errors)
+        return (
+            "Local PDF extraction failed. Install PyMuPDF and pymupdf4llm, or configure MINERU_API_KEY "
+            "for layout-aware extraction. Details: "
+            + detail
+        )
     
     def _extract_citations(self, paragraphs: list, md_content: str, file_path: str) -> list:
         """提取引文"""

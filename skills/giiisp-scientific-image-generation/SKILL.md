@@ -11,6 +11,54 @@ description: 使用 Giiisp Imagine 科研图像生成接口，把论文段落、
 
 不要把它用于纯 SVG 手绘、PPT 排版或普通网页插图。这里的主线是图像生成模型。
 
+## 用户可见进度输出
+
+生成或改图时要主动输出有效状态，减少用户等待。进度绑定真实工作流节点，中文请求用中文；每条前缀当前本地时间或已耗时，但正文要保持科研图执行口径：有参数、有判断、有质量标准，不写成后台日志，也不写成陪聊安慰。只增加用户可见进度说明，不改变 Giiisp Imagine 接口、token 读取方式、请求体字段、轮询方式、run 目录规范或检查脚本。
+
+进度文字要专业、短、具体。不要堆内部文件名，也不要把话说得太口语。优先输出用户真正关心的技术信息：图型、画幅、标签约束、参考图角色、生成状态、尺寸/格式、语义复查维度、是否可交付、下一轮修订策略。不必每轮全发，按真实发生的节点输出。
+
+中文进度样式：
+
+```text
+[21:24 | 任务识别]
+我先确认这张图的类型、画幅和必须保留的科学信息，避免生成时跑偏或自行扩写无关内容。
+
+[21:25 | 作图简报]
+图型、画幅、必须标签和禁止项已经定好；如果使用参考图，只参考指定部分，不改写原始科学含义。
+
+[21:26 | 请求提交]
+生成任务已经提交，正在等待图片返回；访问码只用于本次调用，不会写进记录里。
+
+[21:31 | 图片生成]
+图片已返回，尺寸和格式可读。接下来检查标签、伪英文、水印和版式层次。
+
+[21:32 | 机器检查]
+文件本身是有效图片，尺寸和格式没问题；但语义和标签还要复查，不能只看机器检查就交付。
+
+[21:34 | 复查结论]
+主体结构基本成立，关键标签也在；但仍发现一处文字或语义问题，这版适合做草稿，正式版建议再改一轮。
+
+[21:35 | 交付索引]
+本轮生成、检查和复查结论已经整理好；交付时会说明这张图能用到什么程度，以及下一轮该怎么改。
+```
+
+优先在这些节点输出：任务识别、作图约束确认、请求提交、轮询等待较久、图片下载、机器检查完成、复查开始、复查完成、manifest 更新、blocker、最终交付。每条包含一个真实中间信息即可，例如任务号、图片尺寸、必须标签数量、复查发现、是否建议二次修改。文件名可以出现，但不要每条都堆文件名；只在用户需要追溯或出现 blocker 时明确证据文件。遇到 blocker 时说明证据文件；如果接口返回错误 JSON，优先展示接口 `code` 和 `error`，例如 `INVALID_TOKEN / 访问码无效`，再说明衍生状态如缺 token、`ACCESS_TOKEN_REQUIRED`、无 `job_id`、轮询超时或无图片；明确不会伪造图片。
+
+## 默认交付深度
+
+默认用户交付不是 smoke test。除非用户明确说“只测接口/只 smoke/只 dry-run”，真实生成后必须继续完成复查闭环：
+
+1. 写 `figure_spec.json` 和脱敏 `request.json`。
+2. 发起 `generate-async`，轮询 `generate-jobs/{job_id}`，下载图片。
+3. 运行机器检查并写 `check.json`。
+4. 默认运行 DashScope VLM 语义审查并写 `semantic_review.json`，检查语义符合度、必须标签、错字/伪英文/水印/广告感、布局层级和是否需要二次修改；如果 VLM 被 key、模型或接口阻断，保留 blocked 状态，不伪造审查结论。
+5. 如果 VLM 明确建议 `edit` / `regenerate`，或发现必须标签缺失、禁止项出现、内容准确性/文字可读性/严重伪影失败，自动把 Critic 结论收敛成 PaperBanana 风格的 `critic_suggestions` 和 `revised_description`，再用 Visualizer prompt 重新文生图一次。最多自动修订一轮；第二版复查后停止，把后续选择权交给用户。
+6. 写 `manual_review.md` 代理复查摘要：基于机器检查和 VLM 结果给出是否可交付、主要问题和下一轮修改 prompt；它不是最终人工签核。
+7. 重新运行 `build_figure_manifest.py`，让 `figure_manifest.json` 纳入图片、机器检查、VLM/代理复查、自动修订状态和下一轮修改建议。
+8. 最终回复必须说明：图片路径、检查结果、复查结论、是否达到交付标准、下一轮修改 prompt。
+
+标准入口是 `run_scientific_image_workflow.py`，它串联真实生成、机器检查、VLM 语义审查、最多一轮自动修订、代理复查摘要和 manifest 重建。自动修订时会写 `auto_repair_prompt.json`，记录 `critic_suggestions`、`revised_description` 和最终发给生成器的 Visualizer prompt。`generate_scientific_image_smoke.py` 只是底层接口连通性和单次图片生成脚本，不代表默认完整交付已经结束。
+
 ## 工作流
 
 1. 先写作图简报：图的用途、核心信息、必须出现的标签、画幅比例、风格。
@@ -18,8 +66,10 @@ description: 使用 Giiisp Imagine 科研图像生成接口，把论文段落、
 3. 把作图简报落成 `figure_spec.json`：必须标签、布局、风格、参考图角色、允许/禁止修改项。
 4. 构造 `generate-async` 请求。
 5. 保存请求体、响应、图片、轮询记录和检查记录。
-6. 根据用户反馈继续改图，不覆盖上一版。
-7. 生成或修改后写 `figure_manifest.json`，把任务、图片、检查和人工判断串起来。
+6. 生成图片后做机器检查和 VLM 语义审查；若有基础问题，自动输出 Critic 建议和 revised description，再用 revised description 重新文生图一次。
+7. 对最终版写代理复查摘要，并给出是否需要用户继续判断或修改。
+8. 根据用户反馈继续改图，不覆盖上一版；这属于人工接管后的下一轮，不进入无限自动迭代。
+9. 生成或修改后重建 `figure_manifest.json`，把任务、图片、检查、复查、自动修订状态和人工判断串起来。
 
 ## 参考 PaperBanana 的地方
 
@@ -32,10 +82,24 @@ description: 使用 Giiisp Imagine 科研图像生成接口，把论文段落、
 | `metadata.json` / `run_input.json` | 每轮生成或 blocker 都写 `run_input.json`、`metadata.json` 和 `figure_manifest.json` |
 | `batch_manifest.yaml` | 多图交付用 `build_figure_package.py` 汇总每张图的 manifest，不用口头一次性塞多张图 |
 | `batch_report.json` / checkpoint | 图包目录写 `package_plan.json`、`package_checkpoint.json`、`figure_package.json` |
-| `evaluate_diagram` | 当前先用 `check.json` + `manual_review.md`；有参考图时再补结构化对比 |
+| `evaluate_diagram` | 当前用 `check.json` + `semantic_review.json` + `manual_review.md`；有参考图时再补结构化对比 |
 | 多候选择优 | 多个 run 完成后用 `select_figure_variant.py` 按完成状态、机器检查和人工质量轴选择候选 |
 
-核心原则：每张图都必须有可追溯 run，不只保存最终图片。
+对齐源项目的关键链路是 Critic 看图后修改描述，再由 Visualizer 基于 revised description 重新文生图；本 skill 不默认接入 PaperBanana 的参考图库、Retriever、多候选并发筛选或三轮以上 Critic 循环。核心原则：每张图都必须有可追溯 run，不只保存最终图片。
+
+Critic 输出字段要对齐 PaperBanana：
+
+- `critic_suggestions`：具体审查意见；如果无需修改，写 `No changes needed.`。
+- `revised_description`：合并修正后的完整详细描述；如果无需修改，写 `No changes needed.`。
+
+Visualizer 重生 prompt 要以 revised description 为核心：
+
+```text
+Render an image based on the following detailed description: {revised_description}
+Note that do not include figure titles in the image. Diagram:
+```
+
+本 skill 可以在这个 prompt 后追加中文标签、禁止项、Giiisp 输出要求和“一轮自动修订”边界，但不能跳过 `critic_suggestions` / `revised_description` 这组中间产物。
 
 ## Crafter 启发但不照搬的地方
 
@@ -44,7 +108,7 @@ Crafter 的有效启发是“科研图是结构化语义组件组合，不只是
 - 用 `figure_spec.json` 作为单张图的结构化事实源，避免多轮 prompt 追加后互相矛盾。
 - 用 `reference_role` 明确参考图用途，避免“保留结构”“借用元素”“润色草图”“编辑当前图”混在一起。
 - 用固定质量轴复核生成结果：`content_accuracy`、`layout_quality`、`text_readability`、`aesthetic_quality`、`artifact_severity`。
-- 需要模型审查时，用 DashScope Qwen 只做生成后语义复核，结果写 `semantic_review.json`，不替代本地机器检查。
+- 默认完整流程用 DashScope Qwen 做生成后语义复核，结果写 `semantic_review.json`，不替代本地机器检查和代理复查摘要。
 - 继续坚持本 skill 的核心优势：Giiisp Imagine 专用、token 不落盘、每轮 run 可审计。
 
 ## Figure spec 契约
@@ -83,12 +147,12 @@ python scripts/generate_scientific_image_smoke.py --input-json params.json
 
 ## 二次修改入口
 
-用户说“按这张图继续改”“保留主体，只改标签/配色/布局/局部元素”时，走二次修改入口：
+用户说“按这张图继续改”“保留主体，只改标签/配色/布局/局部元素”时，走二次修改入口。默认先把用户反馈、上一轮 `semantic_review.json` 和原始 `figure_spec.json` 合成新版 prompt/spec，重新文生图；只有在用户明确要求按参考图结构修改，且接口实际可用时，才传 `--reference-image`。
 
 1. 先确认上一轮图片路径或用户提供的参考图路径。
-2. 先声明 `reference_role`：`preserve_structure` 保留结构，`use_elements` 借用元素，`refine_sketch` 把草图润色成成品，`edit_image` 编辑当前图。
+2. 先声明 `reference_role`：`preserve_structure` 保留结构，`use_elements` 借用元素，`refine_sketch` 把草图润色成成品，`edit_image` 编辑当前图；如果不走参考图输入，则记录为文本重生。
 3. 把修改要求写进新的 `prompt`，明确“保留上一版的主体结构/构图/画幅”，再列出只允许变动的部分。
-4. 通过 `imageBase64` 和 `imageMimeType` 传入参考图；不要覆盖上一轮 run 目录。
+4. 若确认走参考图输入，再通过 `imageBase64` 和 `imageMimeType` 传入参考图；否则只传新版 prompt/spec 和 `source_run`。不要覆盖上一轮 run 目录。
 5. 新建一轮 run 目录，保存新的 `figure_spec.json`、`request.json`、`response.json`、`poll_history.json`、图片和 `check.json`。
 6. 如果没有 token、没有参考图或接口拒绝访问，只写 `blocker.json`，不要伪造图片或检查结果。
 
@@ -139,7 +203,7 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 
 ## 访问码
 
-真实生图必须测试结果。如果接口返回 `ACCESS_TOKEN_REQUIRED`，记录 blocker，不要伪造图片，并提示用户到 `https://giiisp.com/#/mcp/authenticate` 申请或刷新 Giiisp MCP 认证。
+真实生图必须测试结果。如果接口返回 `ACCESS_TOKEN_REQUIRED`，记录 blocker，不要伪造图片。
 
 如果用户提供访问码或浏览器会话中已有 token：
 
@@ -147,7 +211,6 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 - 不要把 token 写入文件、日志或最终回复。
 - 只记录“已使用访问码 token”。
 - 命令行测试只从环境变量 `GIIISP_AUTH_TOKEN` 读取 token。
-- 无 `GIIISP_AUTH_TOKEN` 或 token 过期时，`blocker.json` 必须包含认证页和用户动作，便于前端直接提示用户处理。
 
 ## 结果检查
 
@@ -185,7 +248,7 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 
 ## DashScope 语义审查
 
-生成图片并通过机器检查后，可以用 DashScope Qwen 做一次视觉语义审查：
+生成图片并通过机器检查后，标准流程用 DashScope Qwen 做一次视觉语义审查：
 
 ```powershell
 $env:DASHSCOPE_API_KEY = "<dashscope_api_key>"
@@ -200,6 +263,7 @@ python scripts/build_figure_manifest.py --run-dir "scientific_image_skill_runs/s
 - `provider`、`endpoint`、`model`、`dashscope_status_code`。
 - `quality_review_axes`：五个质量轴的 `PASS` / `FAIL` / `UNCERTAIN`、分数和理由。
 - `observed_labels`、`missing_required_labels`、`forbidden_labels_seen`。
+- `critic_suggestions`、`revised_description`：对齐 PaperBanana Critic 输出，用于一次自动修订。
 - `overall_ready_to_ship`、`recommended_next_action`、`next_edit_prompt`。
 
 如果缺少 `DASHSCOPE_API_KEY`、图片不存在、模型不可用或返回无法解析，脚本写 blocked 状态，不伪造语义判断。
@@ -281,6 +345,16 @@ $env:GIIISP_AUTH_TOKEN = "<token>"
 python scripts/generate_scientific_image_smoke.py --prompt "画一个四步科研流程图：问题定义、数据整理、模型生成、结果检查"
 ```
 
+默认完整流程运行：
+
+```powershell
+$env:GIIISP_AUTH_TOKEN = "<token>"
+$env:DASHSCOPE_API_KEY = "<dashscope_api_key>"
+python scripts/run_scientific_image_workflow.py -- --prompt "画一个四步科研流程图：问题定义、数据整理、模型生成、结果检查" --required-labels 问题定义 数据整理 模型生成 结果检查
+```
+
+这个标准入口会依次调用 `generate_scientific_image_smoke.py`、`semantic_review_dashscope.py` 和 `build_figure_manifest.py`，必要时按 Critic 的 `revised_description` 自动重新文生图一次，并补写 `auto_repair_prompt.json`、`manual_review.md` 与 `workflow_status.json`。只有用户明确要求接口 smoke 时，才单独运行 `generate_scientific_image_smoke.py`；只有明确要求关闭自动修订时，才加 `--no-auto-repair`。
+
 续改命令示例：
 
 ```powershell
@@ -294,7 +368,10 @@ python scripts/generate_scientific_image_smoke.py --run-kind edit --source-run "
 - `poll_history.json`：每次任务查询结果。
 - `generated_image.*` 或 `image_url.txt`：下载成功的图片，或接口只返回远程地址时的地址记录。
 - `check.json`：图片是否存在、字节数、PNG/JPEG/WebP 类型、尺寸、token/blocker 状态和失败原因。
-- `semantic_review.json`：可选，DashScope Qwen 对生成图的语义审查。
+- `semantic_review.json`：默认完整流程生成，DashScope Qwen 对生成图的语义审查；阻断时写 blocked 状态。
+- `auto_repair_prompt.json`：如果触发一次自动修订，记录 Critic 建议、revised description 和实际 Visualizer prompt。
+- `manual_review.md`：代理复查摘要，汇总机器检查、VLM 结论、交付判断和下一轮修改 prompt。
+- `workflow_status.json`：标准入口的阶段状态，记录生成、VLM、一次自动修订、代理摘要和 manifest 重建是否完成。
 - `run_input.json`：PaperBanana 式输入契约，记录 prompt、参考图哈希、source run、画幅、大小和 token 策略。
 - `metadata.json`：本轮状态摘要，记录 job id、poll 次数、输出路径、机器检查和 blocker。
 - `figure_manifest.json`：把请求、响应、图片、检查、人工复核和 source run 串成一份交付/续改索引。

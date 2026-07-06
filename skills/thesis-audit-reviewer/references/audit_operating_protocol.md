@@ -30,6 +30,8 @@
 
 默认场景是可第三方解析的普通论文，PDF 默认优先 MinerU VLM 或等效版面解析；同时保留 PDF 物理页口径。若用户声明材料保密、未发表、限制上传或不得外传，应改用本地解析或先确认。
 
+MinerU 不可用、未配置、超时或不允许上传时，使用 `scripts/pdf_local_fallback_extract.py` 作为降级路径：先尝试 `pymupdf4llm.to_markdown()`，再降级到 `PyMuPDF/fitz page.get_text(sort=True)`。本地 fallback 可用于文本层 PDF 的初筛和账本搭建；遇到扫描件、公式、复杂表格、多栏版式、页眉页脚干扰、跨页参考文献时，必须回看原 PDF、改用更强解析方式，或标记为 blocked/residual risk。
+
 解析文本只能作为证据线索，公式、表格、参考文献、编号和跨页内容必须在高风险处回到 PDF 原图复核。
 
 ### 3. 对象账本

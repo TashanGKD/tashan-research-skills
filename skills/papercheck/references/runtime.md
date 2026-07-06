@@ -11,16 +11,24 @@ The old PaperCheck AI project needed a provider API key because it was not itsel
 ## Evidence Extraction
 
 ```powershell
-python ..\scripts\extract_citation_evidence.py "<path-to-paper.docx>" --out "<path-to-evidence.json>"
+python ..\scripts\progressive_papercheck.py "<path-to-paper.docx-or-pdf>" --mode subjective --out "<path-to-evidence.json>" --report "<path-to-report.md>"
 ```
 
-The JSON contains:
+Use modes to match the two upstream project styles:
+
+- `quick` maps to the rule-engine workflow: local extraction, UCAS/GB/T rules, missing citations, unused references, and format issues.
+- `subjective` maps to the PaperCheck AI workflow without a provider key: it prepares citation/context/reference evidence for the mounted Codex model to judge support.
+- `full` keeps the same no-key model review path and adds source-verification caveats. Only claim source-content support when the user supplies source PDFs or verified retrieval evidence.
+
+The evidence JSON contains:
 
 - citation markers and expanded ranges
 - numbered references
 - missing citations and unused references
 - local context around each citation
 - `needs_model_review` markers for citations where Codex should judge support
+
+The Markdown report contains runtime status, MinerU/fallback status, evidence summary, rules summary, semantic review queue, and audit limits.
 
 Review rule: judge only from extracted context, reference entry, and any user-supplied paper/PDF. If the actual cited paper content is unavailable, mark that limitation instead of overclaiming.
 
@@ -60,14 +68,15 @@ Expected success fields: `contract_version`, `run.status=succeeded`, `summary.ma
 For PDF uploads, the rules engine tries this order:
 
 1. MinerU API converts the PDF into Markdown with layout-aware extraction.
-2. If MinerU is missing, expired, or unavailable, PaperCheck falls back to local `PyMuPDF/fitz` and calls `page.get_text()` page by page.
+2. If MinerU is missing, expired, or unavailable, PaperCheck first tries local `pymupdf4llm.to_markdown()` to preserve Markdown-like structure.
+3. If `pymupdf4llm` is unavailable, fails, or returns unusable text, PaperCheck falls back to local `PyMuPDF/fitz` and calls `page.get_text(sort=True)` page by page.
 
 When `scripts/check_papercheck_env.py` reports `pdf_extraction.configured=false`, tell the user:
 
 - MinerU is not configured.
 - They can set `MINERU_API_KEY` or fill `assets/paperchecker-rules/config/config.json` under `mineru_config.api_key`.
-- Until then, PaperCheck will continue with the PyMuPDF fallback.
-- The fallback is the best no-key built-in option currently packaged here for text-layer PDFs, but it is not the optimal production parser for scanned PDFs, complex multi-column layout, tables, formulas, headers/footers, or references split across pages. MinerU or another OCR/layout parser is preferred for higher-confidence PDF audits.
+- Until then, PaperCheck will continue with the local `pymupdf4llm` / `PyMuPDF` fallback if those dependencies are installed.
+- The fallback is the best no-key built-in option currently packaged here for text-layer PDFs, especially when `pymupdf4llm` can preserve headings, lists, and some table structure. It is still not the optimal production parser for scanned PDFs, complex multi-column layout, tables, formulas, headers/footers, or references split across pages. MinerU or another OCR/layout parser is preferred for higher-confidence PDF audits.
 
 ## Known Limits
 

@@ -1,21 +1,11 @@
 ---
 name: scientific-humanization
-description: 中文科研文本 humanization 总入口：把论文、综述、基金、项目书、技术方案、答辩、课程讲稿、PPT讲稿和投资人科研表达改得更像专业作者或讲师本人在说，同时保护事实、术语、数字、引用、图表编号和证据强度。适用于用户说“别AI味”“人一点”“别太官方”“像我讲的”“去模板腔”“改顺但别改事实”的场景。论文/基金段落深改可用 scientific-manuscript-humanizer；科研数字员工 persona/讲师口吻可用 sci-employee-humanization-avatar。
+description: 用于中文科研文本的 scientific humanization：把论文、综述、基金、项目书、技术方案、答辩、课程讲稿、PPT讲稿和投资人科研表达改得更像专业作者或讲师本人在说，同时保护事实、术语、数字、引用、图表编号和证据强度。适用于用户说“别AI味”“人一点”“别太官方”“像我讲的”“去模板腔”“改顺但别改事实”的场景。
 ---
 
 # Scientific Humanization
 
 把科研文本改得像人写、像人讲，但不改坏科学事实。目标不是同义词替换，也不是追求“更高级”的词，而是让读者更容易看懂作者到底做了什么、证据支持到哪里、还有什么不能说满。
-
-## Boundary With Related Humanization Skills
-
-Treat this skill as the default humanization entry for Chinese research, technical, proposal-adjacent, course, PPT script, and investor-facing scientific text.
-
-- Use `scientific-manuscript-humanizer` as the specialist backend when the request is specifically about manuscript, review, grant, or project-proposal paragraphs and the main work is scientific argument structure: problem, evidence, method role, result interpretation, and conclusion boundary.
-- Use `sci-employee-humanization-avatar` only when the user explicitly wants sci-employee persona, lecturer voice, lightweight avatar consistency, or a recurring teaching/investor delivery voice. Do not use it for ordinary “去 AI 味” text cleanup.
-- For Chinese commercial proposal wording where the primary reader is a leader, client, budget owner, or enterprise transformation decision maker, prefer `chronicle-enterprise-ai-solution`; use this skill only for the scientific/technical human voice inside that material.
-
-Do not duplicate humanization rules into new skills. Add durable rules here unless a narrower specialist has a stable, separate workflow.
 
 ## Working Order
 
@@ -37,6 +27,7 @@ Do not duplicate humanization rules into new skills. Add durable rules here unle
 
 ## Human Voice
 
+- 改稿默认少动。先假设原文里的口语、冗余和不工整是作者手迹；只有读起来打绊、证据说满、事实边界不清或明显模板腔时才改。改后不要追求更漂亮，优先保证作者还在、事实没变。
 - 用户给过明确措辞时，优先采用用户措辞，不替用户“升格”成更像模板的说法。
 - 标题和讲稿要短、清楚、轻专业；不要为了显得正式堆概念。
 - 删除或改写这些常见 AI 腔：全面赋能、深度融合、闭环机制、底座、生态、阶段门、沉淀、系统性提升、智能化解决方案、显著赋能。

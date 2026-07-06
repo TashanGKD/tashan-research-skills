@@ -54,7 +54,9 @@ Reference/edit images may use:
 - `imageBase64`
 - `imageMimeType`
 
-If the API returns token errors or no `job_id`, write a blocker in the run directory and do not fake output images.
+If the API returns token errors or no `job_id`, write a blocker in the run directory and do not fake output images. When the token is missing, invalid, or expired, tell the user to authenticate at `https://giiisp.com/#/mcp/authenticate`.
+
+For PPT deck generation, request `aspectRatio: "16:9"` and default to `imageSize: "1K"` unless the user explicitly asks for high-resolution output. Treat `2K` as an optional final regeneration/upscale pass after the slide has passed VLM review. Before packaging a PPT deck, inspect the returned image dimensions. Some backends may accept `aspectRatio: "16:9"` but still return a square image such as `1024 x 1024`. That image can be valid for standalone figure generation but is invalid for a 16:9 slide image. Do not stretch it into PPTX; record the aspect-ratio failure and regenerate with a backend/configuration that returns a native wide image, or stop for user choice.
 
 ## Project Providers
 
@@ -66,7 +68,7 @@ Record:
 - model or route
 - prompt file
 - output layer image path
-- failures and fallback path
+- failures and alternate backend path
 
 ## Prompt Guidance
 

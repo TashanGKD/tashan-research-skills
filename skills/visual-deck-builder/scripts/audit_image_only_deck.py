@@ -12,15 +12,45 @@ import argparse
 import json
 from pathlib import Path
 
+from PIL import Image
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 
 
 EMU_TOLERANCE = 25000
+ASPECT_RATIO_TOLERANCE = 0.03
 
 
 def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _resolve(base: Path, value: str | None) -> Path | None:
+    if not value:
+        return None
+    path = Path(value)
+    return path if path.is_absolute() else base / path
+
+
+def _aspect_issue(label: str, path: Path, target_ratio: float) -> tuple[dict, str | None]:
+    item = {"label": label, "path": str(path), "exists": path.exists()}
+    if not path.exists():
+        return item, f"{label}: image does not exist: {path}"
+    try:
+        with Image.open(path) as image:
+            width, height = image.size
+    except Exception as exc:  # pragma: no cover - defensive reporting
+        return item, f"{label}: image is not readable: {exc}"
+
+    ratio = width / max(height, 1)
+    item.update({"width": width, "height": height, "aspect_ratio": round(ratio, 4)})
+    if abs(ratio - target_ratio) / target_ratio > ASPECT_RATIO_TOLERANCE:
+        return (
+            item,
+            f"{label}: image aspect ratio {width}:{height} ({ratio:.3f}) "
+            f"does not match PPTX ratio {target_ratio:.3f}; refusing stretched full-slide packaging",
+        )
+    return item, None
 
 
 def audit_pptx(path: Path) -> dict:
@@ -97,6 +127,9 @@ def audit_package(
 ) -> dict:
     report = audit_pptx(pptx)
     issues = list(report["issues"])
+    target_ratio = report["slide_width_emu"] / max(report["slide_height_emu"], 1)
+    source_images: list[dict] = []
+    checked_paths: set[Path] = set()
 
     if report["slide_count"] < min_slides:
         issues.append(f"slide_count below {min_slides}")
@@ -112,6 +145,14 @@ def audit_package(
             image_path = slide.get("rendered_image")
             if not image_path:
                 issues.append(f"slide {slide.get('slide_id', '?')}: missing rendered_image")
+                continue
+            resolved = _resolve(spec.parent, image_path)
+            if resolved and resolved not in checked_paths:
+                checked_paths.add(resolved)
+                item, issue = _aspect_issue(f"slide {slide.get('slide_id', '?')} rendered_image", resolved, target_ratio)
+                source_images.append(item)
+                if issue:
+                    issues.append(issue)
 
     if render_manifest:
         manifest = _load_json(render_manifest)
@@ -135,9 +176,18 @@ def audit_package(
         for idx, slide in enumerate(slides, start=1):
             if not slide.get("background"):
                 issues.append(f"deck_json slide {idx}: missing background")
+                continue
+            resolved = _resolve(deck_json.parent, slide.get("background"))
+            if resolved and resolved not in checked_paths:
+                checked_paths.add(resolved)
+                item, issue = _aspect_issue(f"deck_json slide {idx} background", resolved, target_ratio)
+                source_images.append(item)
+                if issue:
+                    issues.append(issue)
 
     report["status"] = "fail" if issues else "pass"
     report["issues"] = issues
+    report["source_images"] = source_images
     return report
 
 

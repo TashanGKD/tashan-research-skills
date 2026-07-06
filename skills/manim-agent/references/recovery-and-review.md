@@ -21,7 +21,7 @@ Identify the failing layer:
 Run:
 
 ```powershell
-python ".\scripts\check_manim_agent_env.py" --repo "<path-to-manim-agent>"
+python scripts/check_manim_agent_env.py --repo <path-to-manim-agent>
 ```
 
 If `uv` is missing, install or use `python -m pip install -e ".[dev]"`.
@@ -52,14 +52,7 @@ Typical fixes:
 - Wrong base URL/token pair: align `ANTHROPIC_BASE_URL` with the matching auth token.
 - Structured output incompatibility: use a provider/model known to work with Claude Agent SDK structured output.
 
-For provider setup, prefer the helper so the key value stays in its source env var:
-
-```powershell
-python ".\scripts\configure_manim_provider.py" --provider aliyun --route regular --format powershell
-python ".\scripts\configure_manim_provider.py" --provider volcengine --route regular --format powershell
-```
-
-For Aliyun DashScope, Claude Agent SDK should use the Anthropic-compatible endpoint:
+For Aliyun DashScope, the SDK should use the Claude Code compatible DashScope endpoint:
 
 ```powershell
 $env:ANTHROPIC_BASE_URL = "https://dashscope.aliyuncs.com/apps/anthropic"
@@ -68,33 +61,15 @@ $env:ANTHROPIC_MODEL = "qwen3.7-plus"
 
 Do not use the OpenAI-compatible endpoint `https://dashscope.aliyuncs.com/compatible-mode/v1` for this repo's Claude Agent SDK path.
 
-If using Token Plan or Coding Plan, use the matching plan endpoint instead of the normal DashScope endpoint:
+If the DashScope/Bailian API key is missing or expired, tell the user to apply or renew it at:
 
-```powershell
-# Token Plan
-$env:ANTHROPIC_BASE_URL = "https://token-plan.cn-beijing.maas.aliyuncs.com/apps/anthropic"
-
-# Coding Plan
-$env:ANTHROPIC_BASE_URL = "https://coding.dashscope.aliyuncs.com/apps/anthropic"
+```text
+https://help.aliyun.com/zh/model-studio/get-api-key
 ```
 
-For Volcengine Ark, distinguish the regular Claude-compatible route from the Coding Plan route:
+`model not found`, `模型不存在`, or `Incorrect API key provided` often means the configured provider, model, or base URL is not accepted by Claude Agent SDK, not that Manim failed.
 
-```powershell
-# Regular Ark API route for Claude/Anthropic-compatible tools
-$env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/compatible"
-$env:ANTHROPIC_MODEL = "deepseek-v4-pro-260425"
-
-# Ark Coding Plan route
-$env:ANTHROPIC_BASE_URL = "https://ark.cn-beijing.volces.com/api/coding"
-$env:ANTHROPIC_MODEL = "ark-code-latest"
-```
-
-If the Ark console shows a newer Claude-compatible base URL or model, pass it through `configure_manim_provider.py --base-url ... --model ...` instead of editing secrets into docs.
-
-`model not found`, `模型不存在`, or `Incorrect API key provided` often means the key family and base URL are mismatched, not that Manim failed.
-
-If a direct `anthropic.Anthropic(...)` smoke test works but `claude_agent_sdk` still calls the wrong provider, inspect `~/.claude/settings.json`; Claude Code CLI can load provider env from settings unless explicitly overridden.
+If a direct provider smoke test works but `claude_agent_sdk` still calls the wrong provider, inspect local Claude Code settings; the CLI can load provider env from settings unless explicitly overridden.
 
 Do not treat these as Manim render failures. They occur before `scene.py` is generated.
 
@@ -154,7 +129,6 @@ For mux:
 - Confirm FFmpeg is available.
 - Confirm visual MP4 and audio file paths exist.
 - Check duration mismatch.
-- Reduce BGM volume or disable BGM if mix fails.
 
 ## Web Failures
 
@@ -190,5 +164,5 @@ uv run ruff check src/ backend/ tests/
 For skill changes:
 
 ```powershell
-python "<path-to-skill-creator>\scripts\quick_validate.py" "."
+python <skill-creator>/scripts/quick_validate.py <path-to-manim-agent-skill>
 ```

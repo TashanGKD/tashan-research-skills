@@ -7,7 +7,7 @@ Use this file before generating or reviewing Manim teaching videos.
 The repo contains detailed production skills and references under:
 
 ```text
-<path-to-manim-agent>\plugins\manim-production\
+plugins/manim-production/
 ```
 
 When working inside the repo, prefer those rules over generic Manim habits:

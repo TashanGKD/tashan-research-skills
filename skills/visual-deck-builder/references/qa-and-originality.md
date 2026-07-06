@@ -5,13 +5,18 @@
 Before delivery, check:
 
 - `slide_spec.json` exists and parses.
-- every primary slide has `slide_id`, `title`, `visual_brief`, `image_prompt`, and `rendered_image`.
+- `visual_style_contract.json` was built from `scripts/build_style_contract.py` (preset library) and passes `scripts/validate_style_contract_richness.py`: explicit hex colors for every palette role, named CJK/Latin fonts, and non-empty mood/accent-limit/grid/icon/chart/rendering fields. A bare color word or a one-line style label is a fail, not a pass-with-a-note.
+- every primary slide has `slide_id`, `title`, `visual_brief`, `extra_fields` (or, for legacy decks, `page_description`), `image_prompt`, and `rendered_image`.
+- `image_prompt` is derived from `extra_fields` (`visual_elements`/`visual_focus`/`layout_notes`, excluding `speaker_notes`) plus `visual_style_contract.json`, not from raw internal field labels.
+- slide 1 has no reference image; slides 2..N were generated with slide 1's rendered image attached as a style-anchor reference (`reference_role: style_reference`), recorded in the run's technical evidence.
+- an independent Stylist pass (`scripts/stylist_refine_slide.py`) ran once per slide before first generation, or its skip/blocker is recorded when `DASHSCOPE_API_KEY` was unavailable.
 - every primary slide uses `delivery_mode: image_only` or clearly belongs to the image-only route.
 - every slide has a generated or source-provided full-slide image recorded in `render_manifest.json`.
 - `deck.json` covers all final slides.
 - blocked images are clearly marked and not silently replaced by placeholders.
 - output PPTX exists and has the expected number of slides.
 - `scripts/audit_image_only_deck.py` passes: one full-slide picture per slide and no required editable text boxes.
+- source slide images match the target PPT aspect ratio; do not accept a square source image stretched into a 16:9 slide.
 - QA previews exist for every slide.
 - visual comparison artifacts exist for each slide: source image, PPTX preview, and notes.
 - `style_reference` routes include `reference_guard` and the target is visually checked for semantic bleed from the reference.
@@ -23,14 +28,22 @@ Generate previews or inspect the PPTX manually. Watch for:
 
 - empty or placeholder pages
 - weak full-slide image: sparse, flat, repetitive, or obviously less polished than a dense infographic benchmark
+- missing design-facing extra_fields/page description or a prompt that reads like field concatenation
+- missing or vague style contract, especially no explicit hex palette, named fonts, hierarchy, density, or visual-language guidance
+- a page that visibly does not match its own style contract's colors/fonts/spacing (style_contract_compliance)
+- a page that reads more like a standalone poster/illustration than a page from a formal presentation deck (formal_ppt_feel)
+- every page using the same card-grid template regardless of content, with no compositional variation for flows vs. comparisons vs. conclusions (template_overfit)
 - wrong aspect ratio
+- stretched or squeezed page content caused by putting a non-16:9 source image into a 16:9 PPT page
 - doubled text
 - missing frame/card/chart geometry
 - missing or duplicated icons
 - unreadable text
 - random English or fake labels
 - reference semantic bleed: brand names, dates, metrics, topic labels, or example copy from a style reference that are not in `slide_spec.json`
+- forbidden generic artifacts such as `LOGO`, page numbers, watermarks, markdown symbols, prompt labels, fake English, or internal field names unless the slide spec explicitly requires them
 - visual style drift
+- poor finished-slide aesthetics: no focal structure, weak hierarchy, cramped spacing, random decorations, or a generic template look
 - repeated layouts when the deck should vary
 - final PPTX preview substantially uglier or blurrier than the source slide image
 
@@ -51,6 +64,8 @@ python scripts/audit_image_only_deck.py out/deck-image.pptx --spec slide_spec.js
 ```
 
 An image-only deck is expected to have zero editable text boxes. Do not run `audit_pptx_editability.py --fail-flattened` as the release gate for this route.
+
+The full-slide image must already have the target page ratio. If the image backend returns `1024 x 1024` for a `16:9` deck, treat it as a failed visual target and regenerate or switch backend. Letterboxing, cropping, or stretching is not a valid release fix unless the user explicitly asks for that compromise.
 
 ## Editable QA
 
@@ -102,6 +117,8 @@ Write `qa/visual-review.json` after opening the slide image, final preview, side
 ```
 
 Use `warn` only for minor, documented deltas. Use `fail` when the slide has unreadable text, duplicated text, weak aesthetics, visible misalignment, missing expected icons/charts, chroma-key artifacts, or unsupported semantic drift. If the renderer cannot show Chinese text correctly, the visual acceptance review must say so and must not pass until another renderer or PowerPoint review confirms readability.
+
+When building a VLM or visible-text review request, pass forbidden text from the style contract and reference guard into the review payload. If the reviewer observes a generic `LOGO`, watermark, page number, prompt label, markdown marker, or internal field name that was not in the allowed slide text, mark the slide `warn` or `fail` even if other quality axes pass.
 
 ## Originality Guard
 

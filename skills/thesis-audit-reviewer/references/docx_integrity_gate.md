@@ -45,3 +45,14 @@ DOCX 不能只用 `python-docx paragraph.text` 或命令行预览来读取。Wor
 ## 五、与批注版 DOCX 的关系
 
 DOCX 输入默认应交付批注版 DOCX。若无法写入真实 Word 批注，必须交付可追溯批注清单并说明限制。批注清单不是替代审阅本体，仍需保留矩阵、问题库、事实账本和覆盖报告。
+
+## 六、PDF 本地降级口径
+
+PDF 输入在没有 MinerU 或无法上传时，先运行 `scripts/pdf_local_fallback_extract.py`。状态文件 `pdf_fallback_status.json` 中的 `method`、`quality`、`warnings` 必须写入源文件登记或覆盖报告。
+
+- `local_markdown_fallback`：`pymupdf4llm` 成功，适合搭建章节、段落和初步对象账本。
+- `local_text_layer`：`fitz` 文本层可用，但版面结构弱于 MinerU。
+- `partial_text_layer`：部分页面有文本，必须结合渲染页复核。
+- `likely_scanned_or_image_pdf`：疑似扫描件或图片 PDF，不能直接做完整审阅；应 OCR、回看原 PDF、改用更强解析方式，或标记 blocked。
+
+本地 fallback 不等于版面审查已完成。公式、图表、复杂表格、跨页参考文献和多栏排版仍要回看原 PDF、改用更强解析方式，或标记 blocked/residual risk。

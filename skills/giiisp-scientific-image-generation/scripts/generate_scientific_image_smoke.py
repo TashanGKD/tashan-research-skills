@@ -18,8 +18,6 @@ ROOT = "http://images.sitianai.com/"
 GENERATE_ENDPOINT = urljoin(ROOT, "api/generate-async")
 JOB_ENDPOINT_TEMPLATE = urljoin(ROOT, "api/generate-jobs/{job_id}")
 DEFAULT_NEGATIVE_PROMPT = "水印，模糊文字，错乱标签，低清晰度，广告风格"
-GIIISP_AUTH_URL = "https://giiisp.com/#/mcp/authenticate"
-GIIISP_AUTH_ACTION = "申请或刷新 Giiisp MCP 认证后设置 GIIISP_AUTH_TOKEN"
 
 
 def stable_root():
@@ -182,7 +180,7 @@ def write_run_input(run_dir, args, body, request_metadata):
         "reference_image_exists": reference_path.exists() if reference_path else None,
         "reference_image_sha256": file_digest(reference_path) if reference_path and reference_path.exists() else None,
         "request_body_summary": summarize_body_for_metadata(body),
-        "token_policy": "read from GIIISP_AUTH_TOKEN environment variable; token is not written to files",
+        "token_policy": "read from GIIISP_AUTH_TOKEN or SITIANAI_IMAGE_TOKEN environment variable; token is not written to files",
         "iterations_requested": 1,
         "vector_export_requested": False,
         "editable_export_requested": False,
@@ -300,6 +298,16 @@ def http_json(method, url, token, body=None, timeout=60):
         return {"status_code": status, "json": data, "text": text}
     except URLError as exc:
         return {"status_code": None, "json": {"error": str(exc)}, "text": str(exc)}
+    except TimeoutError as exc:
+        return {"status_code": None, "json": {"error": str(exc), "type": "TimeoutError"}, "text": str(exc)}
+
+
+def resolve_auth_token():
+    for name in ("GIIISP_AUTH_TOKEN", "SITIANAI_IMAGE_TOKEN"):
+        token = os.environ.get(name, "").strip()
+        if token:
+            return token, name
+    return "", None
 
 
 def contains_access_token_required(value):
@@ -402,9 +410,6 @@ def normalize_extension(image_path, check):
 
 def write_blocker(run_dir, reason, details=None):
     blocker = {"blocked": True, "reason": reason, "details": details or {}}
-    if reason == "missing GIIISP_AUTH_TOKEN" or "ACCESS_TOKEN_REQUIRED" in reason:
-        blocker["auth_url"] = GIIISP_AUTH_URL
-        blocker["user_action"] = GIIISP_AUTH_ACTION
     write_json(run_dir / "blocker.json", blocker)
     print("BLOCKED: " + reason)
     print("Run directory: " + str(run_dir))
@@ -437,6 +442,7 @@ def main():
     parser.add_argument("--input-json", help="Path to JSON containing prompt fields and optional figure_spec.")
     parser.add_argument("--poll-interval", type=float, default=5.0)
     parser.add_argument("--max-polls", type=int, default=24)
+    parser.add_argument("--request-timeout", type=int, default=60, help="Initial generate-async request timeout in seconds.")
     args = parser.parse_args()
     merge_input_json(args)
 
@@ -480,9 +486,9 @@ def main():
         write_figure_manifest(run_dir, source_run=request_metadata.get("source_run"))
         return 2
 
-    token = os.environ.get("GIIISP_AUTH_TOKEN", "").strip()
+    token, token_env = resolve_auth_token()
     if not token:
-        write_blocker(run_dir, "missing GIIISP_AUTH_TOKEN")
+        write_blocker(run_dir, "missing GIIISP_AUTH_TOKEN or SITIANAI_IMAGE_TOKEN")
         blocker = json.loads((run_dir / "blocker.json").read_text(encoding="utf-8"))
         write_metadata(run_dir, run_input, "blocked", blocker=blocker, started_at=started_at)
         write_figure_manifest(run_dir, source_run=request_metadata.get("source_run"))
@@ -496,14 +502,14 @@ def main():
             "headers": {
                 "Content-Type": "application/json",
                 "Referer": ROOT,
-                "Authorization": "Bearer <redacted GIIISP_AUTH_TOKEN>",
+                "Authorization": f"Bearer <redacted {token_env}>",
             },
             "body": body,
             "metadata": request_metadata,
         },
     )
 
-    response = http_json("POST", GENERATE_ENDPOINT, token, body=body)
+    response = http_json("POST", GENERATE_ENDPOINT, token, body=body, timeout=max(1, args.request_timeout))
     write_json(run_dir / "response.json", response)
     if contains_access_token_required(response):
         write_blocker(run_dir, "ACCESS_TOKEN_REQUIRED", {"status_code": response.get("status_code")})
@@ -514,7 +520,19 @@ def main():
 
     job_id = find_job_id(response["json"])
     if not job_id:
-        write_blocker(run_dir, "generate-async response did not include job_id", {"status_code": response.get("status_code")})
+        response_error = response.get("json", {}).get("error") if isinstance(response.get("json"), dict) else None
+        response_error_type = response.get("json", {}).get("type") if isinstance(response.get("json"), dict) else None
+        reason = "generate-async request failed" if response.get("status_code") is None and response_error else "generate-async response did not include job_id"
+        write_blocker(
+            run_dir,
+            reason,
+            {
+                "status_code": response.get("status_code"),
+                "response_error": response_error,
+                "response_error_type": response_error_type,
+                "downstream_effect": "no job_id",
+            },
+        )
         blocker = json.loads((run_dir / "blocker.json").read_text(encoding="utf-8"))
         write_metadata(run_dir, run_input, "blocked", blocker=blocker, started_at=started_at)
         write_figure_manifest(run_dir, source_run=request_metadata.get("source_run"))
