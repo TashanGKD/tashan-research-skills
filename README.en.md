@@ -2,7 +2,7 @@
 
 # Tashan Research Skills
 
-**A bilingual, self-contained skill library for AI-assisted academic research**
+**A bilingual agent skill library for research work**
 
 *Literature evidence · Research ideation · Research expression · Collaboration memory · Tool evaluation*
 
@@ -21,16 +21,18 @@
 
 ## Overview
 
-Tashan Research Skills hosts **16 production-grade agent skills** that cover the daily jobs of a working researcher: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping long-term collaboration context. Every skill is a self-contained directory with a `SKILL.md` entrypoint plus its own scripts, references, templates, and tests.
+Tashan Research Skills hosts **16 agent skills** for the jobs that keep coming back in research work: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping preferences across long collaborations. Each skill is one directory: `SKILL.md` is the entrypoint, and its scripts, references, templates, and tests all live next to it.
 
 This project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
 ### Design principles
 
-- **One skill, one research job** — each skill owns a single, clearly bounded workflow.
-- **Evidence over eloquence** — skills track sources, mark evidence boundaries, and refuse to overclaim.
-- **Deterministic where possible** — parsing, randomization, packaging, and validation are plain scripts with tests; model judgment is reserved for reasoning.
-- **No secrets in the repo** — all credentials come from environment variables at runtime.
+A few habits that run through the whole library:
+
+- One skill, one job. Search does not do writing, writing does not do citation checks; each boundary is written into that skill's `SKILL.md`, so you install only what you need.
+- Claims follow evidence. Retrieval, audit, and research skills cite sources, and mark a claim as "unverified" when the evidence runs out instead of rounding it up.
+- Anything that can be a script is a script. Parsing, randomization, packaging, and validation are plain tested code that fails loudly when broken; the model handles the parts that need judgment.
+- No secrets in the repo. Credentials are read from environment variables at runtime; docs only mention variable names and where to apply.
 
 ## Skill Matrix
 
@@ -103,7 +105,7 @@ Replace `papercheck` with the skill folder you want. Skills have no cross-depend
 
 **3. Configure credentials (only if the skill needs them)**
 
-Skills read secrets from environment variables at runtime and degrade gracefully when a credential is absent (dry-run, local fallback, or a clear blocker report).
+Skills read secrets from environment variables at runtime. Missing a key is fine: some skills switch to dry-run, some fall back to local processing, and when a step truly cannot run they report exactly where it blocked instead of faking output.
 
 | Environment variable | Needed by | Purpose | Where to apply |
 | --- | --- | --- | --- |
@@ -119,7 +121,7 @@ Manim Agent runs on Aliyun Model Studio's Claude Code compatible route: scene ge
 .
 ├── assets/                  # Public images used by docs
 ├── docs/                    # Human-readable package docs (Chinese overview)
-├── skills/                  # 17 skill directories, each with a SKILL.md entrypoint
+├── skills/                  # Skill directories, each with a SKILL.md entrypoint
 ├── .github/                 # Issue and PR templates
 ├── manifest.yml             # Machine-readable skill index (id / category / entrypoint)
 ├── CONTRIBUTING.md          # Collaboration rules
@@ -131,22 +133,22 @@ Manim Agent runs on Aliyun Model Studio's Claude Code compatible route: scene ge
 
 ## Engineering Standards
 
-This repository is kept easy to review and hard to rot:
+Ground rules for changes, so PRs stay easy to review and the repo stays maintainable months from now:
 
-- Keep each skill focused on one research job.
-- Keep reusable scripts inside the owning skill's `scripts/` directory.
-- Prefer Markdown references and structured manifests over large binary-only documentation.
-- Do not commit generated run outputs, raw model logs, private papers, credentials, or local caches.
-- For changes to scripts, include a smoke test or a documented manual verification command.
-- For changes to skill behavior, update the related `SKILL.md` and any referenced docs in the same PR.
+- Before adding a skill, decide which single research job it owns; if one directory cannot explain it, split it in two.
+- Scripts go into the owning skill's `scripts/` folder — there is no global utils directory.
+- Key information lives in Markdown. Images and templates are fine, but they must not be the only place a fact exists.
+- Run outputs, model logs, other people's papers, credentials, and local caches never enter version control.
+- If you touch a script, include a runnable verification command in the PR, or add a smoke test.
+- If you change a skill's behavior, update its `SKILL.md` and the docs it references in the same PR.
 
 ## Security
 
-Do not put API keys, access tokens, bind keys, cookies, private SSH keys, or service credentials in this repository. Skills that need external services must read secrets from environment variables or local user configuration. See [`SECURITY.md`](SECURITY.md) for the full policy and how to report a vulnerability.
+API keys, access tokens, bind keys, cookies, and private SSH keys must not appear anywhere in this repository — examples and tests included. Skills that call external services read credentials from environment variables at runtime. If you find a leaked credential or an exploitable script, report it privately following [`SECURITY.md`](SECURITY.md) rather than opening a public issue.
 
 ## Contributing
 
-Contributions are welcome — new skills, fixes, tests, and docs. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) first; the short version is: one skill per PR scope, tests or a verification command for script changes, and `SKILL.md` updated together with behavior changes.
+New skills, fixes, tests, and docs are all welcome. Skim [`CONTRIBUTING.md`](CONTRIBUTING.md) before starting; it boils down to three rules: one PR touches one skill's scope, script changes come with a way to verify them, and behavior changes update `SKILL.md` in the same PR.
 
 ## Authors and Support
 
