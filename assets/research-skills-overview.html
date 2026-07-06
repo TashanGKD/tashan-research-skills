@@ -4,99 +4,134 @@
 <meta charset="UTF-8">
 <title>他山科研技能库 · 概览图</title>
 <!--
-  仓库首页概览图源文件。
-  修改后用浏览器打开，按 1280x800 视口截图，替换 assets/research-skills-overview.png。
+  仓库首页概览图源文件（设计画布 1280x800）。
+  出图方法：浏览器打开 research-skills-overview.html?x2 （画布放大为 2560x1600），
+  对 #canvas 元素截图，替换 assets/research-skills-overview.png。
 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #e9edf3; }
+
   #canvas {
-    width: 1280px; height: 800px; overflow: hidden;
+    width: 1280px; height: 800px; overflow: hidden; position: relative;
     background:
-      radial-gradient(1000px 500px at 85% -10%, #dcebfa 0%, rgba(220,235,250,0) 60%),
-      radial-gradient(800px 400px at -5% 110%, #e3f2ec 0%, rgba(227,242,236,0) 55%),
-      linear-gradient(160deg, #f7f9fc 0%, #eef3f9 100%);
-    padding: 44px 52px;
-    display: flex;
-    flex-direction: column;
+      radial-gradient(900px 460px at 88% -12%, rgba(90,160,220,.22) 0%, rgba(90,160,220,0) 62%),
+      radial-gradient(760px 420px at -6% 112%, rgba(76,195,176,.18) 0%, rgba(76,195,176,0) 58%),
+      linear-gradient(158deg, #fbfcfe 0%, #f1f5fa 52%, #ecf1f8 100%);
+    padding: 42px 52px 34px;
+    display: flex; flex-direction: column;
+  }
+  /* faint dot texture */
+  #canvas::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(rgba(11,37,69,.05) 1px, transparent 1px);
+    background-size: 26px 26px;
   }
 
-  /* ---------- header ---------- */
-  .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
-  .title-block .kicker {
-    display: inline-block; font-size: 13px; letter-spacing: 3px; color: #2E74B5;
-    border: 1px solid #b9d3ea; border-radius: 999px; padding: 3px 14px; margin-bottom: 14px;
-    background: rgba(255,255,255,.7);
+  /* ================= header ================= */
+  .header { display: flex; align-items: center; justify-content: space-between; position: relative; }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; letter-spacing: 4px; color: #2E74B5; font-weight: 600;
+    margin-bottom: 12px;
   }
-  .title-block h1 { font-size: 40px; color: #0B2545; letter-spacing: 1px; }
-  .title-block h1 .en { font-size: 17px; font-weight: 500; color: #6B7280; margin-left: 14px; letter-spacing: .5px; }
-  .title-block .tagline { margin-top: 10px; font-size: 15px; color: #475467; }
-  .stats { display: flex; gap: 12px; }
+  .kicker::before { content: ""; width: 26px; height: 2px; background: #2E74B5; border-radius: 2px; }
+  h1 { font-size: 42px; color: #0B2545; letter-spacing: 2px; line-height: 1.15; }
+  h1 .en {
+    display: block; font-size: 15px; font-weight: 500; color: #8a94a6;
+    letter-spacing: 3.5px; margin-top: 6px; text-transform: uppercase;
+  }
+  .tagline { margin-top: 12px; font-size: 15.5px; color: #45505f; }
+  .tagline b { color: #2E74B5; font-weight: 600; }
+
+  .stats { display: flex; gap: 14px; }
   .stat {
-    background: #ffffff; border: 1px solid #e4eaf2; border-radius: 14px;
-    padding: 12px 20px; text-align: center; box-shadow: 0 6px 18px rgba(11,37,69,.06);
+    width: 108px; padding: 16px 0 13px; text-align: center;
+    background: rgba(255,255,255,.85); border: 1px solid #e2e9f2; border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(11,37,69,.07);
   }
-  .stat .num { font-size: 26px; font-weight: 700; color: #0B2545; }
-  .stat .num small { font-size: 13px; font-weight: 500; color: #6B7280; margin-left: 2px; }
-  .stat .label { font-size: 12px; color: #6B7280; margin-top: 2px; letter-spacing: 1px; }
+  .stat .num { font-size: 30px; font-weight: 700; color: #0B2545; line-height: 1; }
+  .stat .num small { font-size: 13px; font-weight: 500; color: #8a94a6; margin-left: 2px; }
+  .stat .label { font-size: 12px; color: #8a94a6; margin-top: 7px; letter-spacing: 2px; }
 
-  /* ---------- pipeline hint ---------- */
-  .flow { display: flex; align-items: center; gap: 10px; margin: 14px 0 18px; font-size: 13px; color: #98a2b3; }
-  .flow .line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #c8d4e3, transparent); }
+  /* ================= stepper ================= */
+  .stepper { display: flex; align-items: center; margin: 26px 0 20px; position: relative; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step .pin {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--c); box-shadow: 0 0 0 4px var(--c-soft);
+  }
+  .step .txt { font-size: 13.5px; font-weight: 600; color: #3b4657; letter-spacing: 1px; }
+  .conn { flex: 1; height: 2px; margin: 0 14px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--from), var(--to)); opacity: .45; }
 
-  /* ---------- module grid ---------- */
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; flex: 1; }
+  /* ================= module grid ================= */
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 17px; flex: 1; position: relative; }
   .card {
-    background: #ffffff; border: 1px solid #e4eaf2; border-radius: 18px;
-    padding: 18px 14px 14px; display: flex; flex-direction: column;
-    box-shadow: 0 10px 26px rgba(11,37,69,.07);
-    position: relative; overflow: hidden;
+    background: rgba(255,255,255,.94); border: 1px solid #e3eaf3; border-radius: 20px;
+    padding: 20px 16px 14px; position: relative; overflow: hidden;
+    box-shadow: 0 12px 30px rgba(11,37,69,.08);
+    display: flex; flex-direction: column;
   }
   .card::before {
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--c), var(--c-light));
   }
-  .card .mod-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-  .card .dot {
-    width: 34px; height: 34px; border-radius: 10px; flex: none;
-    background: var(--accent-soft); color: var(--accent-deep);
+  /* watermark glyph fills the visual bottom space */
+  .card::after {
+    content: attr(data-glyph); position: absolute; right: -8px; bottom: -42px;
+    font-size: 104px; font-weight: 700; color: var(--c);
+    opacity: .045; line-height: 1; pointer-events: none;
+  }
+  .mod-head { display: flex; align-items: center; gap: 10px; }
+  .dot {
+    width: 40px; height: 40px; border-radius: 12px; flex: none;
+    background: linear-gradient(135deg, var(--c), var(--c-light)); color: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 700;
+    font-size: 17px; font-weight: 700;
+    box-shadow: 0 6px 14px var(--c-shadow);
   }
-  .card h2 { font-size: 18px; color: #0B2545; letter-spacing: 1px; }
-  .card .mod-en { font-size: 11px; color: #98a2b3; letter-spacing: .5px; margin-top: 1px; }
-  .card .mod-desc { font-size: 12px; color: #667085; line-height: 1.6; margin: 8px 0 12px; min-height: 57px; }
-  .chips { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+  .mod-head h2 { font-size: 18.5px; color: #0B2545; letter-spacing: 1.5px; line-height: 1.2; }
+  .mod-en { font-size: 10.5px; color: #9aa4b5; letter-spacing: .8px; margin-top: 2px; }
+  .mod-desc { font-size: 12.5px; color: #5b6676; line-height: 1.72; margin: 12px 0 12px; }
+
+  .chips { display: flex; flex-direction: column; gap: 7px; position: relative; }
   .chip {
-    display: flex; align-items: center; gap: 7px;
-    background: var(--accent-soft); border-radius: 10px; padding: 8px 10px;
-    white-space: nowrap;
+    display: flex; align-items: center; gap: 9px;
+    background: var(--c-soft); border: 1px solid var(--c-border); border-radius: 11px;
+    padding: 6px 11px;
   }
-  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-deep); flex: none; }
-  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; }
-  .chip .en { font-size: 10px; color: #98a2b3; margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip .idx { font-size: 10px; font-weight: 700; color: var(--c); flex: none; }
+  .chip .names { display: flex; flex-direction: column; min-width: 0; }
+  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; line-height: 1.35; }
+  .chip .en { font-size: 9.5px; color: #9aa4b5; white-space: nowrap; letter-spacing: .3px; line-height: 1.3; }
 
-  .c1 { --accent: linear-gradient(90deg,#2E74B5,#5AA0DC); --accent-soft: #eef5fb; --accent-deep: #2E74B5; }
-  .c2 { --accent: linear-gradient(90deg,#1F9D8B,#4CC3B0); --accent-soft: #ecf7f5; --accent-deep: #178576; }
-  .c3 { --accent: linear-gradient(90deg,#B5762E,#DCA55A); --accent-soft: #faf4ec; --accent-deep: #a06322; }
-  .c4 { --accent: linear-gradient(90deg,#7A5AC8,#A48BE0); --accent-soft: #f3f0fb; --accent-deep: #6a4bb8; }
-  .c5 { --accent: linear-gradient(90deg,#B54545,#DC7A7A); --accent-soft: #fbf0f0; --accent-deep: #a53d3d; }
+  .c1 { --c:#2E74B5; --c-light:#6FAADF; --c-soft:#f0f6fc; --c-border:#dcE9f6; --c-shadow:rgba(46,116,181,.28); }
+  .c2 { --c:#1F9D8B; --c-light:#5CC6B6; --c-soft:#edf8f6; --c-border:#d5efe9; --c-shadow:rgba(31,157,139,.28); }
+  .c3 { --c:#C07A2B; --c-light:#E2AC63; --c-soft:#fbf5ec; --c-border:#f2e3cc; --c-shadow:rgba(192,122,43,.26); }
+  .c4 { --c:#7A5AC8; --c-light:#AB92E4; --c-soft:#f4f1fc; --c-border:#e6def7; --c-shadow:rgba(122,90,200,.28); }
+  .c5 { --c:#C05050; --c-light:#E28C8C; --c-soft:#fcf1f1; --c-border:#f4dcdc; --c-shadow:rgba(192,80,80,.26); }
 
-  /* ---------- footer ---------- */
+  /* ================= footer ================= */
   .footer {
-    margin-top: 18px; display: flex; align-items: center; justify-content: space-between;
-    font-size: 12.5px; color: #98a2b3;
+    margin-top: 20px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 12.5px; color: #9aa4b5; position: relative;
   }
-  .footer .repo { color: #2E74B5; font-weight: 600; }
+  .footer .left { display: flex; align-items: center; gap: 8px; }
+  .footer .badge {
+    background: rgba(255,255,255,.85); border: 1px solid #e2e9f2; border-radius: 999px;
+    padding: 4px 14px; color: #5b6676;
+  }
+  .footer .repo { color: #2E74B5; font-weight: 600; letter-spacing: .3px; }
 </style>
 </head>
 <body>
 <div id="canvas">
   <div class="header">
-    <div class="title-block">
-      <div class="kicker">科研助理技能包</div>
+    <div>
+      <div class="kicker">科研助理技能包 · SKILL PACKAGE</div>
       <h1>他山科研技能库<span class="en">Tashan Research Skills</span></h1>
-      <div class="tagline">为科研工作提供文献查证、研究设计、材料撰写、成果展示与协作沉淀支持</div>
+      <div class="tagline">为科研工作提供<b>文献查证、研究设计、材料撰写、成果展示与协作沉淀</b>支持</div>
     </div>
     <div class="stats">
       <div class="stat"><div class="num">16<small>项</small></div><div class="label">科研技能</div></div>
@@ -105,61 +140,78 @@
     </div>
   </div>
 
-  <div class="flow"><span>证据先行</span><div class="line"></div><span>方案落地</span><div class="line"></div><span>表达成品</span><div class="line"></div><span>长期协作</span><div class="line"></div><span>工具把关</span></div>
+  <div class="stepper">
+    <div class="step" style="--c:#2E74B5;--c-soft:#dcecf9"><div class="pin"></div><div class="txt">证据先行</div></div>
+    <div class="conn" style="--from:#2E74B5;--to:#1F9D8B"></div>
+    <div class="step" style="--c:#1F9D8B;--c-soft:#d9f2ee"><div class="pin"></div><div class="txt">方案落地</div></div>
+    <div class="conn" style="--from:#1F9D8B;--to:#C07A2B"></div>
+    <div class="step" style="--c:#C07A2B;--c-soft:#f7ead6"><div class="pin"></div><div class="txt">表达成品</div></div>
+    <div class="conn" style="--from:#C07A2B;--to:#7A5AC8"></div>
+    <div class="step" style="--c:#7A5AC8;--c-soft:#eae2f9"><div class="pin"></div><div class="txt">长期协作</div></div>
+    <div class="conn" style="--from:#7A5AC8;--to:#C05050"></div>
+    <div class="step" style="--c:#C05050;--c-soft:#f8e0e0"><div class="pin"></div><div class="txt">工具把关</div></div>
+  </div>
 
   <div class="grid">
-    <div class="card c1">
-      <div class="mod-head"><div class="dot">证</div><div><h2>文献证据</h2><div class="mod-en">Literature Evidence</div></div></div>
+    <div class="card c1" data-glyph="证">
+      <div class="mod-head"><div class="dot">证</div><div><h2>文献证据</h2><div class="mod-en">LITERATURE EVIDENCE</div></div></div>
       <div class="mod-desc">快速定位可核验的研究线索，拆关键词、召回证据，标出结论的证据边界。</div>
       <div class="chips">
-        <div class="chip"><span class="zh">论文检索</span><span class="en">Paper Search</span></div>
-        <div class="chip"><span class="zh">深度研究</span><span class="en">Deep Research</span></div>
-        <div class="chip"><span class="zh">论文审查</span><span class="en">Thesis Audit</span></div>
+        <div class="chip"><span class="idx">01</span><span class="names"><span class="zh">论文检索</span><span class="en">Paper Search</span></span></div>
+        <div class="chip"><span class="idx">02</span><span class="names"><span class="zh">深度研究</span><span class="en">Deep Research</span></span></div>
+        <div class="chip"><span class="idx">03</span><span class="names"><span class="zh">论文审查</span><span class="en">Thesis Audit</span></span></div>
       </div>
     </div>
-    <div class="card c2">
-      <div class="mod-head"><div class="dot">构</div><div><h2>研究构思</h2><div class="mod-en">Research Ideation</div></div></div>
-      <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和统计上站得住的实验设计。</div>
+    <div class="card c2" data-glyph="构">
+      <div class="mod-head"><div class="dot">构</div><div><h2>研究构思</h2><div class="mod-en">RESEARCH IDEATION</div></div></div>
+      <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和站得住的实验设计。</div>
       <div class="chips">
-        <div class="chip"><span class="zh">假设生成</span><span class="en">Scispark</span></div>
-        <div class="chip"><span class="zh">数据处理</span><span class="en">Baseline Builder</span></div>
-        <div class="chip"><span class="zh">实验设计</span><span class="en">Experiment Design</span></div>
+        <div class="chip"><span class="idx">04</span><span class="names"><span class="zh">假设生成</span><span class="en">Scispark</span></span></div>
+        <div class="chip"><span class="idx">05</span><span class="names"><span class="zh">数据处理</span><span class="en">Baseline Builder</span></span></div>
+        <div class="chip"><span class="idx">06</span><span class="names"><span class="zh">实验设计</span><span class="en">Experiment Design</span></span></div>
       </div>
     </div>
-    <div class="card c3">
-      <div class="mod-head"><div class="dot">表</div><div><h2>成果表达</h2><div class="mod-en">Research Expression</div></div></div>
-      <div class="mod-desc">从论文润色到写审改投全流程，并把成果转成科研图像、PPT 和讲解视频。</div>
+    <div class="card c3" data-glyph="表">
+      <div class="mod-head"><div class="dot">表</div><div><h2>成果表达</h2><div class="mod-en">RESEARCH EXPRESSION</div></div></div>
+      <div class="mod-desc">从润色到写审改投，并把成果转成图像、PPT 和讲解视频。</div>
       <div class="chips">
-        <div class="chip"><span class="zh">文本润色</span><span class="en">Humanization</span></div>
-        <div class="chip"><span class="zh">学术写作</span><span class="en">Academic Writing</span></div>
-        <div class="chip"><span class="zh">科研绘图</span><span class="en">Image Generation</span></div>
-        <div class="chip"><span class="zh">PPT 制作</span><span class="en">Deck Builder</span></div>
-        <div class="chip"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></div>
+        <div class="chip"><span class="idx">07</span><span class="names"><span class="zh">文本润色</span><span class="en">Humanization</span></span></div>
+        <div class="chip"><span class="idx">08</span><span class="names"><span class="zh">学术写作</span><span class="en">Academic Writing</span></span></div>
+        <div class="chip"><span class="idx">09</span><span class="names"><span class="zh">科研绘图</span><span class="en">Image Generation</span></span></div>
+        <div class="chip"><span class="idx">10</span><span class="names"><span class="zh">PPT 制作</span><span class="en">Deck Builder</span></span></div>
+        <div class="chip"><span class="idx">11</span><span class="names"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></span></div>
       </div>
     </div>
-    <div class="card c4">
-      <div class="mod-head"><div class="dot">协</div><div><h2>协作沉淀</h2><div class="mod-en">Collaboration Memory</div></div></div>
+    <div class="card c4" data-glyph="协">
+      <div class="mod-head"><div class="dot">协</div><div><h2>协作沉淀</h2><div class="mod-en">COLLABORATION MEMORY</div></div></div>
       <div class="mod-desc">引用合规检查、研究偏好画像与分身记忆巩固，接入他山世界科研社区。</div>
       <div class="chips">
-        <div class="chip"><span class="zh">引用合规</span><span class="en">PaperCheck</span></div>
-        <div class="chip"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></div>
-        <div class="chip"><span class="zh">他山世界</span><span class="en">World Threads</span></div>
+        <div class="chip"><span class="idx">12</span><span class="names"><span class="zh">引用合规</span><span class="en">PaperCheck</span></span></div>
+        <div class="chip"><span class="idx">13</span><span class="names"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></span></div>
+        <div class="chip"><span class="idx">14</span><span class="names"><span class="zh">他山世界</span><span class="en">World Threads</span></span></div>
       </div>
     </div>
-    <div class="card c5">
-      <div class="mod-head"><div class="dot">评</div><div><h2>工具测评</h2><div class="mod-en">Tool Evaluation</div></div></div>
-      <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入科研工作流之前，先做安全与可用性把关。</div>
+    <div class="card c5" data-glyph="评">
+      <div class="mod-head"><div class="dot">评</div><div><h2>工具测评</h2><div class="mod-en">TOOL EVALUATION</div></div></div>
+      <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入工作流之前，先做安全与可用性把关。</div>
       <div class="chips">
-        <div class="chip"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></div>
-        <div class="chip"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></div>
+        <div class="chip"><span class="idx">15</span><span class="names"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></span></div>
+        <div class="chip"><span class="idx">16</span><span class="names"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></span></div>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <span>磐石 AI4Science 生态与应用模式研究项目 支持</span>
+    <div class="left">
+      <span class="badge">磐石 AI4Science 生态与应用模式研究项目 支持</span>
+      <span class="badge">MIT License</span>
+    </div>
     <span class="repo">github.com/TashanGKD/tashan-research-skills</span>
   </div>
 </div>
+<script>
+  // ?x2 -> render at 2x for crisp PNG export
+  if (location.search.includes("x2")) document.getElementById("canvas").style.zoom = 2;
+</script>
 </body>
 </html>
