@@ -52,7 +52,7 @@ def preflight(target: Path, run_root: Path | None, slide_id: str, allow_chat_ima
         blockers.append(
             "no auditable image-editing backend is available in the local runtime; "
             "apply for GIIISP_AUTH_TOKEN at https://giiisp.com/#/mcp/authenticate "
-            "or OPENAI_API_KEY at https://platform.openai.com/api-keys"
+            "or use the host platform's built-in image generation"
         )
     if allow_chat_imagegen:
         blockers.append(
