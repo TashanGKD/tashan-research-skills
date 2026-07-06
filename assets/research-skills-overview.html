@@ -4,214 +4,303 @@
 <meta charset="UTF-8">
 <title>他山科研技能库 · 概览图</title>
 <!--
-  仓库首页概览图源文件（设计画布 1280x800）。
-  出图方法：浏览器打开 research-skills-overview.html?x2 （画布放大为 2560x1600），
-  对 #canvas 元素截图，替换 assets/research-skills-overview.png。
+  仓库首页概览图源文件（画布 1280x800）。
+  出图方法：本地静态服务打开本页，对 #canvas 元素截图，替换 assets/research-skills-overview.png。
 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #e9edf3; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #e7ebf2; }
 
   #canvas {
     width: 1280px; height: 800px; overflow: hidden; position: relative;
-    background:
-      radial-gradient(900px 460px at 88% -12%, rgba(90,160,220,.22) 0%, rgba(90,160,220,0) 62%),
-      radial-gradient(760px 420px at -6% 112%, rgba(76,195,176,.18) 0%, rgba(76,195,176,0) 58%),
-      linear-gradient(158deg, #fbfcfe 0%, #f1f5fa 52%, #ecf1f8 100%);
-    padding: 42px 52px 34px;
+    background: linear-gradient(158deg, #fcfdfe 0%, #f3f6fb 50%, #edf2f9 100%);
+    padding: 40px 52px 30px;
     display: flex; flex-direction: column;
   }
-  /* faint dot texture */
+  /* ambient blobs */
+  .blob { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+  .blob.b1 { width: 520px; height: 320px; right: -90px; top: -120px; background: rgba(90,160,220,.20); }
+  .blob.b2 { width: 460px; height: 300px; left: -120px; bottom: -140px; background: rgba(76,195,176,.16); }
+  .blob.b3 { width: 380px; height: 260px; left: 40%; top: -160px; background: rgba(122,90,200,.10); }
+  /* dot texture */
   #canvas::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
     background-image: radial-gradient(rgba(11,37,69,.05) 1px, transparent 1px);
-    background-size: 26px 26px;
+    background-size: 24px 24px;
   }
 
   /* ================= header ================= */
-  .header { display: flex; align-items: center; justify-content: space-between; position: relative; }
+  .header { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
   .kicker {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12.5px; letter-spacing: 4px; color: #2E74B5; font-weight: 600;
-    margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 12px; letter-spacing: 4px; color: #2E74B5; font-weight: 600; margin-bottom: 13px;
   }
-  .kicker::before { content: ""; width: 26px; height: 2px; background: #2E74B5; border-radius: 2px; }
-  h1 { font-size: 42px; color: #0B2545; letter-spacing: 2px; line-height: 1.15; }
-  h1 .en {
-    display: block; font-size: 15px; font-weight: 500; color: #8a94a6;
-    letter-spacing: 3.5px; margin-top: 6px; text-transform: uppercase;
+  .kicker .bar { width: 30px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,#2E74B5,#6FAADF); }
+  .kicker .pill {
+    font-size: 10.5px; letter-spacing: 2px; color: #5b6676; font-weight: 500;
+    border: 1px solid #dbe4ef; border-radius: 999px; padding: 3px 12px; background: rgba(255,255,255,.75);
   }
-  .tagline { margin-top: 12px; font-size: 15.5px; color: #45505f; }
+  h1 { font-size: 44px; color: #0B2545; letter-spacing: 2px; line-height: 1.1; display: flex; align-items: baseline; gap: 16px; }
+  h1 .en { font-size: 14px; font-weight: 600; color: #9aa4b5; letter-spacing: 3.2px; text-transform: uppercase; }
+  .title-underline {
+    width: 148px; height: 4px; border-radius: 4px; margin-top: 10px;
+    background: linear-gradient(90deg,#2E74B5 0%,#1F9D8B 30%,#C07A2B 55%,#7A5AC8 78%,#C05050 100%);
+    opacity: .85;
+  }
+  .tagline { margin-top: 12px; font-size: 15px; color: #45505f; letter-spacing: .4px; }
   .tagline b { color: #2E74B5; font-weight: 600; }
 
-  .stats { display: flex; gap: 14px; }
+  .stats { display: flex; gap: 13px; }
   .stat {
-    width: 108px; padding: 16px 0 13px; text-align: center;
-    background: rgba(255,255,255,.85); border: 1px solid #e2e9f2; border-radius: 16px;
-    box-shadow: 0 8px 22px rgba(11,37,69,.07);
+    width: 112px; padding: 0 0 13px; text-align: center; overflow: hidden;
+    background: rgba(255,255,255,.9); border: 1px solid #e2e9f2; border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(11,37,69,.08);
   }
-  .stat .num { font-size: 30px; font-weight: 700; color: #0B2545; line-height: 1; }
+  .stat .cap { height: 4px; margin-bottom: 13px; }
+  .stat:nth-child(1) .cap { background: linear-gradient(90deg,#2E74B5,#6FAADF); }
+  .stat:nth-child(2) .cap { background: linear-gradient(90deg,#1F9D8B,#5CC6B6); }
+  .stat:nth-child(3) .cap { background: linear-gradient(90deg,#C07A2B,#E2AC63); }
+  .stat .num { font-size: 29px; font-weight: 700; color: #0B2545; line-height: 1; }
   .stat .num small { font-size: 13px; font-weight: 500; color: #8a94a6; margin-left: 2px; }
-  .stat .label { font-size: 12px; color: #8a94a6; margin-top: 7px; letter-spacing: 2px; }
+  .stat .label { font-size: 11.5px; color: #8a94a6; margin-top: 6px; letter-spacing: 2.5px; }
 
   /* ================= stepper ================= */
-  .stepper { display: flex; align-items: center; margin: 26px 0 20px; position: relative; }
-  .step { display: flex; align-items: center; gap: 8px; }
-  .step .pin {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: var(--c); box-shadow: 0 0 0 4px var(--c-soft);
+  .stepper { display: flex; align-items: center; margin: 24px 0 18px; position: relative; z-index: 1; }
+  .step {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.85); border: 1px solid var(--c-border);
+    border-radius: 999px; padding: 6px 16px 6px 8px;
+    box-shadow: 0 4px 12px rgba(11,37,69,.05);
   }
-  .step .txt { font-size: 13.5px; font-weight: 600; color: #3b4657; letter-spacing: 1px; }
-  .conn { flex: 1; height: 2px; margin: 0 14px; border-radius: 2px;
-    background: linear-gradient(90deg, var(--from), var(--to)); opacity: .45; }
+  .step .n {
+    width: 22px; height: 22px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, var(--c), var(--c-light)); color: #fff;
+    font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .step .txt { font-size: 13px; font-weight: 600; color: #33405299; color: #334052; letter-spacing: 1.5px; }
+  .conn { flex: 1; height: 2px; margin: 0 10px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--from), var(--to)); opacity: .38; }
 
   /* ================= module grid ================= */
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 17px; flex: 1; position: relative; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; flex: 1; position: relative; z-index: 1; }
   .card {
-    background: rgba(255,255,255,.94); border: 1px solid #e3eaf3; border-radius: 20px;
-    padding: 20px 16px 14px; position: relative; overflow: hidden;
-    box-shadow: 0 12px 30px rgba(11,37,69,.08);
-    display: flex; flex-direction: column;
+    background: #ffffff; border: 1px solid #e3eaf3; border-radius: 20px;
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 14px 34px rgba(11,37,69,.09);
   }
   .card::before {
-    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
-    background: linear-gradient(90deg, var(--c), var(--c-light));
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 92px;
+    background: linear-gradient(180deg, var(--c-soft) 0%, rgba(255,255,255,0) 100%);
   }
-  /* watermark glyph fills the visual bottom space */
   .card::after {
-    content: attr(data-glyph); position: absolute; right: -8px; bottom: -42px;
-    font-size: 104px; font-weight: 700; color: var(--c);
-    opacity: .045; line-height: 1; pointer-events: none;
+    content: attr(data-glyph); position: absolute; right: -20px; bottom: -30px;
+    font-size: 106px; font-weight: 700; color: var(--c);
+    opacity: .055; line-height: 1; pointer-events: none;
   }
-  .mod-head { display: flex; align-items: center; gap: 10px; }
-  .dot {
-    width: 40px; height: 40px; border-radius: 12px; flex: none;
-    background: linear-gradient(135deg, var(--c), var(--c-light)); color: #fff;
+  .card .accent { height: 5px; background: linear-gradient(90deg, var(--c), var(--c-light)); }
+  .card .inner { padding: 17px 15px 14px; display: flex; flex-direction: column; flex: 1; position: relative; }
+
+  .mod-head { display: flex; align-items: center; gap: 11px; }
+  .icon {
+    width: 42px; height: 42px; border-radius: 13px; flex: none;
+    background: linear-gradient(135deg, var(--c), var(--c-light));
     display: flex; align-items: center; justify-content: center;
-    font-size: 17px; font-weight: 700;
-    box-shadow: 0 6px 14px var(--c-shadow);
+    box-shadow: 0 7px 16px var(--c-shadow);
   }
+  .icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .mod-head h2 { font-size: 18.5px; color: #0B2545; letter-spacing: 1.5px; line-height: 1.2; }
-  .mod-en { font-size: 10.5px; color: #9aa4b5; letter-spacing: .8px; margin-top: 2px; }
-  .mod-desc { font-size: 12.5px; color: #5b6676; line-height: 1.72; margin: 12px 0 12px; }
+  .mod-en { font-size: 9.5px; color: #9aa4b5; letter-spacing: 1.2px; margin-top: 3px; }
+  .mod-no {
+    position: absolute; top: 15px; right: 14px;
+    font-size: 11px; font-weight: 700; color: var(--c); opacity: .5; letter-spacing: 1px;
+  }
+  .mod-desc { font-size: 12.5px; color: #5b6676; line-height: 1.7; margin: 12px 0 11px; }
 
   .chips { display: flex; flex-direction: column; gap: 7px; position: relative; }
   .chip {
     display: flex; align-items: center; gap: 9px;
-    background: var(--c-soft); border: 1px solid var(--c-border); border-radius: 11px;
-    padding: 6px 11px;
+    background: #fbfcfe; border: 1px solid var(--c-border); border-radius: 11px;
+    padding: 6px 10px;
+    box-shadow: 0 2px 6px rgba(11,37,69,.03);
   }
-  .chip .idx { font-size: 10px; font-weight: 700; color: var(--c); flex: none; }
+  .chip .idx {
+    width: 24px; height: 24px; border-radius: 8px; flex: none;
+    background: var(--c-soft); color: var(--c);
+    font-size: 10.5px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
   .chip .names { display: flex; flex-direction: column; min-width: 0; }
-  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; line-height: 1.35; }
-  .chip .en { font-size: 9.5px; color: #9aa4b5; white-space: nowrap; letter-spacing: .3px; line-height: 1.3; }
+  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; line-height: 1.3; }
+  .chip .en { font-size: 9px; color: #9aa4b5; white-space: nowrap; letter-spacing: .4px; line-height: 1.35; margin-top: 1px; }
 
-  .c1 { --c:#2E74B5; --c-light:#6FAADF; --c-soft:#f0f6fc; --c-border:#dcE9f6; --c-shadow:rgba(46,116,181,.28); }
-  .c2 { --c:#1F9D8B; --c-light:#5CC6B6; --c-soft:#edf8f6; --c-border:#d5efe9; --c-shadow:rgba(31,157,139,.28); }
-  .c3 { --c:#C07A2B; --c-light:#E2AC63; --c-soft:#fbf5ec; --c-border:#f2e3cc; --c-shadow:rgba(192,122,43,.26); }
-  .c4 { --c:#7A5AC8; --c-light:#AB92E4; --c-soft:#f4f1fc; --c-border:#e6def7; --c-shadow:rgba(122,90,200,.28); }
-  .c5 { --c:#C05050; --c-light:#E28C8C; --c-soft:#fcf1f1; --c-border:#f4dcdc; --c-shadow:rgba(192,80,80,.26); }
+  .card-foot {
+    margin-top: auto; padding-top: 10px;
+    border-top: 1px dashed var(--c-border);
+    display: flex; align-items: center; gap: 7px;
+    font-size: 10.5px; color: #9aa4b5; letter-spacing: 1px;
+    position: relative;
+  }
+  .card-foot .tick { width: 14px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--c), var(--c-light)); }
+  .card-foot b { color: var(--c); font-weight: 700; }
+
+  .c1 { --c:#2E74B5; --c-light:#6FAADF; --c-soft:#eef5fc; --c-border:#dfeaf6; --c-shadow:rgba(46,116,181,.30); }
+  .c2 { --c:#1F9D8B; --c-light:#5CC6B6; --c-soft:#ebf7f4; --c-border:#d8efe9; --c-shadow:rgba(31,157,139,.30); }
+  .c3 { --c:#C07A2B; --c-light:#E2AC63; --c-soft:#fbf4ea; --c-border:#f2e4cd; --c-shadow:rgba(192,122,43,.28); }
+  .c4 { --c:#7A5AC8; --c-light:#AB92E4; --c-soft:#f3f0fb; --c-border:#e7dff7; --c-shadow:rgba(122,90,200,.30); }
+  .c5 { --c:#C05050; --c-light:#E28C8C; --c-soft:#fcf0f0; --c-border:#f4dddd; --c-shadow:rgba(192,80,80,.28); }
 
   /* ================= footer ================= */
   .footer {
-    margin-top: 20px; display: flex; align-items: center; justify-content: space-between;
-    font-size: 12.5px; color: #9aa4b5; position: relative;
+    margin-top: 18px; padding-top: 14px; position: relative; z-index: 1;
+    border-top: 1px solid rgba(11,37,69,.08);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: #9aa4b5;
   }
-  .footer .left { display: flex; align-items: center; gap: 8px; }
+  .footer .left { display: flex; align-items: center; gap: 9px; }
   .footer .badge {
-    background: rgba(255,255,255,.85); border: 1px solid #e2e9f2; border-radius: 999px;
-    padding: 4px 14px; color: #5b6676;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.9); border: 1px solid #e2e9f2; border-radius: 999px;
+    padding: 5px 14px; color: #5b6676;
   }
-  .footer .repo { color: #2E74B5; font-weight: 600; letter-spacing: .3px; }
+  .footer .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #1F9D8B; }
+  .footer .badge .dot.blue { background: #2E74B5; }
+  .footer .repo {
+    display: inline-flex; align-items: center; gap: 7px;
+    color: #2E74B5; font-weight: 600; letter-spacing: .3px;
+  }
+  .footer .repo svg { width: 14px; height: 14px; stroke: #2E74B5; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
 </head>
 <body>
 <div id="canvas">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
   <div class="header">
     <div>
-      <div class="kicker">科研助理技能包 · SKILL PACKAGE</div>
+      <div class="kicker"><span class="bar"></span>科研助理技能包<span class="pill">OPEN SOURCE · BILINGUAL</span></div>
       <h1>他山科研技能库<span class="en">Tashan Research Skills</span></h1>
+      <div class="title-underline"></div>
       <div class="tagline">为科研工作提供<b>文献查证、研究设计、材料撰写、成果展示与协作沉淀</b>支持</div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="num">16<small>项</small></div><div class="label">科研技能</div></div>
-      <div class="stat"><div class="num">5<small>类</small></div><div class="label">任务模块</div></div>
-      <div class="stat"><div class="num">MIT</div><div class="label">开源协议</div></div>
+      <div class="stat"><div class="cap"></div><div class="num">16<small>项</small></div><div class="label">科研技能</div></div>
+      <div class="stat"><div class="cap"></div><div class="num">5<small>类</small></div><div class="label">任务模块</div></div>
+      <div class="stat"><div class="cap"></div><div class="num">MIT</div><div class="label">开源协议</div></div>
     </div>
   </div>
 
   <div class="stepper">
-    <div class="step" style="--c:#2E74B5;--c-soft:#dcecf9"><div class="pin"></div><div class="txt">证据先行</div></div>
+    <div class="step c1"><div class="n">1</div><div class="txt">证据先行</div></div>
     <div class="conn" style="--from:#2E74B5;--to:#1F9D8B"></div>
-    <div class="step" style="--c:#1F9D8B;--c-soft:#d9f2ee"><div class="pin"></div><div class="txt">方案落地</div></div>
+    <div class="step c2"><div class="n">2</div><div class="txt">方案落地</div></div>
     <div class="conn" style="--from:#1F9D8B;--to:#C07A2B"></div>
-    <div class="step" style="--c:#C07A2B;--c-soft:#f7ead6"><div class="pin"></div><div class="txt">表达成品</div></div>
+    <div class="step c3"><div class="n">3</div><div class="txt">表达成品</div></div>
     <div class="conn" style="--from:#C07A2B;--to:#7A5AC8"></div>
-    <div class="step" style="--c:#7A5AC8;--c-soft:#eae2f9"><div class="pin"></div><div class="txt">长期协作</div></div>
+    <div class="step c4"><div class="n">4</div><div class="txt">长期协作</div></div>
     <div class="conn" style="--from:#7A5AC8;--to:#C05050"></div>
-    <div class="step" style="--c:#C05050;--c-soft:#f8e0e0"><div class="pin"></div><div class="txt">工具把关</div></div>
+    <div class="step c5"><div class="n">5</div><div class="txt">工具把关</div></div>
   </div>
 
   <div class="grid">
     <div class="card c1" data-glyph="证">
-      <div class="mod-head"><div class="dot">证</div><div><h2>文献证据</h2><div class="mod-en">LITERATURE EVIDENCE</div></div></div>
-      <div class="mod-desc">快速定位可核验的研究线索，拆关键词、召回证据，标出结论的证据边界。</div>
-      <div class="chips">
-        <div class="chip"><span class="idx">01</span><span class="names"><span class="zh">论文检索</span><span class="en">Paper Search</span></span></div>
-        <div class="chip"><span class="idx">02</span><span class="names"><span class="zh">深度研究</span><span class="en">Deep Research</span></span></div>
-        <div class="chip"><span class="idx">03</span><span class="names"><span class="zh">论文审查</span><span class="en">Thesis Audit</span></span></div>
+      <div class="accent"></div>
+      <div class="inner">
+        <div class="mod-no">01</div>
+        <div class="mod-head">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg></div>
+          <div><h2>文献证据</h2><div class="mod-en">LITERATURE EVIDENCE</div></div>
+        </div>
+        <div class="mod-desc">快速定位可核验的研究线索，拆关键词、召回证据，标出结论的证据边界。</div>
+        <div class="chips">
+          <div class="chip"><span class="idx">01</span><span class="names"><span class="zh">论文检索</span><span class="en">Paper Search</span></span></div>
+          <div class="chip"><span class="idx">02</span><span class="names"><span class="zh">深度研究</span><span class="en">Deep Research</span></span></div>
+          <div class="chip"><span class="idx">03</span><span class="names"><span class="zh">论文审查</span><span class="en">Thesis Audit Reviewer</span></span></div>
+        </div>
+        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 检索 到 审查</div>
       </div>
     </div>
+
     <div class="card c2" data-glyph="构">
-      <div class="mod-head"><div class="dot">构</div><div><h2>研究构思</h2><div class="mod-en">RESEARCH IDEATION</div></div></div>
-      <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和站得住的实验设计。</div>
-      <div class="chips">
-        <div class="chip"><span class="idx">04</span><span class="names"><span class="zh">假设生成</span><span class="en">Scispark</span></span></div>
-        <div class="chip"><span class="idx">05</span><span class="names"><span class="zh">数据处理</span><span class="en">Baseline Builder</span></span></div>
-        <div class="chip"><span class="idx">06</span><span class="names"><span class="zh">实验设计</span><span class="en">Experiment Design</span></span></div>
+      <div class="accent"></div>
+      <div class="inner">
+        <div class="mod-no">02</div>
+        <div class="mod-head">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="21" x2="14" y2="21"/></svg></div>
+          <div><h2>研究构思</h2><div class="mod-en">RESEARCH IDEATION</div></div>
+        </div>
+        <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和站得住的实验设计。</div>
+        <div class="chips">
+          <div class="chip"><span class="idx">04</span><span class="names"><span class="zh">假设生成</span><span class="en">Scispark</span></span></div>
+          <div class="chip"><span class="idx">05</span><span class="names"><span class="zh">数据处理</span><span class="en">Research Baseline Builder</span></span></div>
+          <div class="chip"><span class="idx">06</span><span class="names"><span class="zh">实验设计</span><span class="en">Experiment Design</span></span></div>
+        </div>
+        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 想法 到 设计</div>
       </div>
     </div>
+
     <div class="card c3" data-glyph="表">
-      <div class="mod-head"><div class="dot">表</div><div><h2>成果表达</h2><div class="mod-en">RESEARCH EXPRESSION</div></div></div>
-      <div class="mod-desc">从润色到写审改投，并把成果转成图像、PPT 和讲解视频。</div>
-      <div class="chips">
-        <div class="chip"><span class="idx">07</span><span class="names"><span class="zh">文本润色</span><span class="en">Humanization</span></span></div>
-        <div class="chip"><span class="idx">08</span><span class="names"><span class="zh">学术写作</span><span class="en">Academic Writing</span></span></div>
-        <div class="chip"><span class="idx">09</span><span class="names"><span class="zh">科研绘图</span><span class="en">Image Generation</span></span></div>
-        <div class="chip"><span class="idx">10</span><span class="names"><span class="zh">PPT 制作</span><span class="en">Deck Builder</span></span></div>
-        <div class="chip"><span class="idx">11</span><span class="names"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></span></div>
+      <div class="accent"></div>
+      <div class="inner">
+        <div class="mod-no">03</div>
+        <div class="mod-head">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></div>
+          <div><h2>成果表达</h2><div class="mod-en">RESEARCH EXPRESSION</div></div>
+        </div>
+        <div class="mod-desc">从润色到写审改投，并把成果转成图像、PPT 和讲解视频。</div>
+        <div class="chips">
+          <div class="chip"><span class="idx">07</span><span class="names"><span class="zh">文本润色</span><span class="en">Scientific Humanization</span></span></div>
+          <div class="chip"><span class="idx">08</span><span class="names"><span class="zh">学术写作</span><span class="en">Academic Writing</span></span></div>
+          <div class="chip"><span class="idx">09</span><span class="names"><span class="zh">科研绘图</span><span class="en">Image Generation</span></span></div>
+          <div class="chip"><span class="idx">10</span><span class="names"><span class="zh">PPT 制作</span><span class="en">Visual Deck Builder</span></span></div>
+          <div class="chip"><span class="idx">11</span><span class="names"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></span></div>
+        </div>
+        <div class="card-foot"><span class="tick"></span><b>5</b>&nbsp;SKILLS · 文字 到 视频</div>
       </div>
     </div>
+
     <div class="card c4" data-glyph="协">
-      <div class="mod-head"><div class="dot">协</div><div><h2>协作沉淀</h2><div class="mod-en">COLLABORATION MEMORY</div></div></div>
-      <div class="mod-desc">引用合规检查、研究偏好画像与分身记忆巩固，接入他山世界科研社区。</div>
-      <div class="chips">
-        <div class="chip"><span class="idx">12</span><span class="names"><span class="zh">引用合规</span><span class="en">PaperCheck</span></span></div>
-        <div class="chip"><span class="idx">13</span><span class="names"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></span></div>
-        <div class="chip"><span class="idx">14</span><span class="names"><span class="zh">他山世界</span><span class="en">World Threads</span></span></div>
+      <div class="accent"></div>
+      <div class="inner">
+        <div class="mod-no">04</div>
+        <div class="mod-head">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><h2>协作沉淀</h2><div class="mod-en">COLLABORATION MEMORY</div></div>
+        </div>
+        <div class="mod-desc">引用合规检查、研究偏好画像与分身记忆巩固，接入他山世界科研社区。</div>
+        <div class="chips">
+          <div class="chip"><span class="idx">12</span><span class="names"><span class="zh">引用合规</span><span class="en">PaperCheck</span></span></div>
+          <div class="chip"><span class="idx">13</span><span class="names"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></span></div>
+          <div class="chip"><span class="idx">14</span><span class="names"><span class="zh">他山世界</span><span class="en">World Threads Entry</span></span></div>
+        </div>
+        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 合规 到 社区</div>
       </div>
     </div>
+
     <div class="card c5" data-glyph="评">
-      <div class="mod-head"><div class="dot">评</div><div><h2>工具测评</h2><div class="mod-en">TOOL EVALUATION</div></div></div>
-      <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入工作流之前，先做安全与可用性把关。</div>
-      <div class="chips">
-        <div class="chip"><span class="idx">15</span><span class="names"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></span></div>
-        <div class="chip"><span class="idx">16</span><span class="names"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></span></div>
+      <div class="accent"></div>
+      <div class="inner">
+        <div class="mod-no">05</div>
+        <div class="mod-head">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 8.95a1 1 0 0 1-.6-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.17 1.17 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div><h2>工具测评</h2><div class="mod-en">TOOL EVALUATION</div></div>
+        </div>
+        <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入工作流之前，先做安全与可用性把关。</div>
+        <div class="chips">
+          <div class="chip"><span class="idx">15</span><span class="names"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></span></div>
+          <div class="chip"><span class="idx">16</span><span class="names"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></span></div>
+        </div>
+        <div class="card-foot"><span class="tick"></span><b>2</b>&nbsp;SKILLS · 装前 先测</div>
       </div>
     </div>
   </div>
 
   <div class="footer">
     <div class="left">
-      <span class="badge">磐石 AI4Science 生态与应用模式研究项目 支持</span>
-      <span class="badge">MIT License</span>
+      <span class="badge"><span class="dot blue"></span>磐石 AI4Science 生态与应用模式研究项目 支持</span>
+      <span class="badge"><span class="dot"></span>MIT License</span>
     </div>
-    <span class="repo">github.com/TashanGKD/tashan-research-skills</span>
+    <span class="repo"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>github.com/TashanGKD/tashan-research-skills</span>
   </div>
 </div>
-<script>
-  // ?x2 -> render at 2x for crisp PNG export
-  if (location.search.includes("x2")) document.getElementById("canvas").style.zoom = 2;
-</script>
 </body>
 </html>
