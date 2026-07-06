@@ -20,13 +20,12 @@ Run from the repository root (contains `src/` and `pyproject.toml`).
 
 - Python deps: `uv sync` (or `pip install -e .`)
 - Node.js 18+ with `npx` (MCP tools are deployed as npm packages)
-- Optional env in `.env`: `OPENAI_API_KEY`/`DASHSCOPE_API_KEY` for layer 2
-  smart tests, `HUB_TOKEN` (GitHub) for layer 3 scoring, Supabase keys only
-  if the user wants results exported
-- Where to apply for keys the user does not have yet: `OPENAI_API_KEY` at
-  `https://platform.openai.com/api-keys`, `DASHSCOPE_API_KEY` at
-  `https://help.aliyun.com/zh/model-studio/get-api-key`, `HUB_TOKEN` at
-  `https://github.com/settings/tokens`
+- Optional env in `.env`: `DASHSCOPE_API_KEY` for layer 2 smart tests
+  (apply at `https://help.aliyun.com/zh/model-studio/get-api-key`;
+  `OPENAI_API_KEY` also works as a drop-in alternative). `HUB_TOKEN`
+  (GitHub) is not required: layer 3 scoring works without it and only
+  risks rate-limiting on heavy use (`https://github.com/settings/tokens`).
+  Supabase keys only if the user wants results exported.
 
 Check what is available before promising layers: without a model key, layer 2
 falls back to basic protocol tests; without `HUB_TOKEN`, layer 3 may be
