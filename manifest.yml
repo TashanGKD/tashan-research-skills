@@ -30,6 +30,12 @@ skills:
   - id: experiment-design
     category: research-ideation
     entrypoint: skills/experiment-design/SKILL.md
+  - id: statistical-analysis
+    category: research-ideation
+    entrypoint: skills/statistical-analysis/SKILL.md
+  - id: statistical-analysis
+    category: research-ideation
+    entrypoint: skills/statistical-analysis/SKILL.md
   - id: scientific-humanization
     category: research-expression
     entrypoint: skills/scientific-humanization/SKILL.md

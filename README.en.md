@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-16-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/Modules-5-0B2545.svg)](#skill-matrix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## Overview
 
-This repository holds 16 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
+This repository holds 17 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
 
 The project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
@@ -42,6 +42,7 @@ The project is supported by the **Panshi AI4Science Ecosystem and Application Mo
 | Scispark | [`skills/scispark`](skills/scispark/SKILL.md) | Generate evidence-tracked research ideas and testable hypotheses from papers or keywords. |
 | Research Baseline Builder | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | Translate a scientific question into data inputs, outputs, baselines, and metrics. |
 | Experiment Design | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | Design statistically sound experiments before data collection: design types, randomization, sample size, power, and analysis plans. |
+| Statistical Analysis | [`skills/statistical-analysis`](skills/statistical-analysis/SKILL.md) | Run the locked analysis plan after data collection: tests, effect sizes, confidence intervals, assumption checks, and multiplicity correction. |
 
 ### Research expression
 

@@ -124,5 +124,5 @@ python scripts/power.py power --test ttest --effect 0.5 --n 50            # 反�
 ## 与其它技能的边界
 
 - 把想法拆成数据任务/输入输出/baseline（偏 ML 工程）→「数据处理(baseline)」。
-- 采集后统计/组学执行（scipy/statsmodels/scanpy/Seurat/DESeq）→「数据分析执行」。
+- 采集后统计执行（检验/效应量/CI/多重比较校正）→「统计分析」（skills/statistical-analysis）；组学专业管线（scanpy/Seurat/DESeq）另找专门工具。
 - 生成研究假设/机制线索 →「假设生成」（本技能承接其后"如何验证"）。

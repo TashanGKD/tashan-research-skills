@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-16-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/%E6%A8%A1%E5%9D%97-5-0B2545.svg)](#技能矩阵)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## 项目概览
 
-仓库里是我们自己开发的 16 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
+仓库里是我们自己开发的 17 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
 
 项目由 **磐石 AI4Science 生态与应用模式研究项目** 支持。
 
@@ -42,6 +42,7 @@
 | 假设生成 | [`skills/scispark`](skills/scispark/SKILL.md) | 基于关键词或论文集合生成带证据追踪的研究想法、假设和机制线索。 |
 | 数据处理 | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | 把科研问题拆成可处理的数据任务，明确输入、输出、baseline 和评估指标。 |
 | 实验设计 | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | 在采集数据之前完成研究设计：设计类型、随机化、样本量、统计功效和分析计划。 |
+| 统计分析 | [`skills/statistical-analysis`](skills/statistical-analysis/SKILL.md) | 数据采集后按分析计划执行验证性统计：检验、效应量、置信区间、前提检查和多重比较校正。 |
 
 ### 成果表达
 
