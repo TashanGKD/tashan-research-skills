@@ -31,6 +31,7 @@ def read_token() -> str:
     token = os.environ.get("MINERU_API_TOKEN", "").strip()
     if token:
         return token
+    print("No MINERU_API_TOKEN found. Apply for a token at https://mineru.net/apiManage/token", file=sys.stderr)
     if sys.stdin.isatty():
         return getpass.getpass("MinerU API token: ").strip()
     return sys.stdin.read().strip()

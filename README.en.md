@@ -106,13 +106,13 @@ Replace `papercheck` with the skill folder you want. Skills have no cross-depend
 
 Skills read secrets from environment variables at runtime and degrade gracefully when a credential is absent (dry-run, local fallback, or a clear blocker report).
 
-| Environment variable | Needed by | Purpose |
-| --- | --- | --- |
-| `GIIISP_AUTH_TOKEN` | Scientific Image Generation, Visual Deck Builder, Paper Search | Giiisp API access (image generation, search) |
-| `DASHSCOPE_API_KEY` | Manim Agent, MCP-CriticAgent | CosyVoice TTS, LLM-driven smart tests |
-| `MINERU_API_TOKEN` | Thesis Audit Reviewer | Optional MinerU online PDF parsing (local fallback exists) |
-| `OPENAI_API_KEY` | Visual Deck Builder, MCP-CriticAgent | Alternative image / test backends |
-| `ANTHROPIC_AUTH_TOKEN` | Manim Agent | Claude-compatible LLM route for scene generation |
+| Environment variable | Needed by | Purpose | Where to apply |
+| --- | --- | --- | --- |
+| `GIIISP_AUTH_TOKEN` | Scientific Image Generation, Visual Deck Builder, Paper Search | Giiisp API access (image generation, search) | [giiisp.com](https://giiisp.com/#/mcp/authenticate) |
+| `DASHSCOPE_API_KEY` | Manim Agent, Scientific Image Generation, Visual Deck Builder, MCP-CriticAgent | Qwen VLM review, CosyVoice TTS, smart tests | [Aliyun Model Studio](https://help.aliyun.com/zh/model-studio/get-api-key) |
+| `MINERU_API_TOKEN` | Thesis Audit Reviewer | Optional MinerU online PDF parsing (local fallback exists) | [mineru.net](https://mineru.net/apiManage/token) |
+| `OPENAI_API_KEY` | Visual Deck Builder, MCP-CriticAgent | Alternative image / test backends | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `ANTHROPIC_AUTH_TOKEN` | Manim Agent | Claude-compatible LLM route (holds the DashScope key) | [Aliyun Model Studio](https://help.aliyun.com/zh/model-studio/get-api-key) |
 
 ## Repository Layout
 

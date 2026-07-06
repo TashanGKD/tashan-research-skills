@@ -171,7 +171,7 @@ def main():
     if not os.environ.get("GIIISP_AUTH_TOKEN"):
         raise SystemExit("GIIISP_AUTH_TOKEN is not set; authenticate at https://giiisp.com/#/mcp/authenticate if the token is missing or expired")
     if not os.environ.get("DASHSCOPE_API_KEY"):
-        raise SystemExit("DASHSCOPE_API_KEY is not set")
+        raise SystemExit("DASHSCOPE_API_KEY is not set; apply for a DashScope/Bailian API key at https://help.aliyun.com/zh/model-studio/get-api-key")
 
     run_dir = args.run_dir.resolve()
     selected_slides = {

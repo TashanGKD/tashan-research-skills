@@ -156,7 +156,7 @@ python scripts/render_md_report_pdf.py --input outputs/paper01/审查报告.md -
 python scripts/validate_audit_report.py --report outputs/paper01/审查报告.md --strict
 ```
 
-The MinerU script reads the token from `MINERU_API_TOKEN`, hidden TTY input, or stdin. Never write the token into a command, report, or repository file. The local PDF fallback script does not need a token; treat its output as lower confidence than MinerU for scanned PDFs, formulas, complex tables, multi-column layout, headers/footers, and split reference lists.
+The MinerU script reads the token from `MINERU_API_TOKEN`, hidden TTY input, or stdin. If the user has no token, point them to `https://mineru.net/apiManage/token` to register and create one. Never write the token into a command, report, or repository file. The local PDF fallback script does not need a token; treat its output as lower confidence than MinerU for scanned PDFs, formulas, complex tables, multi-column layout, headers/footers, and split reference lists.
 
 ## Completion Definition
 

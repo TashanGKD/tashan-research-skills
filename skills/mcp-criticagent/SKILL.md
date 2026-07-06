@@ -23,6 +23,10 @@ Run from the repository root (contains `src/` and `pyproject.toml`).
 - Optional env in `.env`: `OPENAI_API_KEY`/`DASHSCOPE_API_KEY` for layer 2
   smart tests, `HUB_TOKEN` (GitHub) for layer 3 scoring, Supabase keys only
   if the user wants results exported
+- Where to apply for keys the user does not have yet: `OPENAI_API_KEY` at
+  `https://platform.openai.com/api-keys`, `DASHSCOPE_API_KEY` at
+  `https://help.aliyun.com/zh/model-studio/get-api-key`, `HUB_TOKEN` at
+  `https://github.com/settings/tokens`
 
 Check what is available before promising layers: without a model key, layer 2
 falls back to basic protocol tests; without `HUB_TOKEN`, layer 3 may be

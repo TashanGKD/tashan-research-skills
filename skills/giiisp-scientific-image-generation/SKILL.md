@@ -211,6 +211,7 @@ python scripts/dry_run_scientific_image.py --prompt "保留上一版四步流程
 - 不要把 token 写入文件、日志或最终回复。
 - 只记录“已使用访问码 token”。
 - 命令行测试只从环境变量 `GIIISP_AUTH_TOKEN` 读取 token。
+- 没有 token 时提醒用户到 `https://giiisp.com/#/mcp/authenticate` 申请或刷新 Giiisp 认证，再设置 `GIIISP_AUTH_TOKEN`。
 
 ## 结果检查
 
@@ -256,7 +257,7 @@ python scripts/semantic_review_dashscope.py --run-dir "scientific_image_skill_ru
 python scripts/build_figure_manifest.py --run-dir "scientific_image_skill_runs/session_a/smoke_YYYYMMDD_HHMMSS"
 ```
 
-审查脚本使用 DashScope OpenAI-compatible `chat/completions` 接口，默认模型是 `qwen3.7-plus`，也可通过 `--model` 改成账号可用的 Qwen 视觉模型。访问码只从环境变量 `DASHSCOPE_API_KEY` 读取，不写入 `semantic_review.json`、manifest、package 或最终报告。
+审查脚本使用 DashScope OpenAI-compatible `chat/completions` 接口，默认模型是 `qwen3.7-plus`，也可通过 `--model` 改成账号可用的 Qwen 视觉模型。访问码只从环境变量 `DASHSCOPE_API_KEY` 读取，不写入 `semantic_review.json`、manifest、package 或最终报告。没有 key 时提醒用户到 `https://help.aliyun.com/zh/model-studio/get-api-key` 申请 DashScope/百炼 API key。
 
 `semantic_review.json` 必须保留：
 

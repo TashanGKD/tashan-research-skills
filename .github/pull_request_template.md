@@ -1,17 +1,17 @@
-## Summary
+## 变更摘要
 
 - 
 
-## Changed skills
+## 涉及技能
 
 - 
 
-## Verification
+## 验证
 
-- [ ] Read the changed `SKILL.md`
-- [ ] Ran the relevant smoke test or manual verification
-- [ ] Checked that no secrets, private papers, generated runs, or local caches were added
+- [ ] 已阅读改动涉及的 `SKILL.md`
+- [ ] 已运行相关 smoke test 或手工验证命令
+- [ ] 已确认没有引入密钥、私有论文、生成运行目录或本地缓存
 
-## Notes
+## 备注
 
 - 
