@@ -4,301 +4,285 @@
 <meta charset="UTF-8">
 <title>他山科研技能库 · 概览图</title>
 <!--
-  仓库首页概览图源文件（画布 1280x800）。
+  仓库首页概览图源文件（画布 1280x800，深色 Bento 风格）。
   出图方法：本地静态服务打开本页，对 #canvas 元素截图，替换 assets/research-skills-overview.png。
 -->
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #e7ebf2; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #05070d; }
 
   #canvas {
     width: 1280px; height: 800px; overflow: hidden; position: relative;
-    background: linear-gradient(158deg, #fcfdfe 0%, #f3f6fb 50%, #edf2f9 100%);
+    background: #0A0F1E;
     padding: 40px 52px 30px;
     display: flex; flex-direction: column;
   }
-  /* ambient blobs */
-  .blob { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
-  .blob.b1 { width: 520px; height: 320px; right: -90px; top: -120px; background: rgba(90,160,220,.20); }
-  .blob.b2 { width: 460px; height: 300px; left: -120px; bottom: -140px; background: rgba(76,195,176,.16); }
-  .blob.b3 { width: 380px; height: 260px; left: 40%; top: -160px; background: rgba(122,90,200,.10); }
-  /* dot texture */
+  /* ambient glows */
+  .glow { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; }
+  .glow.g1 { width: 560px; height: 360px; right: -140px; top: -160px; background: rgba(56,120,200,.28); }
+  .glow.g2 { width: 480px; height: 320px; left: -160px; bottom: -180px; background: rgba(45,170,150,.20); }
+  .glow.g3 { width: 400px; height: 300px; left: 42%; top: -180px; background: rgba(140,110,220,.16); }
+  /* faint grid */
   #canvas::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
-    background-image: radial-gradient(rgba(11,37,69,.05) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image:
+      linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, #000 40%, transparent 100%);
   }
 
   /* ================= header ================= */
-  .header { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
-  .kicker {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 12px; letter-spacing: 4px; color: #2E74B5; font-weight: 600; margin-bottom: 13px;
+  .header { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
+  .kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .kicker .bar { width: 26px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,#60A5FA,#4FD1C5); }
+  .kicker .txt { font-size: 12px; letter-spacing: 5px; color: #7d8aa5; font-weight: 600; }
+  .kicker .tag {
+    font-size: 10px; letter-spacing: 2px; color: #9fb1cc; font-weight: 600;
+    border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 3px 12px;
+    background: rgba(255,255,255,.04);
   }
-  .kicker .bar { width: 30px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,#2E74B5,#6FAADF); }
-  .kicker .pill {
-    font-size: 10.5px; letter-spacing: 2px; color: #5b6676; font-weight: 500;
-    border: 1px solid #dbe4ef; border-radius: 999px; padding: 3px 12px; background: rgba(255,255,255,.75);
+  h1 { font-size: 50px; color: #F2F6FC; letter-spacing: 3px; line-height: 1.08; font-weight: 700; }
+  .en-title {
+    margin-top: 10px; font-size: 13px; font-weight: 700; letter-spacing: 6px;
+    background: linear-gradient(90deg,#60A5FA 0%,#4FD1C5 45%,#A78BFA 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-transform: uppercase;
   }
-  h1 { font-size: 44px; color: #0B2545; letter-spacing: 2px; line-height: 1.1; display: flex; align-items: baseline; gap: 16px; }
-  h1 .en { font-size: 14px; font-weight: 600; color: #9aa4b5; letter-spacing: 3.2px; text-transform: uppercase; }
-  .title-underline {
-    width: 148px; height: 4px; border-radius: 4px; margin-top: 10px;
-    background: linear-gradient(90deg,#2E74B5 0%,#1F9D8B 30%,#C07A2B 55%,#7A5AC8 78%,#C05050 100%);
-    opacity: .85;
-  }
-  .tagline { margin-top: 12px; font-size: 15px; color: #45505f; letter-spacing: .4px; }
-  .tagline b { color: #2E74B5; font-weight: 600; }
+  .tagline { margin-top: 14px; font-size: 15px; color: #8b98b3; letter-spacing: .4px; }
+  .tagline b { color: #dbe5f5; font-weight: 600; }
 
-  .stats { display: flex; gap: 13px; }
-  .stat {
-    width: 112px; padding: 0 0 13px; text-align: center; overflow: hidden;
-    background: rgba(255,255,255,.9); border: 1px solid #e2e9f2; border-radius: 16px;
-    box-shadow: 0 10px 26px rgba(11,37,69,.08);
+  .hero-stat { text-align: right; }
+  .hero-stat .big {
+    font-size: 92px; font-weight: 800; line-height: .9; letter-spacing: -2px;
+    background: linear-gradient(135deg,#8EC5FF 0%,#4FD1C5 55%,#A78BFA 110%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .stat .cap { height: 4px; margin-bottom: 13px; }
-  .stat:nth-child(1) .cap { background: linear-gradient(90deg,#2E74B5,#6FAADF); }
-  .stat:nth-child(2) .cap { background: linear-gradient(90deg,#1F9D8B,#5CC6B6); }
-  .stat:nth-child(3) .cap { background: linear-gradient(90deg,#C07A2B,#E2AC63); }
-  .stat .num { font-size: 29px; font-weight: 700; color: #0B2545; line-height: 1; }
-  .stat .num small { font-size: 13px; font-weight: 500; color: #8a94a6; margin-left: 2px; }
-  .stat .label { font-size: 11.5px; color: #8a94a6; margin-top: 6px; letter-spacing: 2.5px; }
+  .hero-stat .big small { font-size: 26px; font-weight: 700; letter-spacing: 0; }
+  .hero-stat .sub { margin-top: 8px; font-size: 13px; color: #7d8aa5; letter-spacing: 3px; }
+  .hero-stat .meta { margin-top: 6px; font-size: 11.5px; color: #55627d; letter-spacing: 2px; }
 
   /* ================= stepper ================= */
-  .stepper { display: flex; align-items: center; margin: 24px 0 18px; position: relative; z-index: 1; }
-  .step {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,.85); border: 1px solid var(--c-border);
-    border-radius: 999px; padding: 6px 16px 6px 8px;
-    box-shadow: 0 4px 12px rgba(11,37,69,.05);
-  }
-  .step .n {
-    width: 22px; height: 22px; border-radius: 50%; flex: none;
-    background: linear-gradient(135deg, var(--c), var(--c-light)); color: #fff;
-    font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
-  }
-  .step .txt { font-size: 13px; font-weight: 600; color: #33405299; color: #334052; letter-spacing: 1.5px; }
-  .conn { flex: 1; height: 2px; margin: 0 10px; border-radius: 2px;
-    background: linear-gradient(90deg, var(--from), var(--to)); opacity: .38; }
+  .stepper { display: flex; align-items: center; margin: 22px 0 18px; position: relative; z-index: 1; }
+  .sp { display: flex; align-items: center; gap: 8px; }
+  .sp .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
+  .sp .t { font-size: 12px; font-weight: 600; color: #9fb1cc; letter-spacing: 2.5px; }
+  .ln { flex: 1; height: 1px; margin: 0 14px; background: linear-gradient(90deg, var(--a), var(--b)); opacity: .35; }
 
-  /* ================= module grid ================= */
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; flex: 1; position: relative; z-index: 1; }
-  .card {
-    background: #ffffff; border: 1px solid #e3eaf3; border-radius: 20px;
+  /* ================= bento grid ================= */
+  .grid {
+    flex: 1; position: relative; z-index: 1;
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 15px;
+  }
+  .cell {
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 18px; padding: 20px 20px 16px;
     position: relative; overflow: hidden; display: flex; flex-direction: column;
-    box-shadow: 0 14px 34px rgba(11,37,69,.09);
   }
-  .card::before {
-    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 92px;
-    background: linear-gradient(180deg, var(--c-soft) 0%, rgba(255,255,255,0) 100%);
+  .cell::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c), transparent); opacity: .75;
   }
-  .card::after {
-    content: attr(data-glyph); position: absolute; right: -20px; bottom: -30px;
-    font-size: 106px; font-weight: 700; color: var(--c);
-    opacity: .055; line-height: 1; pointer-events: none;
+  .cell .halo {
+    position: absolute; top: -70px; left: 50%; transform: translateX(-50%);
+    width: 220px; height: 120px; border-radius: 50%;
+    background: var(--c); opacity: .10; filter: blur(46px); pointer-events: none;
   }
-  .card .accent { height: 5px; background: linear-gradient(90deg, var(--c), var(--c-light)); }
-  .card .inner { padding: 17px 15px 14px; display: flex; flex-direction: column; flex: 1; position: relative; }
+  .cell .no {
+    position: absolute; right: 14px; top: 10px;
+    font-size: 44px; font-weight: 800; line-height: 1; color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,.10);
+  }
+  .wide { grid-column: span 2; }
 
-  .mod-head { display: flex; align-items: center; gap: 11px; }
-  .icon {
-    width: 42px; height: 42px; border-radius: 13px; flex: none;
-    background: linear-gradient(135deg, var(--c), var(--c-light));
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 7px 16px var(--c-shadow);
-  }
-  .icon svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .mod-head h2 { font-size: 18.5px; color: #0B2545; letter-spacing: 1.5px; line-height: 1.2; }
-  .mod-en { font-size: 9.5px; color: #9aa4b5; letter-spacing: 1.2px; margin-top: 3px; }
-  .mod-no {
-    position: absolute; top: 15px; right: 14px;
-    font-size: 11px; font-weight: 700; color: var(--c); opacity: .5; letter-spacing: 1px;
-  }
-  .mod-desc { font-size: 12.5px; color: #5b6676; line-height: 1.7; margin: 12px 0 11px; }
-
-  .chips { display: flex; flex-direction: column; gap: 7px; position: relative; }
-  .chip {
-    display: flex; align-items: center; gap: 9px;
-    background: #fbfcfe; border: 1px solid var(--c-border); border-radius: 11px;
-    padding: 6px 10px;
-    box-shadow: 0 2px 6px rgba(11,37,69,.03);
-  }
-  .chip .idx {
-    width: 24px; height: 24px; border-radius: 8px; flex: none;
-    background: var(--c-soft); color: var(--c);
-    font-size: 10.5px; font-weight: 700;
+  .mhead { display: flex; align-items: center; gap: 11px; margin-bottom: 4px; }
+  .micon {
+    width: 38px; height: 38px; border-radius: 11px; flex: none;
+    background: color-mix(in srgb, var(--c) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
     display: flex; align-items: center; justify-content: center;
   }
-  .chip .names { display: flex; flex-direction: column; min-width: 0; }
-  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; line-height: 1.3; }
-  .chip .en { font-size: 9px; color: #9aa4b5; white-space: nowrap; letter-spacing: .4px; line-height: 1.35; margin-top: 1px; }
+  .micon svg { width: 19px; height: 19px; stroke: var(--c); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .mhead h2 { font-size: 17.5px; color: #F2F6FC; letter-spacing: 2px; font-weight: 700; }
+  .men { font-size: 9px; color: #55627d; letter-spacing: 1.8px; margin-top: 3px; text-transform: uppercase; }
+  .mdesc { font-size: 11.5px; color: #7d8aa5; line-height: 1.65; margin: 8px 0 10px; }
 
-  .card-foot {
-    margin-top: auto; padding-top: 10px;
-    border-top: 1px dashed var(--c-border);
+  .slist { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+  .slist.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+  .sk { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .sk .d { width: 5px; height: 5px; border-radius: 50%; background: var(--c); flex: none; box-shadow: 0 0 6px var(--c); }
+  .sk .zh { font-size: 13.5px; font-weight: 600; color: #dbe5f5; white-space: nowrap; }
+  .sk .en { font-size: 10px; color: #55627d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .3px; }
+
+  .c1 { --c:#60A5FA; }
+  .c2 { --c:#4FD1C5; }
+  .c3 { --c:#F6AD55; }
+  .c4 { --c:#A78BFA; }
+  .c5 { --c:#F87171; }
+
+  /* ================= terminal cell ================= */
+  .term {
+    grid-column: span 2; --c:#4FD1C5;
+    background: rgba(8,12,24,.88); border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px; overflow: hidden; position: relative;
+    display: flex; flex-direction: column;
+  }
+  .term::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  }
+  .tbar {
     display: flex; align-items: center; gap: 7px;
-    font-size: 10.5px; color: #9aa4b5; letter-spacing: 1px;
-    position: relative;
+    padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.03);
   }
-  .card-foot .tick { width: 14px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--c), var(--c-light)); }
-  .card-foot b { color: var(--c); font-weight: 700; }
-
-  .c1 { --c:#2E74B5; --c-light:#6FAADF; --c-soft:#eef5fc; --c-border:#dfeaf6; --c-shadow:rgba(46,116,181,.30); }
-  .c2 { --c:#1F9D8B; --c-light:#5CC6B6; --c-soft:#ebf7f4; --c-border:#d8efe9; --c-shadow:rgba(31,157,139,.30); }
-  .c3 { --c:#C07A2B; --c-light:#E2AC63; --c-soft:#fbf4ea; --c-border:#f2e4cd; --c-shadow:rgba(192,122,43,.28); }
-  .c4 { --c:#7A5AC8; --c-light:#AB92E4; --c-soft:#f3f0fb; --c-border:#e7dff7; --c-shadow:rgba(122,90,200,.30); }
-  .c5 { --c:#C05050; --c-light:#E28C8C; --c-soft:#fcf0f0; --c-border:#f4dddd; --c-shadow:rgba(192,80,80,.28); }
+  .tbar .b { width: 10px; height: 10px; border-radius: 50%; }
+  .tbar .b1 { background: #FF5F57; } .tbar .b2 { background: #FEBC2E; } .tbar .b3 { background: #28C840; }
+  .tbar .ttl { margin-left: 8px; font-size: 11px; color: #7d8aa5; letter-spacing: 1.5px; }
+  .tbody { padding: 16px 18px; font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; line-height: 2.0; }
+  .tbody .ln1 { color: #8b98b3; }
+  .tbody .p { color: #4FD1C5; font-weight: 700; }
+  .tbody .cmd { color: #dbe5f5; }
+  .tbody .str { color: #F6AD55; }
+  .tbody .ok { color: #34d399; }
+  .tbody .cmt { color: #55627d; }
+  .tbody .cursor {
+    display: inline-block; width: 8px; height: 15px; vertical-align: -2px;
+    background: #4FD1C5; box-shadow: 0 0 8px rgba(79,209,197,.8);
+  }
 
   /* ================= footer ================= */
   .footer {
-    margin-top: 18px; padding-top: 14px; position: relative; z-index: 1;
-    border-top: 1px solid rgba(11,37,69,.08);
+    margin-top: 16px; padding-top: 13px; position: relative; z-index: 1;
+    border-top: 1px solid rgba(255,255,255,.08);
     display: flex; align-items: center; justify-content: space-between;
-    font-size: 12px; color: #9aa4b5;
+    font-size: 11.5px; color: #55627d; letter-spacing: 1px;
   }
-  .footer .left { display: flex; align-items: center; gap: 9px; }
-  .footer .badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,.9); border: 1px solid #e2e9f2; border-radius: 999px;
-    padding: 5px 14px; color: #5b6676;
-  }
-  .footer .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #1F9D8B; }
-  .footer .badge .dot.blue { background: #2E74B5; }
   .footer .repo {
     display: inline-flex; align-items: center; gap: 7px;
-    color: #2E74B5; font-weight: 600; letter-spacing: .3px;
+    color: #9fb1cc; font-weight: 600; font-family: Consolas, monospace; font-size: 12px; letter-spacing: 0;
   }
-  .footer .repo svg { width: 14px; height: 14px; stroke: #2E74B5; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .footer .repo svg { width: 13px; height: 13px; stroke: #4FD1C5; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
 </head>
 <body>
 <div id="canvas">
-  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
 
   <div class="header">
     <div>
-      <div class="kicker"><span class="bar"></span>科研助理技能包<span class="pill">OPEN SOURCE · BILINGUAL</span></div>
-      <h1>他山科研技能库<span class="en">Tashan Research Skills</span></h1>
-      <div class="title-underline"></div>
-      <div class="tagline">为科研工作提供<b>文献查证、研究设计、材料撰写、成果展示与协作沉淀</b>支持</div>
+      <div class="kicker"><span class="bar"></span><span class="txt">科研助理技能包</span><span class="tag">OPEN SOURCE · BILINGUAL · MIT</span></div>
+      <h1>他山科研技能库</h1>
+      <div class="en-title">Tashan Research Skills</div>
+      <div class="tagline">为科研工作提供<b>文献查证 · 研究设计 · 材料撰写 · 成果展示 · 协作沉淀</b>支持</div>
     </div>
-    <div class="stats">
-      <div class="stat"><div class="cap"></div><div class="num">16<small>项</small></div><div class="label">科研技能</div></div>
-      <div class="stat"><div class="cap"></div><div class="num">5<small>类</small></div><div class="label">任务模块</div></div>
-      <div class="stat"><div class="cap"></div><div class="num">MIT</div><div class="label">开源协议</div></div>
+    <div class="hero-stat">
+      <div class="big">16<small>项</small></div>
+      <div class="sub">科研技能 · 5 类任务模块</div>
+      <div class="meta">SKILL.md 即插即用</div>
     </div>
   </div>
 
   <div class="stepper">
-    <div class="step c1"><div class="n">1</div><div class="txt">证据先行</div></div>
-    <div class="conn" style="--from:#2E74B5;--to:#1F9D8B"></div>
-    <div class="step c2"><div class="n">2</div><div class="txt">方案落地</div></div>
-    <div class="conn" style="--from:#1F9D8B;--to:#C07A2B"></div>
-    <div class="step c3"><div class="n">3</div><div class="txt">表达成品</div></div>
-    <div class="conn" style="--from:#C07A2B;--to:#7A5AC8"></div>
-    <div class="step c4"><div class="n">4</div><div class="txt">长期协作</div></div>
-    <div class="conn" style="--from:#7A5AC8;--to:#C05050"></div>
-    <div class="step c5"><div class="n">5</div><div class="txt">工具把关</div></div>
+    <div class="sp" style="--c:#60A5FA"><span class="dot"></span><span class="t">证据先行</span></div>
+    <div class="ln" style="--a:#60A5FA;--b:#4FD1C5"></div>
+    <div class="sp" style="--c:#4FD1C5"><span class="dot"></span><span class="t">方案落地</span></div>
+    <div class="ln" style="--a:#4FD1C5;--b:#F6AD55"></div>
+    <div class="sp" style="--c:#F6AD55"><span class="dot"></span><span class="t">表达成品</span></div>
+    <div class="ln" style="--a:#F6AD55;--b:#A78BFA"></div>
+    <div class="sp" style="--c:#A78BFA"><span class="dot"></span><span class="t">长期协作</span></div>
+    <div class="ln" style="--a:#A78BFA;--b:#F87171"></div>
+    <div class="sp" style="--c:#F87171"><span class="dot"></span><span class="t">工具把关</span></div>
   </div>
 
   <div class="grid">
-    <div class="card c1" data-glyph="证">
-      <div class="accent"></div>
-      <div class="inner">
-        <div class="mod-no">01</div>
-        <div class="mod-head">
-          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg></div>
-          <div><h2>文献证据</h2><div class="mod-en">LITERATURE EVIDENCE</div></div>
-        </div>
-        <div class="mod-desc">快速定位可核验的研究线索，拆关键词、召回证据，标出结论的证据边界。</div>
-        <div class="chips">
-          <div class="chip"><span class="idx">01</span><span class="names"><span class="zh">论文检索</span><span class="en">Paper Search</span></span></div>
-          <div class="chip"><span class="idx">02</span><span class="names"><span class="zh">深度研究</span><span class="en">Deep Research</span></span></div>
-          <div class="chip"><span class="idx">03</span><span class="names"><span class="zh">论文审查</span><span class="en">Thesis Audit Reviewer</span></span></div>
-        </div>
-        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 检索 到 审查</div>
+    <div class="cell c1">
+      <div class="halo"></div><div class="no">01</div>
+      <div class="mhead">
+        <div class="micon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg></div>
+        <div><h2>文献证据</h2><div class="men">Literature Evidence</div></div>
+      </div>
+      <div class="mdesc">快速定位可核验的研究线索，标出结论的证据边界。</div>
+      <div class="slist">
+        <div class="sk"><span class="d"></span><span class="zh">论文检索</span><span class="en">Paper Search</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">深度研究</span><span class="en">Deep Research</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">论文审查</span><span class="en">Thesis Audit Reviewer</span></div>
       </div>
     </div>
 
-    <div class="card c2" data-glyph="构">
-      <div class="accent"></div>
-      <div class="inner">
-        <div class="mod-no">02</div>
-        <div class="mod-head">
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="21" x2="14" y2="21"/></svg></div>
-          <div><h2>研究构思</h2><div class="mod-en">RESEARCH IDEATION</div></div>
-        </div>
-        <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和站得住的实验设计。</div>
-        <div class="chips">
-          <div class="chip"><span class="idx">04</span><span class="names"><span class="zh">假设生成</span><span class="en">Scispark</span></span></div>
-          <div class="chip"><span class="idx">05</span><span class="names"><span class="zh">数据处理</span><span class="en">Research Baseline Builder</span></span></div>
-          <div class="chip"><span class="idx">06</span><span class="names"><span class="zh">实验设计</span><span class="en">Experiment Design</span></span></div>
-        </div>
-        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 想法 到 设计</div>
+    <div class="cell c2">
+      <div class="halo"></div><div class="no">02</div>
+      <div class="mhead">
+        <div class="micon"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="21" x2="14" y2="21"/></svg></div>
+        <div><h2>研究构思</h2><div class="men">Research Ideation</div></div>
+      </div>
+      <div class="mdesc">把“我想研究什么”转成假设、数据任务和实验设计。</div>
+      <div class="slist">
+        <div class="sk"><span class="d"></span><span class="zh">假设生成</span><span class="en">Scispark</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">数据处理</span><span class="en">Baseline Builder</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">实验设计</span><span class="en">Experiment Design</span></div>
       </div>
     </div>
 
-    <div class="card c3" data-glyph="表">
-      <div class="accent"></div>
-      <div class="inner">
-        <div class="mod-no">03</div>
-        <div class="mod-head">
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></div>
-          <div><h2>成果表达</h2><div class="mod-en">RESEARCH EXPRESSION</div></div>
-        </div>
-        <div class="mod-desc">从润色到写审改投，并把成果转成图像、PPT 和讲解视频。</div>
-        <div class="chips">
-          <div class="chip"><span class="idx">07</span><span class="names"><span class="zh">文本润色</span><span class="en">Scientific Humanization</span></span></div>
-          <div class="chip"><span class="idx">08</span><span class="names"><span class="zh">学术写作</span><span class="en">Academic Writing</span></span></div>
-          <div class="chip"><span class="idx">09</span><span class="names"><span class="zh">科研绘图</span><span class="en">Image Generation</span></span></div>
-          <div class="chip"><span class="idx">10</span><span class="names"><span class="zh">PPT 制作</span><span class="en">Visual Deck Builder</span></span></div>
-          <div class="chip"><span class="idx">11</span><span class="names"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></span></div>
-        </div>
-        <div class="card-foot"><span class="tick"></span><b>5</b>&nbsp;SKILLS · 文字 到 视频</div>
+    <div class="cell c3 wide">
+      <div class="halo"></div><div class="no">03</div>
+      <div class="mhead">
+        <div class="micon"><svg viewBox="0 0 24 24"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg></div>
+        <div><h2>成果表达</h2><div class="men">Research Expression</div></div>
+      </div>
+      <div class="mdesc">从论文润色到“写—审—改—投”，再把成果转成科研图像、演示文稿和讲解视频。</div>
+      <div class="slist cols">
+        <div class="sk"><span class="d"></span><span class="zh">文本润色</span><span class="en">Humanization</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">学术写作</span><span class="en">Academic Writing</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">科研绘图</span><span class="en">Image Generation</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">PPT 制作</span><span class="en">Visual Deck Builder</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">讲解视频</span><span class="en">Manim Agent</span></div>
       </div>
     </div>
 
-    <div class="card c4" data-glyph="协">
-      <div class="accent"></div>
-      <div class="inner">
-        <div class="mod-no">04</div>
-        <div class="mod-head">
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <div><h2>协作沉淀</h2><div class="mod-en">COLLABORATION MEMORY</div></div>
-        </div>
-        <div class="mod-desc">引用合规检查、研究偏好画像与分身记忆巩固，接入他山世界科研社区。</div>
-        <div class="chips">
-          <div class="chip"><span class="idx">12</span><span class="names"><span class="zh">引用合规</span><span class="en">PaperCheck</span></span></div>
-          <div class="chip"><span class="idx">13</span><span class="names"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></span></div>
-          <div class="chip"><span class="idx">14</span><span class="names"><span class="zh">他山世界</span><span class="en">World Threads Entry</span></span></div>
-        </div>
-        <div class="card-foot"><span class="tick"></span><b>3</b>&nbsp;SKILLS · 合规 到 社区</div>
+    <div class="cell c4">
+      <div class="halo"></div><div class="no">04</div>
+      <div class="mhead">
+        <div class="micon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div><h2>协作沉淀</h2><div class="men">Collaboration Memory</div></div>
+      </div>
+      <div class="mdesc">引用合规、偏好画像与分身记忆，接入他山世界社区。</div>
+      <div class="slist">
+        <div class="sk"><span class="d"></span><span class="zh">引用合规</span><span class="en">PaperCheck</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">他山世界</span><span class="en">World Threads Entry</span></div>
       </div>
     </div>
 
-    <div class="card c5" data-glyph="评">
-      <div class="accent"></div>
-      <div class="inner">
-        <div class="mod-no">05</div>
-        <div class="mod-head">
-          <div class="icon"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 8.95a1 1 0 0 1-.6-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.17 1.17 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
-          <div><h2>工具测评</h2><div class="mod-en">TOOL EVALUATION</div></div>
-        </div>
-        <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入工作流之前，先做安全与可用性把关。</div>
-        <div class="chips">
-          <div class="chip"><span class="idx">15</span><span class="names"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></span></div>
-          <div class="chip"><span class="idx">16</span><span class="names"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></span></div>
-        </div>
-        <div class="card-foot"><span class="tick"></span><b>2</b>&nbsp;SKILLS · 装前 先测</div>
+    <div class="cell c5">
+      <div class="halo"></div><div class="no">05</div>
+      <div class="mhead">
+        <div class="micon"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.7 8.95a1 1 0 0 1-.6-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.17 1.17 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div><h2>工具测评</h2><div class="men">Tool Evaluation</div></div>
+      </div>
+      <div class="mdesc">MCP 服务与 Agent Skill 纳入工作流前，先做把关。</div>
+      <div class="slist">
+        <div class="sk"><span class="d"></span><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></div>
+        <div class="sk"><span class="d"></span><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></div>
+      </div>
+    </div>
+
+    <div class="term">
+      <div class="tbar"><span class="b b1"></span><span class="b b2"></span><span class="b b3"></span><span class="ttl">QUICK START · POWERSHELL</span></div>
+      <div class="tbody">
+        <div><span class="p">&gt;</span> <span class="cmd">git clone</span> <span class="str">https://github.com/TashanGKD/tashan-research-skills</span></div>
+        <div><span class="p">&gt;</span> <span class="cmd">Copy-Item -Recurse .\skills\papercheck</span> <span class="str">"$env:USERPROFILE\.codex\skills\"</span></div>
+        <div><span class="ok">✓</span> <span class="cmd">skill installed</span> <span class="cmt">— 16 skills · 每个目录一个 SKILL.md，即插即用</span></div>
+        <div><span class="cmt"># 文献证据 · 研究构思 · 成果表达 · 协作沉淀 · 工具测评</span></div>
+        <div><span class="p">&gt;</span> <span class="cursor"></span></div>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <div class="left">
-      <span class="badge"><span class="dot blue"></span>磐石 AI4Science 生态与应用模式研究项目 支持</span>
-      <span class="badge"><span class="dot"></span>MIT License</span>
-    </div>
+    <span>磐石 AI4Science 生态与应用模式研究项目 支持 · MIT License</span>
     <span class="repo"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>github.com/TashanGKD/tashan-research-skills</span>
   </div>
 </div>
