@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-07-07T00:38:38",
+  "schema": "research_skill_graph_v1",
+  "skill_count": 1398,
+  "edge_count": 32302,
+  "buckets": 90,
+  "capabilities": 12,
+  "source": "TopicLab science-skill discovery pipeline"
+}

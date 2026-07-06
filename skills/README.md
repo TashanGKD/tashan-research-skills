@@ -4,6 +4,7 @@ Each folder contains one skill entrypoint named `SKILL.md`.
 
 | Folder | Skill name | Category |
 | --- | --- | --- |
+| [`find-science-skills`](find-science-skills/SKILL.md) | Find Science Skills | Literature evidence |
 | [`giiisp-paper-search-apis`](giiisp-paper-search-apis/SKILL.md) | Paper Search | Literature evidence |
 | [`sci-employee-deep-research`](sci-employee-deep-research/SKILL.md) | Deep Research | Literature evidence |
 | [`thesis-audit-reviewer`](thesis-audit-reviewer/SKILL.md) | Thesis Audit Reviewer | Literature evidence |

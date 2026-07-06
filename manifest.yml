@@ -12,6 +12,9 @@ authors:
   - Wang Rui
   - Fang Zerui
 skills:
+  - id: find-science-skills
+    category: literature-evidence
+    entrypoint: skills/find-science-skills/SKILL.md
   - id: giiisp-paper-search-apis
     category: literature-evidence
     entrypoint: skills/giiisp-paper-search-apis/SKILL.md

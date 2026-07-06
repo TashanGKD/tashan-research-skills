@@ -1,0 +1,8 @@
+interface:
+  display_name: "科研技能发现"
+  short_description: "在他山科研技能图谱里检索并推荐该装哪个 skill"
+  brand_color: "#4F8FF7"
+  default_prompt: "Use $find-science-skills to find and recommend the best research skills for this task, expanding graph neighbors (alternatives, companions, next workflow step)."
+
+policy:
+  allow_implicit_invocation: true
