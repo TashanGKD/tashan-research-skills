@@ -1,8 +1,10 @@
 import argparse
 import base64
+import http.client
 import json
 import os
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -158,19 +160,25 @@ def call_dashscope(model, api_key, image_path, prompt, timeout):
         },
         method="POST",
     )
-    try:
-        with urlopen(request, timeout=timeout) as response:
-            text = response.read().decode("utf-8", errors="replace")
-            return {"status_code": response.status, "json": json.loads(text), "text": text}
-    except HTTPError as exc:
-        text = exc.read().decode("utf-8", errors="replace")
+    last_error = None
+    for attempt in range(3):
+        if attempt:
+            time.sleep(2 * attempt)
         try:
-            data = json.loads(text)
-        except json.JSONDecodeError:
-            data = {"raw_text": text}
-        return {"status_code": exc.code, "json": data, "text": text}
-    except URLError as exc:
-        return {"status_code": None, "json": {"error": str(exc)}, "text": str(exc)}
+            with urlopen(request, timeout=timeout) as response:
+                text = response.read().decode("utf-8", errors="replace")
+                return {"status_code": response.status, "json": json.loads(text), "text": text}
+        except HTTPError as exc:
+            text = exc.read().decode("utf-8", errors="replace")
+            try:
+                data = json.loads(text)
+            except json.JSONDecodeError:
+                data = {"raw_text": text}
+            return {"status_code": exc.code, "json": data, "text": text}
+        except (URLError, TimeoutError, http.client.HTTPException, ConnectionError, OSError) as exc:
+            # transient network failures (SSL EOF, IncompleteRead) are worth a retry
+            last_error = exc
+    return {"status_code": None, "json": {"error": str(last_error), "type": type(last_error).__name__}, "text": str(last_error)}
 
 
 def blocked(reason, details=None):

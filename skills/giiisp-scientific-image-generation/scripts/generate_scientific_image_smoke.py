@@ -1,6 +1,7 @@
 import argparse
 import base64
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -300,6 +301,9 @@ def http_json(method, url, token, body=None, timeout=60):
         return {"status_code": None, "json": {"error": str(exc)}, "text": str(exc)}
     except TimeoutError as exc:
         return {"status_code": None, "json": {"error": str(exc), "type": "TimeoutError"}, "text": str(exc)}
+    except (http.client.HTTPException, ConnectionError, OSError) as exc:
+        # e.g. IncompleteRead when a large poll payload is cut mid-transfer; let the poll loop retry
+        return {"status_code": None, "json": {"error": str(exc), "type": type(exc).__name__}, "text": str(exc)}
 
 
 def resolve_auth_token():
