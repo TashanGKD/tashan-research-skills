@@ -11,7 +11,6 @@ authors:
   - Cai Anping
   - Wang Rui
   - Fang Zerui
-  - OpenAI Codex-assisted development contributors
 skills:
   - id: giiisp-paper-search-apis
     category: literature-evidence
@@ -52,9 +51,6 @@ skills:
   - id: cognitive-profile
     category: collaboration-memory
     entrypoint: skills/cognitive-profile/SKILL.md
-  - id: research-dream
-    category: collaboration-memory
-    entrypoint: skills/research-dream/SKILL.md
   - id: world-threads-entry
     category: collaboration-memory
     entrypoint: skills/world-threads-entry/SKILL.md

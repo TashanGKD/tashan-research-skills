@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>他山科研技能库 · 概览图</title>
+<!--
+  仓库首页概览图源文件。
+  修改后用浏览器打开，按 1280x800 视口截图，替换 assets/research-skills-overview.png。
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; }
+  #canvas {
+    width: 1280px; height: 800px; overflow: hidden;
+    background:
+      radial-gradient(1000px 500px at 85% -10%, #dcebfa 0%, rgba(220,235,250,0) 60%),
+      radial-gradient(800px 400px at -5% 110%, #e3f2ec 0%, rgba(227,242,236,0) 55%),
+      linear-gradient(160deg, #f7f9fc 0%, #eef3f9 100%);
+    padding: 44px 52px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- header ---------- */
+  .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
+  .title-block .kicker {
+    display: inline-block; font-size: 13px; letter-spacing: 3px; color: #2E74B5;
+    border: 1px solid #b9d3ea; border-radius: 999px; padding: 3px 14px; margin-bottom: 14px;
+    background: rgba(255,255,255,.7);
+  }
+  .title-block h1 { font-size: 40px; color: #0B2545; letter-spacing: 1px; }
+  .title-block h1 .en { font-size: 17px; font-weight: 500; color: #6B7280; margin-left: 14px; letter-spacing: .5px; }
+  .title-block .tagline { margin-top: 10px; font-size: 15px; color: #475467; }
+  .stats { display: flex; gap: 12px; }
+  .stat {
+    background: #ffffff; border: 1px solid #e4eaf2; border-radius: 14px;
+    padding: 12px 20px; text-align: center; box-shadow: 0 6px 18px rgba(11,37,69,.06);
+  }
+  .stat .num { font-size: 26px; font-weight: 700; color: #0B2545; }
+  .stat .num small { font-size: 13px; font-weight: 500; color: #6B7280; margin-left: 2px; }
+  .stat .label { font-size: 12px; color: #6B7280; margin-top: 2px; letter-spacing: 1px; }
+
+  /* ---------- pipeline hint ---------- */
+  .flow { display: flex; align-items: center; gap: 10px; margin: 14px 0 18px; font-size: 13px; color: #98a2b3; }
+  .flow .line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, #c8d4e3, transparent); }
+
+  /* ---------- module grid ---------- */
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; flex: 1; }
+  .card {
+    background: #ffffff; border: 1px solid #e4eaf2; border-radius: 18px;
+    padding: 18px 14px 14px; display: flex; flex-direction: column;
+    box-shadow: 0 10px 26px rgba(11,37,69,.07);
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: var(--accent);
+  }
+  .card .mod-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .card .dot {
+    width: 34px; height: 34px; border-radius: 10px; flex: none;
+    background: var(--accent-soft); color: var(--accent-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+  }
+  .card h2 { font-size: 18px; color: #0B2545; letter-spacing: 1px; }
+  .card .mod-en { font-size: 11px; color: #98a2b3; letter-spacing: .5px; margin-top: 1px; }
+  .card .mod-desc { font-size: 12px; color: #667085; line-height: 1.6; margin: 8px 0 12px; min-height: 57px; }
+  .chips { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+  .chip {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--accent-soft); border-radius: 10px; padding: 8px 10px;
+    white-space: nowrap;
+  }
+  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-deep); flex: none; }
+  .chip .zh { font-size: 13.5px; font-weight: 600; color: #1d2939; white-space: nowrap; }
+  .chip .en { font-size: 10px; color: #98a2b3; margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .c1 { --accent: linear-gradient(90deg,#2E74B5,#5AA0DC); --accent-soft: #eef5fb; --accent-deep: #2E74B5; }
+  .c2 { --accent: linear-gradient(90deg,#1F9D8B,#4CC3B0); --accent-soft: #ecf7f5; --accent-deep: #178576; }
+  .c3 { --accent: linear-gradient(90deg,#B5762E,#DCA55A); --accent-soft: #faf4ec; --accent-deep: #a06322; }
+  .c4 { --accent: linear-gradient(90deg,#7A5AC8,#A48BE0); --accent-soft: #f3f0fb; --accent-deep: #6a4bb8; }
+  .c5 { --accent: linear-gradient(90deg,#B54545,#DC7A7A); --accent-soft: #fbf0f0; --accent-deep: #a53d3d; }
+
+  /* ---------- footer ---------- */
+  .footer {
+    margin-top: 18px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 12.5px; color: #98a2b3;
+  }
+  .footer .repo { color: #2E74B5; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div class="header">
+    <div class="title-block">
+      <div class="kicker">科研助理技能包</div>
+      <h1>他山科研技能库<span class="en">Tashan Research Skills</span></h1>
+      <div class="tagline">为科研工作提供文献查证、研究设计、材料撰写、成果展示与协作沉淀支持</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">16<small>项</small></div><div class="label">科研技能</div></div>
+      <div class="stat"><div class="num">5<small>类</small></div><div class="label">任务模块</div></div>
+      <div class="stat"><div class="num">MIT</div><div class="label">开源协议</div></div>
+    </div>
+  </div>
+
+  <div class="flow"><span>证据先行</span><div class="line"></div><span>方案落地</span><div class="line"></div><span>表达成品</span><div class="line"></div><span>长期协作</span><div class="line"></div><span>工具把关</span></div>
+
+  <div class="grid">
+    <div class="card c1">
+      <div class="mod-head"><div class="dot">证</div><div><h2>文献证据</h2><div class="mod-en">Literature Evidence</div></div></div>
+      <div class="mod-desc">快速定位可核验的研究线索，拆关键词、召回证据，标出结论的证据边界。</div>
+      <div class="chips">
+        <div class="chip"><span class="zh">论文检索</span><span class="en">Paper Search</span></div>
+        <div class="chip"><span class="zh">深度研究</span><span class="en">Deep Research</span></div>
+        <div class="chip"><span class="zh">论文审查</span><span class="en">Thesis Audit</span></div>
+      </div>
+    </div>
+    <div class="card c2">
+      <div class="mod-head"><div class="dot">构</div><div><h2>研究构思</h2><div class="mod-en">Research Ideation</div></div></div>
+      <div class="mod-desc">把“我想研究什么”转成假设、数据任务、baseline 和统计上站得住的实验设计。</div>
+      <div class="chips">
+        <div class="chip"><span class="zh">假设生成</span><span class="en">Scispark</span></div>
+        <div class="chip"><span class="zh">数据处理</span><span class="en">Baseline Builder</span></div>
+        <div class="chip"><span class="zh">实验设计</span><span class="en">Experiment Design</span></div>
+      </div>
+    </div>
+    <div class="card c3">
+      <div class="mod-head"><div class="dot">表</div><div><h2>成果表达</h2><div class="mod-en">Research Expression</div></div></div>
+      <div class="mod-desc">从论文润色到写审改投全流程，并把成果转成科研图像、PPT 和讲解视频。</div>
+      <div class="chips">
+        <div class="chip"><span class="zh">文本润色</span><span class="en">Humanization</span></div>
+        <div class="chip"><span class="zh">学术写作</span><span class="en">Academic Writing</span></div>
+        <div class="chip"><span class="zh">科研绘图</span><span class="en">Image Generation</span></div>
+        <div class="chip"><span class="zh">PPT 制作</span><span class="en">Deck Builder</span></div>
+        <div class="chip"><span class="zh">讲解视频</span><span class="en">Manim Agent</span></div>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="mod-head"><div class="dot">协</div><div><h2>协作沉淀</h2><div class="mod-en">Collaboration Memory</div></div></div>
+      <div class="mod-desc">引用合规检查、研究偏好画像与分身记忆巩固，接入他山世界科研社区。</div>
+      <div class="chips">
+        <div class="chip"><span class="zh">引用合规</span><span class="en">PaperCheck</span></div>
+        <div class="chip"><span class="zh">科研画像</span><span class="en">Cognitive Profile</span></div>
+        <div class="chip"><span class="zh">他山世界</span><span class="en">World Threads</span></div>
+      </div>
+    </div>
+    <div class="card c5">
+      <div class="mod-head"><div class="dot">评</div><div><h2>工具测评</h2><div class="mod-en">Tool Evaluation</div></div></div>
+      <div class="mod-desc">在把外部 MCP 服务和 Agent Skill 纳入科研工作流之前，先做安全与可用性把关。</div>
+      <div class="chips">
+        <div class="chip"><span class="zh">MCP 测评</span><span class="en">MCP-CriticAgent</span></div>
+        <div class="chip"><span class="zh">技能测评</span><span class="en">Skill-CriticAgent</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>磐石 AI4Science 生态与应用模式研究项目 支持</span>
+    <span class="repo">github.com/TashanGKD/tashan-research-skills</span>
+  </div>
+</div>
+</body>
+</html>

@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-16-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/%E6%A8%A1%E5%9D%97-5-0B2545.svg)](#技能矩阵)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## 项目概览
 
-他山科研技能库收录 **17 个生产级 agent skills**，覆盖科研工作者的日常任务：查文献、核证据，把想法变成可检验的研究设计，把成果做成论文、图像、PPT 和讲解视频，并沉淀长期协作记忆。每个 skill 都是独立工作流目录，以 `SKILL.md` 为入口，自带脚本、参考文档、模板和测试。
+他山科研技能库收录 **16 个生产级 agent skills**，覆盖科研工作者的日常任务：查文献、核证据，把想法变成可检验的研究设计，把成果做成论文、图像、PPT 和讲解视频，并沉淀长期协作记忆。每个 skill 都是独立工作流目录，以 `SKILL.md` 为入口，自带脚本、参考文档、模板和测试。
 
 本项目由 **磐石 AI4Science 生态与应用模式研究项目** 支持。
 
@@ -65,8 +65,7 @@
 | 技能 | 路径 | 用途 |
 | --- | --- | --- |
 | 引用合规 | [`skills/papercheck`](skills/papercheck/SKILL.md) | 检查论文引文、参考文献、格式和上下文支撑关系。 |
-| 科研画像 | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | 记录研究偏好、表达习惯和协作边界，让长期辅助更贴合个人风格。 |
-| 科研分身 | [`skills/research-dream`](skills/research-dream/SKILL.md) | 把日常科研对话沉淀为长期记忆文件，周期性做“做梦”式深度整理，逐步形成科研数字分身。 |
+| 科研画像 | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | 记录研究偏好、表达习惯和协作边界，内置“做梦”式深度整理，让长期辅助逐步形成科研数字分身。配套 Dream 巩固层见 [`skills/research-dream`](skills/research-dream/SKILL.md)（可选安装，不单独上架）。 |
 | 他山世界 | [`skills/world-threads-entry`](skills/world-threads-entry/SKILL.md) | 接入 TopicLab / 他山世界 / OpenClaw，支持前沿信息获取和科研协作。 |
 
 ### 工具测评
@@ -152,7 +151,7 @@ Copy-Item -Recurse .\skills\papercheck "$env:USERPROFILE\.codex\skills\paperchec
 
 **作者与贡献者**
 
-乔晗 · 朱晓墨 · Yu-Yang Li · 蔡安平 · 王瑞 · 房泽锐 · OpenAI Codex 辅助开发贡献者
+乔晗 · 朱晓墨 · Yu-Yang Li · 蔡安平 · 王瑞 · 房泽锐
 
 **支持项目**
 

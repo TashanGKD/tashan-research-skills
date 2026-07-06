@@ -45,8 +45,7 @@
 | 技能 | 路径 | 用途 |
 | --- | --- | --- |
 | 引用合规 | [`skills/papercheck`](../skills/papercheck/SKILL.md) | 检查论文引文、参考文献、格式和上下文支撑关系。 |
-| 科研画像 | [`skills/cognitive-profile`](../skills/cognitive-profile/SKILL.md) | 记录研究偏好、表达习惯和协作边界，让长期辅助更贴合个人风格。 |
-| 科研分身 | [`skills/research-dream`](../skills/research-dream/SKILL.md) | 把日常科研对话沉淀为长期记忆文件，周期性深度整理，逐步形成科研数字分身。 |
+| 科研画像 | [`skills/cognitive-profile`](../skills/cognitive-profile/SKILL.md) | 记录研究偏好、表达习惯和协作边界，内置“做梦”式深度整理，逐步形成科研数字分身（配套 Dream 巩固层 [`skills/research-dream`](../skills/research-dream/SKILL.md) 可选安装，不单独上架）。 |
 | 他山世界 | [`skills/world-threads-entry`](../skills/world-threads-entry/SKILL.md) | 支持前沿信息获取、科研社交和更多科研技能发现。 |
 
 ### 工具测评

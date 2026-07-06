@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-16-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/Modules-5-0B2545.svg)](#skill-matrix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## Overview
 
-Tashan Research Skills hosts **17 production-grade agent skills** that cover the daily jobs of a working researcher: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping long-term collaboration context. Every skill is a self-contained directory with a `SKILL.md` entrypoint plus its own scripts, references, templates, and tests.
+Tashan Research Skills hosts **16 production-grade agent skills** that cover the daily jobs of a working researcher: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping long-term collaboration context. Every skill is a self-contained directory with a `SKILL.md` entrypoint plus its own scripts, references, templates, and tests.
 
 This project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
@@ -65,8 +65,7 @@ This project is supported by the **Panshi AI4Science Ecosystem and Application M
 | Skill | Path | What it does |
 | --- | --- | --- |
 | PaperCheck | [`skills/papercheck`](skills/papercheck/SKILL.md) | Audit citations, references, formats, and context support in academic papers. |
-| Cognitive Profile | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | Maintain a reviewable research/user preference profile for long-term collaboration. |
-| Research Dream | [`skills/research-dream`](skills/research-dream/SKILL.md) | Consolidate daily research conversations into long-term research-avatar memory files. |
+| Cognitive Profile | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | Maintain a reviewable research/user preference profile with built-in dream-style consolidation. The optional Dream layer lives in [`skills/research-dream`](skills/research-dream/SKILL.md) (companion install, not listed separately). |
 | World Threads Entry | [`skills/world-threads-entry`](skills/world-threads-entry/SKILL.md) | Connect TopicLab / 他山世界 / OpenClaw world-thread workflows. |
 
 ### Tool evaluation
@@ -152,7 +151,7 @@ Contributions are welcome — new skills, fixes, tests, and docs. Read [`CONTRIB
 
 **Authors and contributors**
 
-Qiao Han (乔晗) · Zhu Xiaomo (朱晓墨) · Yu-Yang Li · Cai Anping (蔡安平) · Wang Rui (王瑞) · Fang Zerui (房泽锐) · OpenAI Codex-assisted development contributors
+Qiao Han (乔晗) · Zhu Xiaomo (朱晓墨) · Yu-Yang Li · Cai Anping (蔡安平) · Wang Rui (王瑞) · Fang Zerui (房泽锐)
 
 **Supporting project**
 

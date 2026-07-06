@@ -17,7 +17,7 @@ Each folder contains one skill entrypoint named `SKILL.md`.
 | [`manim-agent`](manim-agent/SKILL.md) | Manim Agent | Research expression |
 | [`papercheck`](papercheck/SKILL.md) | PaperCheck | Collaboration memory |
 | [`cognitive-profile`](cognitive-profile/SKILL.md) | Cognitive Profile | Collaboration memory |
-| [`research-dream`](research-dream/SKILL.md) | Research Dream | Collaboration memory |
+| [`research-dream`](research-dream/SKILL.md) | Research Dream (companion Dream layer of Cognitive Profile, not listed separately) | Collaboration memory |
 | [`world-threads-entry`](world-threads-entry/SKILL.md) | World Threads Entry | Collaboration memory |
 | [`mcp-criticagent`](mcp-criticagent/SKILL.md) | MCP-CriticAgent | Tool evaluation |
 | [`skill-criticagent`](skill-criticagent/SKILL.md) | Skill-CriticAgent | Tool evaluation |
