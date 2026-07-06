@@ -10,16 +10,17 @@ This project is supported by the **Panshi AI4Science Ecosystem and Application M
 
 ## Overview
 
-The repository currently includes **12 skills**. Each skill is a self-contained workflow directory with a `SKILL.md` entrypoint and, when needed, supporting scripts, references, templates, examples, or assets.
+The repository currently includes **17 skills**. Each skill is a self-contained workflow directory with a `SKILL.md` entrypoint and, when needed, supporting scripts, references, templates, examples, or assets.
 
-The skills are grouped around four practical research jobs:
+The skills are grouped around five practical research jobs:
 
 | Module | What it supports | Skills |
 | --- | --- | --- |
 | Literature evidence | Paper search, evidence retrieval, claim tracing, manuscript audit, and evidence boundary checks. | Paper Search, Deep Research, Thesis Audit Reviewer |
-| Research ideation | Turning topics, paper sets, or early questions into hypotheses, mechanisms, data tasks, baselines, and evaluation plans. | Scispark, Research Baseline Builder |
-| Research expression | Improving scientific writing and producing figures, slides, and technical explainer videos. | Scientific Humanization, Scientific Image Generation, Visual Deck Builder, Manim Agent |
-| Collaboration memory | Citation compliance, preference memory, and long-running research collaboration workflows. | PaperCheck, Cognitive Profile, World Threads Entry |
+| Research ideation | Turning topics, paper sets, or early questions into hypotheses, mechanisms, data tasks, baselines, experiment designs, and evaluation plans. | Scispark, Research Baseline Builder, Experiment Design |
+| Research expression | Improving scientific writing and producing manuscripts, figures, slides, and technical explainer videos. | Scientific Humanization, Academic Writing, Scientific Image Generation, Visual Deck Builder, Manim Agent |
+| Collaboration memory | Citation compliance, preference memory, research-avatar memory consolidation, and long-running research collaboration workflows. | PaperCheck, Cognitive Profile, Research Dream, World Threads Entry |
+| Tool evaluation | Vetting MCP servers and Agent Skills before adopting them into a research workflow. | MCP-CriticAgent, Skill-CriticAgent |
 
 ## Included Skills
 
@@ -30,13 +31,18 @@ The skills are grouped around four practical research jobs:
 | Thesis Audit Reviewer | [`skills/thesis-audit-reviewer`](skills/thesis-audit-reviewer/SKILL.md) | Audit thesis or manuscript claims, evidence, references, methods, and completion gates. |
 | Scispark | [`skills/scispark`](skills/scispark/SKILL.md) | Generate evidence-tracked research ideas and testable hypotheses from papers or keywords. |
 | Research Baseline Builder | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | Translate a scientific question into data inputs, outputs, baselines, and metrics. |
+| Experiment Design | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | Design statistically sound, reproducible experiments before data collection: design types, randomization, sample size, power, and analysis plans. |
 | Scientific Humanization | [`skills/scientific-humanization`](skills/scientific-humanization/SKILL.md) | Rewrite Chinese scientific text so it sounds natural while preserving facts and evidence boundaries. |
+| Academic Writing | [`skills/academic-writing`](skills/academic-writing/SKILL.md) | Draft, review, revise, and submit academic work: manuscripts, peer review, rebuttals, grant proposals, and submission materials. |
 | Scientific Image Generation | [`skills/giiisp-scientific-image-generation`](skills/giiisp-scientific-image-generation/SKILL.md) | Turn paper paragraphs, mechanisms, and experiment flows into scientific image briefs and runs. |
 | Visual Deck Builder | [`skills/visual-deck-builder`](skills/visual-deck-builder/SKILL.md) | Build image-model-driven PPT decks from topics, papers, reports, notes, or style references. |
 | Manim Agent | [`skills/manim-agent`](skills/manim-agent/SKILL.md) | Create, review, and package mathematical or technical explainer videos. |
 | PaperCheck | [`skills/papercheck`](skills/papercheck/SKILL.md) | Audit citations, references, formats, and context support in academic papers. |
 | Cognitive Profile | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | Maintain a reviewable research/user preference profile for long-term collaboration. |
+| Research Dream | [`skills/research-dream`](skills/research-dream/SKILL.md) | Consolidate daily research conversations into long-term research-avatar memory files. |
 | World Threads Entry | [`skills/world-threads-entry`](skills/world-threads-entry/SKILL.md) | Connect TopicLab / 他山世界 / OpenClaw world-thread workflows. |
+| MCP-CriticAgent | [`skills/mcp-criticagent`](skills/mcp-criticagent/SKILL.md) | Deploy, test, and score MCP servers and tools: protocol checks, smart tests, and repository health. |
+| Skill-CriticAgent | [`skills/skill-criticagent`](skills/skill-criticagent/SKILL.md) | Evaluate Agent Skills for spec compliance, security, behavior uplift, and trigger quality before installing. |
 
 See [`docs/skill-package-overview.md`](docs/skill-package-overview.md) for the Chinese package overview.
 

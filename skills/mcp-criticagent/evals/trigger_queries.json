@@ -1,0 +1,10 @@
+[
+  {"query": "can you test this mcp server for me https://github.com/upstash/context7 — we want to use it in prod", "should_trigger": true},
+  {"query": "is @modelcontextprotocol/server-filesystem any good? need something for file access", "should_trigger": true},
+  {"query": "vet this MCP package before we roll it out to the team: exa-mcp-server", "should_trigger": true},
+  {"query": "find me an mcp tool for querying postgres and check it actually works", "should_trigger": true},
+  {"query": "evaluate the skill at ./my-skills/csv-analyzer and tell me if it's worth installing", "should_trigger": false},
+  {"query": "write an MCP server that wraps our internal ticketing API", "should_trigger": false},
+  {"query": "my MCP server code throws a JSON-RPC parse error, help me debug the handler", "should_trigger": false},
+  {"query": "what is the Model Context Protocol and how does it compare to function calling?", "should_trigger": false}
+]

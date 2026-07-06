@@ -1,0 +1,10 @@
+[
+  {"query": "hey can you check if this skill i downloaded is any good? it's in ~/Downloads/pdf-wizard, my coworker swears by it but idk", "should_trigger": true},
+  {"query": "audit the skills folder in our repo (.agents/skills) and tell me which ones are safe to keep", "should_trigger": true},
+  {"query": "I wrote a SKILL.md for our deploy workflow — does the description actually trigger when people ask about deployments?", "should_trigger": true},
+  {"query": "benchmark whether the csv-analyzer skill actually helps compared to no skill at all", "should_trigger": true},
+  {"query": "evaluate this MCP server at https://github.com/upstash/context7 and tell me if it works", "should_trigger": false},
+  {"query": "write me a new skill that formats git commit messages", "should_trigger": false},
+  {"query": "my python script in scripts/extract.py has a syntax error, can you fix it", "should_trigger": false},
+  {"query": "summarize the SKILL.md file in this repo so I can understand what it does", "should_trigger": false}
+]

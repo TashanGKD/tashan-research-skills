@@ -10,16 +10,17 @@
 
 ## 项目概览
 
-当前仓库共包含 **12 个 skills**。每个 skill 都是一个独立工作流目录，入口文件为 `SKILL.md`，必要时配套 `scripts/`、`references/`、`templates/`、`examples/` 或 `assets/`。
+当前仓库共包含 **17 个 skills**。每个 skill 都是一个独立工作流目录，入口文件为 `SKILL.md`，必要时配套 `scripts/`、`references/`、`templates/`、`examples/` 或 `assets/`。
 
-这些 skills 按四类科研任务组织：
+这些 skills 按五类科研任务组织：
 
 | 模块 | 支持内容 | 包含技能 |
 | --- | --- | --- |
 | 文献证据 | 论文检索、证据召回、结论追踪、论文审查和证据边界核验。 | 论文检索、深度研究、论文审查 |
-| 研究构思 | 把主题、论文集合或初步问题转成假设、机制线索、数据任务、baseline 和评估方案。 | Scispark、Research Baseline Builder |
-| 成果表达 | 改进科研写作，并生成科研图像、PPT 和技术讲解视频。 | 科研文本润色、科研绘图、Visual Deck Builder、Manim Agent |
-| 协作沉淀 | 引用合规、偏好记忆和长期科研协作工作流。 | PaperCheck、科研画像、他山世界 |
+| 研究构思 | 把主题、论文集合或初步问题转成假设、机制线索、数据任务、baseline、实验设计和评估方案。 | 假设生成、数据处理、实验设计 |
+| 成果表达 | 改进科研写作，并产出论文稿件、科研图像、PPT 和技术讲解视频。 | 文本润色、学术写作、科研绘图、PPT 制作、讲解视频 |
+| 协作沉淀 | 引用合规、偏好记忆、科研分身记忆巩固和长期科研协作工作流。 | 引用合规、科研画像、科研分身、他山世界 |
+| 工具测评 | 在把 MCP 服务和 Agent Skill 纳入科研工作流之前先做测评把关。 | MCP 测评、技能测评 |
 
 ## 包含技能
 
@@ -30,13 +31,18 @@
 | 论文审查 | [`skills/thesis-audit-reviewer`](skills/thesis-audit-reviewer/SKILL.md) | 审查论文或学位论文中的事实、方法、引用、证据边界和完成度。 |
 | Scispark | [`skills/scispark`](skills/scispark/SKILL.md) | 基于关键词或论文集合生成带证据追踪的研究想法、假设和机制线索。 |
 | Research Baseline Builder | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | 把科研问题拆成可处理的数据任务，明确输入、输出、baseline 和评估指标。 |
+| 实验设计 | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | 在采集数据之前完成研究设计：设计类型、随机化、样本量、统计功效和分析计划。 |
 | 科研文本润色 | [`skills/scientific-humanization`](skills/scientific-humanization/SKILL.md) | 优化中文论文、基金、答辩和讲稿表达，让文字更自然，同时保留事实边界。 |
+| 学术写作 | [`skills/academic-writing`](skills/academic-writing/SKILL.md) | 覆盖论文写作、同行评审、审稿回复、基金申请和投稿材料的"写—审—改—投"全流程。 |
 | 科研绘图 | [`skills/giiisp-scientific-image-generation`](skills/giiisp-scientific-image-generation/SKILL.md) | 把论文段落、机制描述或实验流程转成科研图像生成任务。 |
 | PPT 制作 | [`skills/visual-deck-builder`](skills/visual-deck-builder/SKILL.md) | 把主题、论文、报告或笔记整理成结构清晰、视觉完整的演示文稿。 |
 | 讲解视频 | [`skills/manim-agent`](skills/manim-agent/SKILL.md) | 生成数学、公式或技术概念的讲解动画，可按需要加入配音。 |
 | 引用合规 | [`skills/papercheck`](skills/papercheck/SKILL.md) | 检查论文引文、参考文献、格式和上下文支撑关系。 |
 | 科研画像 | [`skills/cognitive-profile`](skills/cognitive-profile/SKILL.md) | 记录研究偏好、表达习惯和协作边界，让长期辅助更贴合个人风格。 |
+| 科研分身 | [`skills/research-dream`](skills/research-dream/SKILL.md) | 把日常科研对话沉淀为长期记忆文件，周期性做"做梦"式深度整理，逐步形成科研数字分身。 |
 | 他山世界 | [`skills/world-threads-entry`](skills/world-threads-entry/SKILL.md) | 接入 TopicLab / 他山世界 / OpenClaw，支持前沿信息获取和科研协作。 |
+| MCP 测评 | [`skills/mcp-criticagent`](skills/mcp-criticagent/SKILL.md) | 部署、测试并评分 MCP 服务与工具：协议连通、行为测试和仓库健康度。 |
+| 技能测评 | [`skills/skill-criticagent`](skills/skill-criticagent/SKILL.md) | 在安装 Agent Skill 之前评估规范合规、安全性、实际提升和触发质量。 |
 
 更多中文能力说明见 [`docs/skill-package-overview.md`](docs/skill-package-overview.md)。
 

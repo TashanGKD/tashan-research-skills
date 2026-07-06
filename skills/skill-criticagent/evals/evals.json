@@ -1,0 +1,27 @@
+{
+  "skill_name": "skill-criticagent",
+  "evals": [
+    {
+      "id": "full-evaluation",
+      "prompt": "I found a skill called csv-analyzer in ./candidate-skills/csv-analyzer — evaluate it and tell me if it's worth installing.",
+      "expected_output": "A verdict-first plain-language report: install/fix/reject recommendation up top, then one line each for compliance, usefulness (as counts, e.g. 3/3 vs 1/3), and triggering, with only the evidence that matters. No internal jargon like pass_rate_delta, and the user is not asked to co-author eval cases.",
+      "expectations": [
+        "contains: eval-skill",
+        "The evaluation starts with static validation before any behavior evaluation",
+        "The report leads with a clear install / fix-first / reject verdict",
+        "Uplift is reported as plain counts rather than internal jargon such as pass_rate_delta",
+        "The recommendation cites concrete evidence such as failed assertions or validation errors"
+      ]
+    },
+    {
+      "id": "invalid-skill-stops-early",
+      "prompt": "Evaluate the skill at ./broken-skill (its SKILL.md has no frontmatter) and benchmark its behavior.",
+      "expected_output": "Static validation fails and the evaluation stops with the errors reported; no behavior rounds are run for an uninstallable skill.",
+      "expectations": [
+        "not-contains: pass_rate_delta",
+        "The response reports the frontmatter validation error",
+        "The response explains that behavior evaluation is skipped because the skill cannot install"
+      ]
+    }
+  ]
+}

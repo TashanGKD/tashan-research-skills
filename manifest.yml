@@ -28,9 +28,15 @@ skills:
   - id: research-baseline-builder
     category: research-ideation
     entrypoint: skills/research-baseline-builder/SKILL.md
+  - id: experiment-design
+    category: research-ideation
+    entrypoint: skills/experiment-design/SKILL.md
   - id: scientific-humanization
     category: research-expression
     entrypoint: skills/scientific-humanization/SKILL.md
+  - id: academic-writing
+    category: research-expression
+    entrypoint: skills/academic-writing/SKILL.md
   - id: giiisp-scientific-image-generation
     category: research-expression
     entrypoint: skills/giiisp-scientific-image-generation/SKILL.md
@@ -46,6 +52,15 @@ skills:
   - id: cognitive-profile
     category: collaboration-memory
     entrypoint: skills/cognitive-profile/SKILL.md
+  - id: research-dream
+    category: collaboration-memory
+    entrypoint: skills/research-dream/SKILL.md
   - id: world-threads-entry
     category: collaboration-memory
     entrypoint: skills/world-threads-entry/SKILL.md
+  - id: mcp-criticagent
+    category: tool-evaluation
+    entrypoint: skills/mcp-criticagent/SKILL.md
+  - id: skill-criticagent
+    category: tool-evaluation
+    entrypoint: skills/skill-criticagent/SKILL.md

@@ -1,0 +1,26 @@
+{
+  "skill_name": "mcp-criticagent",
+  "evals": [
+    {
+      "id": "url-evaluation",
+      "prompt": "Test this MCP server and tell me if we can rely on it: https://github.com/upstash/context7",
+      "expected_output": "A three-layer evaluation: deployment/protocol result, smart-test behavior result, repository health score, ending with a use/caution/avoid recommendation backed by evidence from the test report.",
+      "expectations": [
+        "contains: test-url",
+        "The evaluation reports deployment and protocol results before any quality judgment",
+        "The report presents three separate layer verdicts instead of one merged number",
+        "Skipped layers are stated explicitly with the reason instead of being presented as passed"
+      ]
+    },
+    {
+      "id": "quick-check-uses-right-flags",
+      "prompt": "Just quickly check whether the package @upstash/context7-mcp starts up and responds — no deep analysis needed, I don't have any API keys set up.",
+      "expected_output": "A quick connectivity check using test-package with smart tests and repo evaluation disabled, reporting deployment and protocol handshake results only.",
+      "expectations": [
+        "contains: --no-smart",
+        "contains: test-package",
+        "The response does not claim behavior quality was evaluated, only connectivity"
+      ]
+    }
+  ]
+}
