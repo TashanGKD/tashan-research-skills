@@ -21,9 +21,9 @@
 
 ## Overview
 
-Tashan Research Skills hosts **16 agent skills, all developed by the team**, for the jobs that keep coming back in research work: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping preferences across long collaborations. Each skill is one directory: `SKILL.md` is the entrypoint, and its scripts, references, templates, and tests all live next to it.
+This repository holds 16 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
 
-This project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
+The project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
 ## Skill Matrix
 
