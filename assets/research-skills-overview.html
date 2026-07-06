@@ -5,11 +5,20 @@
 <title>他山科研技能库 · 概览图</title>
 <!--
   仓库首页概览图源文件（画布 1280x800，深色 Bento 风格）。
-  出图方法：本地静态服务打开本页，对 #canvas 元素截图，替换 assets/research-skills-overview.png。
+  出图方法：本地静态服务打开本页，等字体加载完成，对 #canvas 元素截图，
+  替换 assets/research-skills-overview.png。
 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif; background: #05070d; }
+  :root {
+    --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --disp: "Space Grotesk", "Noto Sans SC", sans-serif;
+    --mono: "JetBrains Mono", Consolas, monospace;
+  }
+  body { font-family: var(--sans); background: #05070d; -webkit-font-smoothing: antialiased; }
 
   #canvas {
     width: 1280px; height: 800px; overflow: hidden; position: relative;
@@ -35,39 +44,43 @@
 
   /* ================= header ================= */
   .header { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
-  .kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .kicker { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 15px; }
   .kicker .bar { width: 26px; height: 2px; border-radius: 2px; background: linear-gradient(90deg,#60A5FA,#4FD1C5); }
-  .kicker .txt { font-size: 12px; letter-spacing: 5px; color: #7d8aa5; font-weight: 600; }
+  .kicker .txt { font-size: 12.5px; letter-spacing: 6px; color: #8b98b3; font-weight: 500; }
   .kicker .tag {
-    font-size: 10px; letter-spacing: 2px; color: #9fb1cc; font-weight: 600;
-    border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 3px 12px;
+    font-family: var(--disp); font-size: 10px; letter-spacing: 2.2px; color: #9fb1cc; font-weight: 600;
+    border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 4px 13px;
     background: rgba(255,255,255,.04);
   }
-  h1 { font-size: 50px; color: #F2F6FC; letter-spacing: 3px; line-height: 1.08; font-weight: 700; }
+  h1 {
+    font-size: 51px; letter-spacing: 4px; line-height: 1.08; font-weight: 900;
+    background: linear-gradient(180deg,#FFFFFF 20%,#BCCDE8 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
   .en-title {
-    margin-top: 10px; font-size: 13px; font-weight: 700; letter-spacing: 6px;
+    margin-top: 12px; font-family: var(--disp); font-size: 13.5px; font-weight: 600; letter-spacing: 7px;
     background: linear-gradient(90deg,#60A5FA 0%,#4FD1C5 45%,#A78BFA 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
     text-transform: uppercase;
   }
-  .tagline { margin-top: 14px; font-size: 15px; color: #8b98b3; letter-spacing: .4px; }
-  .tagline b { color: #dbe5f5; font-weight: 600; }
+  .tagline { margin-top: 15px; font-size: 15px; font-weight: 400; color: #8b98b3; letter-spacing: .8px; }
+  .tagline b { color: #e6eefb; font-weight: 700; }
 
   .hero-stat { text-align: right; }
   .hero-stat .big {
-    font-size: 92px; font-weight: 800; line-height: .9; letter-spacing: -2px;
+    font-family: var(--disp); font-size: 96px; font-weight: 700; line-height: .9; letter-spacing: -3px;
     background: linear-gradient(135deg,#8EC5FF 0%,#4FD1C5 55%,#A78BFA 110%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .hero-stat .big small { font-size: 26px; font-weight: 700; letter-spacing: 0; }
-  .hero-stat .sub { margin-top: 8px; font-size: 13px; color: #7d8aa5; letter-spacing: 3px; }
-  .hero-stat .meta { margin-top: 6px; font-size: 11.5px; color: #55627d; letter-spacing: 2px; }
+  .hero-stat .big small { font-family: var(--sans); font-size: 25px; font-weight: 700; letter-spacing: 2px; }
+  .hero-stat .sub { margin-top: 9px; font-size: 13px; font-weight: 500; color: #7d8aa5; letter-spacing: 3.5px; }
+  .hero-stat .meta { margin-top: 7px; font-family: var(--mono); font-size: 10.5px; color: #55627d; letter-spacing: 1px; }
 
   /* ================= stepper ================= */
   .stepper { display: flex; align-items: center; margin: 22px 0 18px; position: relative; z-index: 1; }
-  .sp { display: flex; align-items: center; gap: 8px; }
+  .sp { display: flex; align-items: center; gap: 9px; }
   .sp .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
-  .sp .t { font-size: 12px; font-weight: 600; color: #9fb1cc; letter-spacing: 2.5px; }
+  .sp .t { font-size: 12px; font-weight: 500; color: #9fb1cc; letter-spacing: 3.5px; }
   .ln { flex: 1; height: 1px; margin: 0 14px; background: linear-gradient(90deg, var(--a), var(--b)); opacity: .35; }
 
   /* ================= bento grid ================= */
@@ -91,9 +104,9 @@
     background: var(--c); opacity: .10; filter: blur(46px); pointer-events: none;
   }
   .cell .no {
-    position: absolute; right: 14px; top: 10px;
-    font-size: 44px; font-weight: 800; line-height: 1; color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,.10);
+    position: absolute; right: 16px; top: 12px;
+    font-family: var(--disp); font-size: 42px; font-weight: 700; line-height: 1; color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,.12);
   }
   .wide { grid-column: span 2; }
 
@@ -105,16 +118,16 @@
     display: flex; align-items: center; justify-content: center;
   }
   .micon svg { width: 19px; height: 19px; stroke: var(--c); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .mhead h2 { font-size: 17.5px; color: #F2F6FC; letter-spacing: 2px; font-weight: 700; }
-  .men { font-size: 9px; color: #55627d; letter-spacing: 1.8px; margin-top: 3px; text-transform: uppercase; }
-  .mdesc { font-size: 11.5px; color: #7d8aa5; line-height: 1.65; margin: 8px 0 10px; }
+  .mhead h2 { font-size: 17.5px; color: #F2F6FC; letter-spacing: 2.5px; font-weight: 700; }
+  .men { font-family: var(--disp); font-size: 9px; font-weight: 600; color: #55627d; letter-spacing: 2px; margin-top: 3px; text-transform: uppercase; }
+  .mdesc { font-size: 11.5px; font-weight: 400; color: #7d8aa5; line-height: 1.75; margin: 8px 0 10px; letter-spacing: .4px; }
 
   .slist { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
   .slist.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
   .sk { display: flex; align-items: center; gap: 9px; min-width: 0; }
   .sk .d { width: 5px; height: 5px; border-radius: 50%; background: var(--c); flex: none; box-shadow: 0 0 6px var(--c); }
-  .sk .zh { font-size: 13.5px; font-weight: 600; color: #dbe5f5; white-space: nowrap; }
-  .sk .en { font-size: 10px; color: #55627d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .3px; }
+  .sk .zh { font-size: 13.5px; font-weight: 500; color: #e2eaf7; white-space: nowrap; letter-spacing: 1px; }
+  .sk .en { font-family: var(--disp); font-size: 10px; font-weight: 500; color: #55627d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: .4px; }
 
   .c1 { --c:#60A5FA; }
   .c2 { --c:#4FD1C5; }
@@ -140,10 +153,9 @@
   }
   .tbar .b { width: 10px; height: 10px; border-radius: 50%; }
   .tbar .b1 { background: #FF5F57; } .tbar .b2 { background: #FEBC2E; } .tbar .b3 { background: #28C840; }
-  .tbar .ttl { margin-left: 8px; font-size: 11px; color: #7d8aa5; letter-spacing: 1.5px; }
-  .tbody { padding: 16px 18px; font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; line-height: 2.0; }
-  .tbody .ln1 { color: #8b98b3; }
-  .tbody .p { color: #4FD1C5; font-weight: 700; }
+  .tbar .ttl { margin-left: 8px; font-family: var(--disp); font-size: 10.5px; font-weight: 600; color: #7d8aa5; letter-spacing: 2px; }
+  .tbody { padding: 15px 18px; font-family: var(--mono); font-size: 12px; line-height: 2.05; }
+  .tbody .p { color: #4FD1C5; font-weight: 600; }
   .tbody .cmd { color: #dbe5f5; }
   .tbody .str { color: #F6AD55; }
   .tbody .ok { color: #34d399; }
@@ -158,11 +170,11 @@
     margin-top: 16px; padding-top: 13px; position: relative; z-index: 1;
     border-top: 1px solid rgba(255,255,255,.08);
     display: flex; align-items: center; justify-content: space-between;
-    font-size: 11.5px; color: #55627d; letter-spacing: 1px;
+    font-size: 11.5px; color: #55627d; letter-spacing: 1.5px;
   }
   .footer .repo {
     display: inline-flex; align-items: center; gap: 7px;
-    color: #9fb1cc; font-weight: 600; font-family: Consolas, monospace; font-size: 12px; letter-spacing: 0;
+    color: #9fb1cc; font-weight: 400; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0;
   }
   .footer .repo svg { width: 13px; height: 13px; stroke: #4FD1C5; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 </style>
@@ -181,7 +193,7 @@
     <div class="hero-stat">
       <div class="big">16<small>项</small></div>
       <div class="sub">科研技能 · 5 类任务模块</div>
-      <div class="meta">SKILL.md 即插即用</div>
+      <div class="meta">SKILL.md · plug and play</div>
     </div>
   </div>
 

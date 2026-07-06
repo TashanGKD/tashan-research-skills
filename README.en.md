@@ -108,9 +108,10 @@ Skills read secrets from environment variables at runtime and degrade gracefully
 | Environment variable | Needed by | Purpose | Where to apply |
 | --- | --- | --- | --- |
 | `GIIISP_AUTH_TOKEN` | Scientific Image Generation, Visual Deck Builder, Paper Search | Giiisp API access (image generation, search) | [giiisp.com](https://giiisp.com/#/mcp/authenticate) |
-| `DASHSCOPE_API_KEY` | Manim Agent, Scientific Image Generation, Visual Deck Builder, MCP-CriticAgent | Qwen VLM review, CosyVoice TTS, smart tests | [Aliyun Model Studio](https://help.aliyun.com/zh/model-studio/get-api-key) |
+| `DASHSCOPE_API_KEY` | Manim Agent, Scientific Image Generation, Visual Deck Builder, MCP-CriticAgent | Scene generation, Qwen VLM review, CosyVoice TTS, smart tests | [Aliyun Model Studio](https://help.aliyun.com/zh/model-studio/get-api-key) |
 | `MINERU_API_TOKEN` | Thesis Audit Reviewer | Optional MinerU online PDF parsing (local fallback exists) | [mineru.net](https://mineru.net/apiManage/token) |
-| `ANTHROPIC_AUTH_TOKEN` | Manim Agent | Claude-compatible LLM route (holds the DashScope key) | [Aliyun Model Studio](https://help.aliyun.com/zh/model-studio/get-api-key) |
+
+Manim Agent runs on Aliyun Model Studio's Claude Code compatible route: scene generation and CosyVoice TTS reuse the same `DASHSCOPE_API_KEY`; no separate Anthropic key is needed.
 
 ## Repository Layout
 

@@ -108,9 +108,10 @@ Copy-Item -Recurse .\skills\papercheck "$env:USERPROFILE\.codex\skills\paperchec
 | 环境变量 | 使用技能 | 用途 | 申请地址 |
 | --- | --- | --- | --- |
 | `GIIISP_AUTH_TOKEN` | 科研绘图、PPT 制作、论文检索 | Giiisp API 访问（图像生成、检索） | [giiisp.com](https://giiisp.com/#/mcp/authenticate) |
-| `DASHSCOPE_API_KEY` | 讲解视频、科研绘图、PPT 制作、MCP 测评 | Qwen 视觉审查、CosyVoice 配音、行为测试 | [阿里云百炼](https://help.aliyun.com/zh/model-studio/get-api-key) |
+| `DASHSCOPE_API_KEY` | 讲解视频、科研绘图、PPT 制作、MCP 测评 | 场景生成、Qwen 视觉审查、CosyVoice 配音、行为测试 | [阿里云百炼](https://help.aliyun.com/zh/model-studio/get-api-key) |
 | `MINERU_API_TOKEN` | 论文审查 | 可选的 MinerU 在线 PDF 解析（有本地回退） | [mineru.net](https://mineru.net/apiManage/token) |
-| `ANTHROPIC_AUTH_TOKEN` | 讲解视频 | Claude 兼容路线的场景生成（填 DashScope key） | [阿里云百炼](https://help.aliyun.com/zh/model-studio/get-api-key) |
+
+讲解视频（Manim Agent）走阿里云百炼的 Claude Code 兼容路线，场景生成与 CosyVoice 配音复用同一个 `DASHSCOPE_API_KEY`，不需要单独申请 Anthropic key。
 
 ## 仓库结构
 
