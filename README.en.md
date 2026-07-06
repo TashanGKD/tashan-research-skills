@@ -21,18 +21,9 @@
 
 ## Overview
 
-Tashan Research Skills hosts **16 agent skills** for the jobs that keep coming back in research work: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping preferences across long collaborations. Each skill is one directory: `SKILL.md` is the entrypoint, and its scripts, references, templates, and tests all live next to it.
+Tashan Research Skills hosts **16 agent skills, all developed by the team**, for the jobs that keep coming back in research work: finding and verifying literature, shaping ideas into testable designs, turning results into papers, figures, slides, and videos, and keeping preferences across long collaborations. Each skill is one directory: `SKILL.md` is the entrypoint, and its scripts, references, templates, and tests all live next to it.
 
 This project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
-
-### Design principles
-
-A few habits that run through the whole library:
-
-- One skill, one job. Search does not do writing, writing does not do citation checks; each boundary is written into that skill's `SKILL.md`, so you install only what you need.
-- Claims follow evidence. Retrieval, audit, and research skills cite sources, and mark a claim as "unverified" when the evidence runs out instead of rounding it up.
-- Anything that can be a script is a script. Parsing, randomization, packaging, and validation are plain tested code that fails loudly when broken; the model handles the parts that need judgment.
-- No secrets in the repo. Credentials are read from environment variables at runtime; docs only mention variable names and where to apply.
 
 ## Skill Matrix
 
@@ -130,25 +121,6 @@ Manim Agent runs on Aliyun Model Studio's Claude Code compatible route: scene ge
 ├── README.md                # Chinese README (default)
 └── README.en.md             # English README
 ```
-
-## Engineering Standards
-
-Ground rules for changes, so PRs stay easy to review and the repo stays maintainable months from now:
-
-- Before adding a skill, decide which single research job it owns; if one directory cannot explain it, split it in two.
-- Scripts go into the owning skill's `scripts/` folder — there is no global utils directory.
-- Key information lives in Markdown. Images and templates are fine, but they must not be the only place a fact exists.
-- Run outputs, model logs, other people's papers, credentials, and local caches never enter version control.
-- If you touch a script, include a runnable verification command in the PR, or add a smoke test.
-- If you change a skill's behavior, update its `SKILL.md` and the docs it references in the same PR.
-
-## Security
-
-API keys, access tokens, bind keys, cookies, and private SSH keys must not appear anywhere in this repository — examples and tests included. Skills that call external services read credentials from environment variables at runtime. If you find a leaked credential or an exploitable script, report it privately following [`SECURITY.md`](SECURITY.md) rather than opening a public issue.
-
-## Contributing
-
-New skills, fixes, tests, and docs are all welcome. Skim [`CONTRIBUTING.md`](CONTRIBUTING.md) before starting; it boils down to three rules: one PR touches one skill's scope, script changes come with a way to verify them, and behavior changes update `SKILL.md` in the same PR.
 
 ## Authors and Support
 
