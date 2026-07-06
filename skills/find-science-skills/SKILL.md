@@ -6,11 +6,13 @@ description: 发现并推荐科研/学术/实验/仿真类 agent skill 的科研
 # Find Science Skills（科研版 find-skills）
 
 对标 `vercel-labs/skills` 的 `npx skills find`，但数据源是他山自建、清洗去重后的**科研技能图谱**
-（约 1400 个 canonical 科研技能，5 功能家族 / 12 功能组）。相比纯关键词检索，它带两层优化：
+（约 1400 个 canonical 科研技能，5 功能家族 / 12 功能组）。相比纯关键词检索，它带三层优化：
 
 1. **证据排序**：命中度 + CriticAgent 质量分 + 深度评测结论 + 多仓库共识 + stars，不只看关键词。
 2. **图感知推荐（skill graph）**：每个命中带出它的图邻居——同类可替代 / 同仓库配套 / 工作流下一步，
    帮 agent 组出一条连贯的技能序列，而不是给一堆孤立结果。
+3. **轻量语义扩展**：对冷冻电镜、有限元、DFT、分子动力学、单细胞、时间序列等高频科研表达做中英同义扩展，
+   缓解纯 lexical 检索漏召回或被泛词带偏的问题；无需额外依赖，可用 `--no-semantic` 关闭。
 
 技能图谱数据托管在本仓库 `github.com/TashanGKD/tashan-research-skills`，随仓库持续更新；
 每次使用前用 `--update` 先 `git pull`，即可拿到最新的技能库再检索。
@@ -77,6 +79,10 @@ python scripts/find_skills.py --owner Hello-QM "vasp"      # 按 owner 过滤
 python scripts/find_skills.py --list-capabilities          # 能力簇 leaderboard
 python scripts/find_skills.py --show diffdock              # 查看单技能及其图邻居
 python scripts/find_skills.py "cryo em" --json             # 机器可读（含邻居 id）
+python scripts/find_skills.py "冷冻电镜" --no-semantic       # 只用原始关键词，便于排查排序
+python scripts/search_wiki.py "冷冻电镜 EMDB"                # 搜静态 Wiki 解释页
+python scripts/search_wiki.py "引用管理 bibtex" --type skill # 只搜 skill 证据页
+python scripts/build_wiki.py                               # 维护者：重建静态 Wiki + 图谱页
 ```
 
 示例回复：
@@ -97,9 +103,26 @@ python scripts/find_skills.py "cryo em" --json             # 机器可读（含�
 ## 数据与更新
 
 - `data/skill_graph_index.json`：技能图谱（节点=技能、边=技能↔技能关系，含质量分/深评）。
+- `data/skill_graph_view.json`：静态图谱页使用的瘦图数据。
 - `data/data_version.json`：数据版本（技能数 / 边数 / 生成时间）。
+- `wiki/`：Karpathy-style LLM Wiki，可读解释层；包含索引、概览、能力组页、学科页和每个 skill 的证据页。
+- `wiki/search_index.json`：静态 Wiki 搜索索引，供 `scripts/search_wiki.py` 使用。
+- `site/graph.html`：无需数据库的静态可视化入口；本地打开或经 GitHub Pages 托管均可浏览。
 - 数据由 TopicLab 科研技能发现流水线定期重建并推送进本仓库；用户侧只需 `git pull`（或 `--update`）即可拿到最新版本。
-- 脚本仅依赖 Python 标准库，无需安装额外包即可检索。
+- 脚本仅依赖 Python 标准库，无需安装额外包即可检索；语义扩展在脚本内完成，不依赖运行时 API key。
+
+## 静态 Wiki 与可视化
+
+本 skill 不建数据库。机器检索走 `data/skill_graph_index.json` + `scripts/find_skills.py`；
+人读解释走 `wiki/`；Wiki 页面检索走 `wiki/search_index.json` + `scripts/search_wiki.py`；
+全局关系浏览走 `site/graph.html`。维护者更新数据后运行：
+
+```bash
+python scripts/build_wiki.py
+```
+
+该命令会从 `data/skill_graph_index.json` 重新生成 `wiki/`、`wiki/search_index.json`、`data/skill_graph_view.json` 和 `site/graph.html`。
+如果只是在 GitHub 上挂载本 skill，用户无需运行生成器，直接使用随仓库分发的静态产物即可。
 
 ## 与通用 skill 市场的关系
 

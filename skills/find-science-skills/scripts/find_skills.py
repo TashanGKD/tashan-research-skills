@@ -57,6 +57,29 @@ CAP_ALIASES = {
     "可视化展示": ["可视化", "展示", "figure", "plot", "poster", "slides", "ppt", "报告", "配图"],
 }
 
+# High-value scientific synonyms used as a lightweight semantic layer. This keeps
+# runtime fully standard-library while covering common cross-language terms that
+# lexical token overlap misses or under-ranks.
+SEMANTIC_ALIASES = {
+    "冷冻电镜": "cryo em cryo-em electron microscopy emdb density map micrograph cryoet tomography 电子显微镜",
+    "电子显微镜": "cryo em cryo-em electron microscopy emdb density map micrograph cryoet tomography 冷冻电镜",
+    "cryo em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph cryoet tomography",
+    "cryo-em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph cryoet tomography",
+    "有限元": "finite element fem mesh meshing solver simulation numerical pde",
+    "finite element": "有限元 fem mesh meshing solver simulation numerical pde",
+    "fem": "有限元 finite element mesh meshing solver simulation numerical pde",
+    "第一性原理": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "密度泛函": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "dft": "第一性原理 密度泛函 density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "分子动力学": "molecular dynamics md gromacs lammps openmm simulation trajectory force field",
+    "molecular dynamics": "分子动力学 md gromacs lammps openmm simulation trajectory force field",
+    "单细胞": "single cell single-cell scrna scRNA-seq scanpy seurat transcriptomics",
+    "single cell": "单细胞 single-cell scrna scRNA-seq scanpy seurat transcriptomics",
+    "scrna": "单细胞 single cell single-cell scRNA-seq scanpy seurat transcriptomics",
+    "时间序列": "time series forecasting temporal sequential anomaly detection arima sarimax aeon",
+    "time series": "时间序列 forecasting temporal sequential anomaly detection arima sarimax aeon",
+}
+
 R, B, D, C, Y, G = "\x1b[0m", "\x1b[1m", "\x1b[2m", "\x1b[36m", "\x1b[33m", "\x1b[32m"
 if os.environ.get("NO_COLOR") or not sys.stdout.isatty():
     R = B = D = C = Y = G = ""
@@ -113,6 +136,26 @@ def tok(s: str):
     return out
 
 
+def query_tokens(query: str, semantic: bool = True):
+    tokens = tok(query)
+    if not semantic or not query:
+        return tokens
+    q = query.lower()
+    extra = []
+    for trigger, aliases in SEMANTIC_ALIASES.items():
+        if trigger.lower() in q:
+            extra.extend(tok(aliases))
+    if not extra:
+        return tokens
+    seen = set()
+    merged = []
+    for t in tokens + extra:
+        if t not in seen:
+            seen.add(t)
+            merged.append(t)
+    return merged
+
+
 def resolve_cap(term: str):
     if not term:
         return None
@@ -144,7 +187,7 @@ def blob_of(node):
     ])))
 
 
-def score_node(node, q_tokens, name_tokens, idf=None):
+def score_node(node, q_tokens, name_tokens, idf=None, intent_cap=None):
     if not q_tokens:
         base = 0.0
     else:
@@ -153,16 +196,23 @@ def score_node(node, q_tokens, name_tokens, idf=None):
         matched = uq & toks                        # exact-token overlap
         if not matched:
             return -1
-        # IDF weighting: rare terms (有限元) count far more than generic ones (分析)
+        # IDF weighting: rare terms (有限元) count far more than generic ones (分析).
+        # Semantic alias tokens are allowed into q_tokens, so coverage uses a soft
+        # denominator; otherwise a rich alias expansion would over-penalize good hits.
         hitw = sum((idf.get(t, 1.0) if idf else 1.0) for t in matched)
         nh = sum((idf.get(t, 1.0) if idf else 1.0) for t in (uq & name_tokens))
-        base = hitw + nh * 1.5 + len(matched) / len(uq) * 3
+        cov = len(matched) / max(1, min(len(uq), 6))
+        base = hitw + nh * 1.5 + cov * 3
     stars = node.get("stars") or 0
     ev = math.log10(stars + 1) * 0.5 + math.log2((node.get("repo_count") or 1) + 1) * 0.5
-    qs = (node.get("score") or 0) / 100 * 1.4
+    # quality: rank-percentile (spread evenly) if present, else raw/100 fallback
+    qpct = node.get("qpct")
+    qs = (qpct if qpct is not None else (node.get("score") or 0) / 100) * 1.6
     deepb = 0.8 if node.get("deep") == "建议安装" else (-0.6 if node.get("deep") == "先修复" else 0)
+    # intent alignment: query implies a capability group -> boost that group
+    intentb = 1.2 if (intent_cap and node.get("group") == intent_cap) else 0.0
     pen = 0.85 if node.get("review") else 1.0
-    return (base + ev + qs + deepb) * pen
+    return (base + ev + qs + deepb + intentb) * pen
 
 
 def deep_tag(node):
@@ -235,7 +285,9 @@ def run_search(args, data):
     cap = resolve_cap(args.capability) if args.capability else None
     if args.capability and not cap:
         print(f"{D}未知能力过滤 '{args.capability}'，可用：{', '.join(CAP_ALIASES)}{R}", file=sys.stderr)
-    q_tokens = tok(args.query)
+    q_tokens = query_tokens(args.query, semantic=not args.no_semantic)
+    # infer intent capability from the query itself (only when unambiguous)
+    intent_cap = None if cap else resolve_cap(args.query)
 
     scored = []
     for sid, n in nodes.items():
@@ -243,7 +295,7 @@ def run_search(args, data):
             continue
         if args.owner and args.owner.lower() not in (n.get("example_repo", "").split("/")[0].lower()):
             continue
-        s = score_node(n, q_tokens, set(tok(n.get("name", "") + " " + sid)), idf)
+        s = score_node(n, q_tokens, set(tok(n.get("name", "") + " " + sid)), idf, intent_cap)
         if s >= 0:
             scored.append((s, n))
     scored.sort(key=lambda x: (-x[0], -(x[1].get("score") or 0), -(x[1].get("stars") or 0)))
@@ -314,6 +366,7 @@ def main() -> int:
     ap.add_argument("--graph", "-g", action="store_true", help="展开图邻居（可替代/配套/下一步）")
     ap.add_argument("--show", default="", help="查看单个技能及其图邻居")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--no-semantic", action="store_true", help="关闭轻量语义同义扩展，仅用原始关键词")
     ap.add_argument("--list-capabilities", action="store_true", help="能力簇 leaderboard")
     args = ap.parse_args()
     args.query = " ".join(args.query)

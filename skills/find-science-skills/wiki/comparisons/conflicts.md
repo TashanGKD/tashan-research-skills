@@ -1,0 +1,136 @@
+---
+title: "待复核与冲突汇总"
+type: comparison
+tags: ["conflicts", "review"]
+date: 2026-07-07
+updated: 2026-07-07
+confidence: well_sourced
+---
+
+# 待复核与冲突汇总
+
+## 待复核技能
+- [[skills/figma-generate-library]] — 论文写作 / 科研流程
+- [[skills/notion-research-documentation]] — 引用管理 / 科研流程
+- [[skills/markitdown]] — 可视化展示 / 科研流程
+- [[skills/predict-protein-heat-stability]] — 建模仿真 / 蛋白与结构生物学
+- [[skills/rnaseq-differential-expression]] — 统计分析 / 科研流程
+- [[skills/rnaseq-functional-enrichment]] — 统计分析 / 科研流程
+- [[skills/download-gdc]] — 数据库检索 / 科研流程
+- [[skills/download-geo]] — 数据库检索 / 科研流程
+- [[skills/download-sra]] — 数据库检索 / 科研流程
+- [[skills/genome-variant-calling]] — 数据处理 / 科研流程
+- [[skills/metagenome-functional-profiling]] — 智能体编排 / 科研流程
+- [[skills/tooluniverse-comparative-genomics]] — 数据库检索 / 生物信息学
+- [[skills/tooluniverse-drug-drug-interaction]] — 综述阅读 / 药物发现
+- [[skills/cfd-interpret]] — 建模仿真 / 计算机视觉
+- [[skills/genome-read-alignment]] — 数据处理 / 科研流程
+- [[skills/rnaseq-read-alignment]] — 数据处理 / 科研流程
+- [[skills/bioinformatics-env-setup]] — 智能体编排 / 生物信息学
+- [[skills/tooluniverse-cancer-classification]] — 统计分析 / 机器学习
+- [[skills/tooluniverse-cancer-genomics-tcga]] — 统计分析 / 生物信息学
+- [[skills/tooluniverse-drug-target-validation]] — 数据处理 / 药物发现
+- [[skills/scrnaseq-integration]] — 智能体编排 / 生物信息学
+- [[skills/scrum-sage]] — 统计分析 / 科研流程
+- [[skills/clinical-trials-database]] — 数据库检索 / 临床研究
+- [[skills/human-protein-atlas-database]] — 数据库检索 / 蛋白与结构生物学
+- [[skills/alphagenome-single-variant-analysis]] — 统计分析 / 科研流程
+- [[skills/encode-ccres-database]] — 数据库检索 / 科研流程
+- [[skills/gnomad-database]] — 数据库检索 / 科研流程
+- [[skills/gtex-database]] — 数据库检索 / 科研流程
+- [[skills/interpro-database]] — 数据库检索 / 科研流程
+- [[skills/jaspar-database]] — 数据库检索 / 科研流程
+- [[skills/ncbi-sequence-fetch]] — 数据库检索 / 科研流程
+- [[skills/opentargets-database]] — 数据库检索 / 科研流程
+- [[skills/protein-sequence-msa]] — 建模仿真 / 蛋白与结构生物学
+- [[skills/quickgo-database]] — 数据库检索 / 科研流程
+- [[skills/string-database]] — 数据库检索 / 科研流程
+- [[skills/unibind-database]] — 数据库检索 / 科研流程
+- [[skills/uniprot-database]] — 数据库检索 / 科研流程
+- [[skills/embl-ebi-ols]] — 数据库检索 / 科研流程
+- [[skills/ucsc-conservation-and-tfbs]] — 数据库检索 / 科研流程
+- [[skills/graph-skills-retriever]] — 数据库检索 / 科研流程
+- [[skills/gemini-delegate]] — 投稿评审 / 合成与催化
+- [[skills/setup-tooluniverse]] — 智能体编排 / 科研流程
+
+## 低质量分技能
+- [[skills/setup-tooluniverse]] — 质量分 22
+- [[skills/dataset-qa]] — 质量分 33
+- [[skills/dataset-schema-designer]] — 质量分 33
+- [[skills/experiment-idea-planner]] — 质量分 33
+- [[skills/github-research-maintainer]] — 质量分 33
+- [[skills/paper-tutorial-briefing]] — 质量分 33
+- [[skills/research-radar-update]] — 质量分 33
+- [[skills/brainblast]] — 质量分 34
+- [[skills/figure-caption-reader]] — 质量分 34
+- [[skills/nextflow-development]] — 质量分 34
+- [[skills/paper-outliner]] — 质量分 34
+- [[skills/protocol-writer]] — 质量分 34
+- [[skills/remote-compute-modal]] — 质量分 34
+- [[skills/research-hub]] — 质量分 34
+- [[skills/co-scientist-dashboard]] — 质量分 35
+- [[skills/co-scientist-doctor]] — 质量分 35
+- [[skills/co-scientist-install]] — 质量分 35
+- [[skills/co-scientist-params]] — 质量分 35
+- [[skills/co-scientist-run]] — 质量分 35
+- [[skills/armored-cart-design-agent]] — 质量分 36
+- [[skills/gemini-delegate]] — 质量分 36
+- [[skills/agentd-drug-discovery]] — 质量分 38
+- [[skills/bio-alignment-validation]] — 质量分 38
+- [[skills/clinical-interpretation]] — 质量分 38
+- [[skills/consensus-sequences]] — 质量分 38
+- [[skills/graph-skills-retriever]] — 质量分 38
+- [[skills/image-analysis]] — 质量分 38
+- [[skills/spatial-communication]] — 质量分 38
+- [[skills/internet-research-expert]] — 质量分 39
+- [[skills/tooluniverse-claude-code-plugin]] — 质量分 39
+- [[skills/embl-ebi-ols]] — 质量分 40
+- [[skills/ucsc-conservation-and-tfbs]] — 质量分 40
+- [[skills/alphagenome-single-variant-analysis]] — 质量分 41
+- [[skills/bayesian-optimizer]] — 质量分 41
+- [[skills/encode-ccres-database]] — 质量分 41
+- [[skills/gnomad-database]] — 质量分 41
+- [[skills/gtex-database]] — 质量分 41
+- [[skills/interpro-database]] — 质量分 41
+- [[skills/jaspar-database]] — 质量分 41
+- [[skills/ncbi-sequence-fetch]] — 质量分 41
+- [[skills/opentargets-database]] — 质量分 41
+- [[skills/protein-sequence-msa]] — 质量分 41
+- [[skills/quickgo-database]] — 质量分 41
+- [[skills/string-database]] — 质量分 41
+- [[skills/unibind-database]] — 质量分 41
+- [[skills/uniprot-database]] — 质量分 41
+- [[skills/bio-alignment-files-bam-statistics]] — 质量分 42
+- [[skills/bio-alignment-filtering]] — 质量分 42
+- [[skills/bio-alignment-indexing]] — 质量分 42
+- [[skills/bio-alignment-sorting]] — 质量分 42
+- [[skills/clinical-trials-database]] — 质量分 42
+- [[skills/human-protein-atlas-database]] — 质量分 42
+- [[skills/lammps-validate]] — 质量分 42
+- [[skills/composer]] — 质量分 43
+- [[skills/denario]] — 质量分 43
+- [[skills/stat-writing]] — 质量分 43
+- [[skills/strategist]] — 质量分 43
+- [[skills/building-screening-rubrics]] — 质量分 44
+- [[skills/checking-chembl]] — 质量分 44
+- [[skills/getting-started]] — 质量分 44
+- [[skills/openfoam-agent]] — 质量分 44
+- [[skills/protocolsio-integration]] — 质量分 44
+- [[skills/searching-literature]] — 质量分 44
+- [[skills/subagent-driven-review]] — 质量分 44
+- [[skills/traversing-citations]] — 质量分 44
+- [[skills/research-proposal]] — 质量分 45
+- [[skills/scientific-critical-thinking]] — 质量分 45
+- [[skills/scrnaseq-integration]] — 质量分 45
+- [[skills/scrum-sage]] — 质量分 45
+- [[skills/cfd-literature]] — 质量分 46
+- [[skills/fair-simulation-packager]] — 质量分 46
+- [[skills/ontology-explorer]] — 质量分 46
+- [[skills/paper-builder]] — 质量分 46
+- [[skills/paper-slide-deck]] — 质量分 46
+- [[skills/parallel-web]] — 质量分 46
+- [[skills/simulation-failure-triage]] — 质量分 46
+- [[skills/sr-search]] — 质量分 46
+- [[skills/tooluniverse-cancer-classification]] — 质量分 46
+- [[skills/tooluniverse-cancer-genomics-tcga]] — 质量分 46
+- [[skills/tooluniverse-drug-target-validation]] — 质量分 46

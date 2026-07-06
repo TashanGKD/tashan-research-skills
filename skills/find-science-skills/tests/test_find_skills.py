@@ -39,12 +39,14 @@ def test_tokenizer_splits_hyphen_and_cjk():
 def _search(query, cap="", limit=5):
     d = load()
     fs.ensure_blobs(d["nodes"])
-    q = fs.tok(query)
+    idf = fs.build_idf(d["nodes"])
+    q = fs.query_tokens(query)
+    intent_cap = None if cap else fs.resolve_cap(query)
     out = []
     for sid, n in d["nodes"].items():
         if cap and n.get("group") != cap:
             continue
-        s = fs.score_node(n, q, set(fs.tok(n.get("name", "") + " " + sid)))
+        s = fs.score_node(n, q, set(fs.tok(n.get("name", "") + " " + sid)), idf, intent_cap)
         if s >= 0:
             out.append((s, n))
     out.sort(key=lambda x: (-x[0], -(x[1].get("score") or 0), -(x[1].get("stars") or 0)))
@@ -78,6 +80,17 @@ def test_chinese_query_retrieval():
     assert any("alphafold" in x or "esm" in x or "fold" in x or "chai" in x for x in names)
     md = [n["name"].lower() for n in _search("分子动力学模拟")]
     assert any("md" in x or "lammps" in x or "gromacs" in x or "dynamics" in x for x in md)
+
+
+def test_cryo_em_prefers_electron_microscopy_over_general_pdb():
+    ids = [n["id"] for n in _search("冷冻电镜", limit=3)]
+    assert ids[0] == "tooluniverse-electron-microscopy"
+    assert ids.index("tooluniverse-electron-microscopy") < ids.index("pdb-database")
+
+
+def test_time_series_keeps_strong_existing_hit_first():
+    ids = [n["id"] for n in _search("时间序列", limit=5)]
+    assert ids[0] == "aeon"
 
 
 def test_no_substring_false_positive():
