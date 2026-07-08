@@ -222,6 +222,13 @@ def test_search_wiki_ranks_matching_skill_page(tmp_path):
     assert hits[0]["path"] == "wiki/skills/tooluniverse-electron-microscopy.md"
 
 
+def test_search_wiki_uses_shared_intent_rules_data():
+    assert sw.INTENT_RULES["schema"] == "find_science_skills_intent_rules_v1"
+    assert "protein structure prediction" in sw.SEMANTIC_ALIASES
+    assert "orca_quantum_chemistry" in sw.NAMED_TOOL_RULES
+    assert "vasp_materials_dft" in sw.NAMED_TOOL_RULES
+
+
 def test_search_wiki_keeps_cryo_em_above_generic_particle_tracking():
     index = {
         "documents": [

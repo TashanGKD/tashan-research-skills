@@ -20,46 +20,46 @@ SKILL_DIR = SCRIPT_DIR.parent
 DEFAULT_INDEX = SKILL_DIR / "wiki" / "search_index.json"
 GAPS_CANDIDATE = SKILL_DIR / "data" / "retrieval_gaps.json"
 
-SEMANTIC_ALIASES = {
-    "alphafold": "alphafold2 alphafold3 colabfold chai1 openfold openfold3 esmfold esmfold2 boltz protein structure prediction 蛋白质结构预测",
-    "protein structure prediction": "alphafold alphafold2 chai1 openfold3 esmfold2 boltz 蛋白质结构预测",
-    "蛋白质结构预测": "protein structure prediction alphafold alphafold2 chai1 openfold3 esmfold2 boltz",
-    "orca": "quantum chemistry dft density functional theory frequency vibrational thermochemistry optimization single point ir spectrum",
-    "vasp": "dft density functional theory plane wave paw poscar incar kpoints potcar band structure dos electronic structure materials hpc",
-    "冷冻电镜": "cryo em cryo-em electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction 电子显微镜",
-    "电子显微镜": "cryo em cryo-em electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction 冷冻电镜",
-    "cryo em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction",
-    "cryo-em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction",
-    "gromacs": "molecular dynamics md trajectory rmsd rmsf topology mdp force field hpc 分子动力学",
-    "rmsd": "molecular dynamics gromacs md trajectory rmsf structural fluctuation 分子动力学",
-    "rmsf": "molecular dynamics gromacs md trajectory rmsd structural fluctuation 分子动力学",
-    "单细胞": "single cell single-cell scrna scrnaseq scRNA-seq cell type annotation marker gene 标记基因 细胞类型注释",
-    "single cell": "单细胞 single-cell scrna scrnaseq cell type annotation marker gene",
-    "marker gene": "标记基因 single cell annotation cell type scrnaseq",
-    "rna velocity": "single cell scrna scrnaseq trajectory pseudotime scvelo monocle3 velocity 拟时序 轨迹推断",
-    "trajectory analysis": "single cell scrna scrnaseq rna velocity pseudotime scvelo monocle3 拟时序 轨迹推断",
-    "pseudotime": "single cell scrna scrnaseq trajectory rna velocity scvelo monocle3 拟时序 轨迹推断",
-    "引用管理": "citation management reference bibtex zotero 参考文献",
-    "citation management": "引用管理 reference bibtex zotero 参考文献",
-    "bibtex": "citation management 引用管理 reference zotero 参考文献",
-    "zotero": "citation management 引用管理 bibtex reference 参考文献",
-    "netcdf": "zarr xarray dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
-    "xarray": "zarr netcdf dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
-    "climate data": "netcdf xarray zarr dask chunked array n-dimensional arrays scientific computing",
-    "metabolomics": "代谢组 代谢组学 multi omics multi-omics bulk omics proteomics transcriptomics integrative planner biomedical direction pathway enrichment lcms lc ms",
-    "lc-ms": "metabolomics 代谢组 代谢组学 lcms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
-    "lcms": "metabolomics 代谢组 代谢组学 lc ms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
-    "metagenomics": "metagenome taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "metagenome": "metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "kraken2": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "metaphlan": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken 宏基因组 微生物群落 分类谱",
-    "immunofluorescence": "fluorescence microscopy colocalization colocalisation bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "colocalization": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "colocalisation": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "mtt": "cell viability assay dose response concentration response ic50 4pl hill curve fitting drug screening",
-    "cck8": "cell viability assay dose response concentration response ic50 od450 4pl hill curve fitting drug screening",
-    "cell viability": "mtt cck8 dose response concentration response ic50 ec50 4pl hill curve fitting drug screening",
-}
+INTENT_RULES_CANDIDATE = SKILL_DIR / "data" / "intent_rules.json"
+
+
+def load_intent_rules(path: pathlib.Path = INTENT_RULES_CANDIDATE) -> dict:
+    if not path.exists():
+        return {"semantic_aliases": {}, "named_tool_rules": {}}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+INTENT_RULES = load_intent_rules()
+SEMANTIC_ALIASES = INTENT_RULES.get("semantic_aliases", {})
+NAMED_TOOL_RULES = INTENT_RULES.get("named_tool_rules", {})
+
+
+def _contains_any(hay: str, needles: list[str] | None) -> bool:
+    return any(str(needle).lower() in hay for needle in (needles or []))
+
+
+def _rule_matches(rule: dict, q_tokens: set[str], hay: str, title_hay: str) -> bool:
+    q_any = {str(token).lower() for token in (rule.get("query_tokens_any") or [])}
+    if q_any and not (q_tokens & q_any):
+        return False
+    if rule.get("hay_contains_any") and not _contains_any(hay, rule.get("hay_contains_any")):
+        return False
+    if rule.get("title_contains_any") and not _contains_any(title_hay, rule.get("title_contains_any")):
+        return False
+    return True
+
+
+def apply_intent_adjustments(rule_set: dict, q_tokens: set[str], hay: str, title_hay: str = "") -> float:
+    total = 0.0
+    for rule in rule_set.get("ordered_adjustments") or []:
+        if _rule_matches(rule, q_tokens, hay, title_hay):
+            total += float(rule.get("score") or 0.0)
+            break
+    for bucket in ("additive_boosts", "additive_penalties"):
+        for rule in rule_set.get(bucket) or []:
+            if _rule_matches(rule, q_tokens, hay, title_hay):
+                total += float(rule.get("score") or 0.0)
+    return total
 
 
 def tok(text: str) -> list[str]:
@@ -326,47 +326,28 @@ def intent_score(doc: dict, query: str) -> float:
             bonus -= 16.0
     gromacs_md_query = "gromacs" in q_tokens or "rmsd" in q_tokens or "rmsf" in q_tokens
     if gromacs_md_query:
-        if "hpc-gromacs" in title_hay:
-            bonus += 58.0
-        elif "drug-protein-ligand-md" in title_hay:
-            bonus += 10.0
-        elif any(marker in hay for marker in ["gromacs", "molecular dynamics", "rmsd", "rmsf", "topology", "mdp", "force field"]):
-            bonus += 18.0
-        if any(marker in title_hay for marker in ["lammps", "reaxff", "deepmd"]):
-            bonus -= 36.0
-        elif any(marker in hay for marker in ["lammps", "reaxff", "deepmd"]):
-            bonus -= 16.0
-        if any(marker in title_hay for marker in ["scrnaseq", "single-cell", "single-cell-rna"]):
-            bonus -= 120.0
-        elif any(marker in hay for marker in ["rna velocity", "pseudotime", "single cell", "cell type annotation"]):
-            bonus -= 60.0
+        bonus += apply_intent_adjustments(
+            NAMED_TOOL_RULES.get("gromacs_md_trajectory", {}).get("wiki", {}),
+            q_tokens,
+            hay,
+            title_hay,
+        )
     orca_query = "orca" in q_tokens
     if orca_query:
-        frequency_query = bool(q_tokens & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
-        if frequency_query and "orca-freq" in title_hay:
-            bonus += 68.0
-        elif "orca" in title_hay:
-            bonus += 34.0
-        elif any(marker in hay for marker in ["orca", "density functional", "dft", "single point", "optimization", "frequency", "frequencies", "vibrational", "thermochemistry"]):
-            bonus += 14.0
-        if any(marker in title_hay for marker in ["quantum-espresso", "phonopy", "vasp", "abinit", "gpaw", "dftbplus"]):
-            bonus -= 40.0
+        bonus += apply_intent_adjustments(
+            NAMED_TOOL_RULES.get("orca_quantum_chemistry", {}).get("wiki", {}),
+            q_tokens,
+            hay,
+            title_hay,
+        )
     vasp_query = "vasp" in q_tokens
     if vasp_query:
-        band_query = bool(q_tokens & {"band", "bands", "dos", "electronic"})
-        freq_query = bool(q_tokens & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
-        if band_query and "hpc-vasp" in title_hay:
-            bonus += 72.0
-        elif freq_query and "vasp-freq" in title_hay:
-            bonus += 124.0
-        elif any(marker in title_hay for marker in ["hpc-vasp", "vasp-freq"]):
-            bonus += 44.0
-        elif "vasp" in title_hay:
-            bonus += 28.0
-        elif any(marker in hay for marker in ["vasp", "incar", "poscar", "kpoints", "potcar", "band structure", "density of states", "plane wave", "paw", "electronic structure"]):
-            bonus += 14.0
-        if any(marker in title_hay for marker in ["quantum-espresso", "orca", "phonopy", "abinit", "gpaw", "dftbplus"]):
-            bonus -= 42.0
+        bonus += apply_intent_adjustments(
+            NAMED_TOOL_RULES.get("vasp_materials_dft", {}).get("wiki", {}),
+            q_tokens,
+            hay,
+            title_hay,
+        )
     return bonus
 
 

@@ -3,25 +3,25 @@
   "holdout_version": "2026-07-07",
   "summary": {
     "difficulty_confusing": {
-      "count": 32,
-      "top1": 32,
-      "top3": 32,
-      "top1_rate": 1.0,
-      "top3_rate": 1.0
+      "count": 38,
+      "top1": 36,
+      "top3": 37,
+      "top1_rate": 0.9474,
+      "top3_rate": 0.9737
     },
     "find": {
-      "count": 16,
-      "top1": 16,
-      "top3": 16,
-      "top1_rate": 1.0,
+      "count": 19,
+      "top1": 18,
+      "top3": 19,
+      "top1_rate": 0.9474,
       "top3_rate": 1.0
     },
     "level_complex": {
-      "count": 18,
-      "top1": 18,
-      "top3": 18,
-      "top1_rate": 1.0,
-      "top3_rate": 1.0
+      "count": 24,
+      "top1": 22,
+      "top3": 23,
+      "top1_rate": 0.9167,
+      "top3_rate": 0.9583
     },
     "level_medium": {
       "count": 14,
@@ -31,41 +31,41 @@
       "top3_rate": 1.0
     },
     "overall": {
-      "count": 32,
-      "top1": 32,
-      "top3": 32,
-      "top1_rate": 1.0,
-      "top3_rate": 1.0
+      "count": 38,
+      "top1": 36,
+      "top3": 37,
+      "top1_rate": 0.9474,
+      "top3_rate": 0.9737
     },
     "wiki": {
-      "count": 16,
-      "top1": 16,
-      "top3": 16,
-      "top1_rate": 1.0,
-      "top3_rate": 1.0
+      "count": 19,
+      "top1": 18,
+      "top3": 18,
+      "top1_rate": 0.9474,
+      "top3_rate": 0.9474
     }
   },
   "resolution_summary": {
     "difficulty_confusing": {
-      "count": 32,
+      "count": 38,
       "top1_real_skill": 8,
-      "top1_registry_gap": 24,
-      "top3_real_skill": 8,
-      "top3_registry_gap": 24
+      "top1_registry_gap": 28,
+      "top3_real_skill": 9,
+      "top3_registry_gap": 28
     },
     "find": {
-      "count": 16,
+      "count": 19,
       "top1_real_skill": 4,
-      "top1_registry_gap": 12,
-      "top3_real_skill": 4,
-      "top3_registry_gap": 12
+      "top1_registry_gap": 14,
+      "top3_real_skill": 5,
+      "top3_registry_gap": 14
     },
     "level_complex": {
-      "count": 18,
+      "count": 24,
       "top1_real_skill": 6,
-      "top1_registry_gap": 12,
-      "top3_real_skill": 6,
-      "top3_registry_gap": 12
+      "top1_registry_gap": 16,
+      "top3_real_skill": 7,
+      "top3_registry_gap": 16
     },
     "level_medium": {
       "count": 14,
@@ -75,37 +75,37 @@
       "top3_registry_gap": 12
     },
     "overall": {
-      "count": 32,
+      "count": 38,
       "top1_real_skill": 8,
-      "top1_registry_gap": 24,
-      "top3_real_skill": 8,
-      "top3_registry_gap": 24
+      "top1_registry_gap": 28,
+      "top3_real_skill": 9,
+      "top3_registry_gap": 28
     },
     "wiki": {
-      "count": 16,
+      "count": 19,
       "top1_real_skill": 4,
-      "top1_registry_gap": 12,
+      "top1_registry_gap": 14,
       "top3_real_skill": 4,
-      "top3_registry_gap": 12
+      "top3_registry_gap": 14
     }
   },
   "expected_resolution_summary": {
     "difficulty_confusing": {
-      "count": 32,
-      "expected_real_skill": 8,
-      "expected_registry_gap": 24,
+      "count": 38,
+      "expected_real_skill": 10,
+      "expected_registry_gap": 28,
       "expected_none": 0
     },
     "find": {
-      "count": 16,
-      "expected_real_skill": 4,
-      "expected_registry_gap": 12,
+      "count": 19,
+      "expected_real_skill": 5,
+      "expected_registry_gap": 14,
       "expected_none": 0
     },
     "level_complex": {
-      "count": 18,
-      "expected_real_skill": 6,
-      "expected_registry_gap": 12,
+      "count": 24,
+      "expected_real_skill": 8,
+      "expected_registry_gap": 16,
       "expected_none": 0
     },
     "level_medium": {
@@ -115,19 +115,50 @@
       "expected_none": 0
     },
     "overall": {
-      "count": 32,
-      "expected_real_skill": 8,
-      "expected_registry_gap": 24,
+      "count": 38,
+      "expected_real_skill": 10,
+      "expected_registry_gap": 28,
       "expected_none": 0
     },
     "wiki": {
-      "count": 16,
-      "expected_real_skill": 4,
-      "expected_registry_gap": 12,
+      "count": 19,
+      "expected_real_skill": 5,
+      "expected_registry_gap": 14,
       "expected_none": 0
     }
   },
-  "case_failures": [],
+  "case_failures": [
+    {
+      "id": "holdout_wiki_phylogenetic_tree_inference",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "phylogenetic tree inference",
+      "reason": "Static Wiki should eventually surface phylogenetics/ETE evidence pages ahead of decision-tree and generic inference pages.",
+      "top1_ok": false,
+      "top3_ok": false,
+      "top1_match_type": "none",
+      "top3_match_type": "none",
+      "expected_match_type": "real_skill",
+      "top5": [
+        "decision-tree-analysis",
+        "arboreto-grn-inference",
+        "causal-inference-r",
+        "causal-inference",
+        "computational-inference"
+      ],
+      "expected_top1_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ],
+      "expected_top3_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ]
+    }
+  ],
   "cases": [
     {
       "id": "holdout_find_climate_xarray_netcdf",
@@ -171,10 +202,10 @@
       "expected_match_type": "registry_gap",
       "top5": [
         "__missing_biomedical_ner_skill__",
+        "__missing_spanish_ner_skill__",
         "biomedical-search",
         "biomedical-search-strategy-builder",
-        "research-paper-writing",
-        "conversation-memory"
+        "research-paper-writing"
       ],
       "expected_top1_any": [
         "__missing_biomedical_ner_skill__"
@@ -597,10 +628,10 @@
       "expected_match_type": "registry_gap",
       "top5": [
         "__missing_biomedical_ner_skill__",
+        "__missing_spanish_ner_skill__",
         "biomedical-search-strategy-builder",
         "biomedical-search",
-        "sci-figure",
-        "conversation-memory"
+        "sci-figure"
       ],
       "expected_top1_any": [
         "__missing_biomedical_ner_skill__"
@@ -979,6 +1010,170 @@
       ],
       "expected_top3_any": [
         "__missing_neuroimaging_nifti_skill__"
+      ]
+    },
+    {
+      "id": "holdout_find_phylogenetic_tree_inference",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "phylogenetic tree inference",
+      "reason": "Expert tail probe: correct biology skills exist but top-1 is currently decision-tree-analysis because tree is interpreted as an ML decision tree.",
+      "top1_ok": false,
+      "top3_ok": true,
+      "top1_match_type": "none",
+      "top3_match_type": "real_skill",
+      "expected_match_type": "real_skill",
+      "top5": [
+        "decision-tree-analysis",
+        "etetoolkit",
+        "phylogenetics",
+        "computational-inference",
+        "causal-inference-r"
+      ],
+      "expected_top1_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ],
+      "expected_top3_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ]
+    },
+    {
+      "id": "holdout_find_vae_generative_model",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "变分自编码器 生成模型",
+      "reason": "Expert tail probe: VAE generative modeling is undercovered and currently drifts to sparse autoencoder, BLIP, or code-model evaluation false positives.",
+      "top1_ok": true,
+      "top3_ok": true,
+      "top1_match_type": "registry_gap",
+      "top3_match_type": "registry_gap",
+      "expected_match_type": "registry_gap",
+      "top5": [
+        "__missing_vae_generative_model_skill__",
+        "sparse-autoencoder-training",
+        "blip-2-vision-language",
+        "evaluating-code-models",
+        "evo2"
+      ],
+      "expected_top1_any": [
+        "__missing_vae_generative_model_skill__"
+      ],
+      "expected_top3_any": [
+        "__missing_vae_generative_model_skill__"
+      ]
+    },
+    {
+      "id": "holdout_find_spanish_ner",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "西班牙语 命名实体识别",
+      "reason": "Expert tail probe: Spanish NER currently drifts to Spanish grant-writing because language and task intent are not separated.",
+      "top1_ok": true,
+      "top3_ok": true,
+      "top1_match_type": "registry_gap",
+      "top3_match_type": "registry_gap",
+      "expected_match_type": "registry_gap",
+      "top5": [
+        "__missing_spanish_ner_skill__",
+        "grant-writing-spanish",
+        "literature-search-openalex",
+        "medical-guideline-parser-v2",
+        "benchling-integration"
+      ],
+      "expected_top1_any": [
+        "__missing_spanish_ner_skill__"
+      ],
+      "expected_top3_any": [
+        "__missing_spanish_ner_skill__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_phylogenetic_tree_inference",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "phylogenetic tree inference",
+      "reason": "Static Wiki should eventually surface phylogenetics/ETE evidence pages ahead of decision-tree and generic inference pages.",
+      "top1_ok": false,
+      "top3_ok": false,
+      "top1_match_type": "none",
+      "top3_match_type": "none",
+      "expected_match_type": "real_skill",
+      "top5": [
+        "decision-tree-analysis",
+        "arboreto-grn-inference",
+        "causal-inference-r",
+        "causal-inference",
+        "computational-inference"
+      ],
+      "expected_top1_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ],
+      "expected_top3_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_vae_generative_model",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "变分自编码器 生成模型",
+      "reason": "Static Wiki should expose the VAE/generative-modeling coverage gap rather than satisfying the query with sparse-autoencoder or multimodal-model pages.",
+      "top1_ok": true,
+      "top3_ok": true,
+      "top1_match_type": "registry_gap",
+      "top3_match_type": "registry_gap",
+      "expected_match_type": "registry_gap",
+      "top5": [
+        "__missing_vae_generative_model_skill__",
+        "sparse-autoencoder-training",
+        "blip-2-vision-language",
+        "evaluating-code-models",
+        "pymc-bayesian-modeling"
+      ],
+      "expected_top1_any": [
+        "__missing_vae_generative_model_skill__"
+      ],
+      "expected_top3_any": [
+        "__missing_vae_generative_model_skill__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_spanish_ner",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "西班牙语 命名实体识别",
+      "reason": "Static Wiki should expose the Spanish NER coverage gap instead of Spanish grant-writing or generic document parsing pages.",
+      "top1_ok": true,
+      "top3_ok": true,
+      "top1_match_type": "registry_gap",
+      "top3_match_type": "registry_gap",
+      "expected_match_type": "registry_gap",
+      "top5": [
+        "__missing_spanish_ner_skill__",
+        "grant-writing-spanish",
+        "medical-guideline-parser-v2",
+        "literature-search-openalex",
+        "tooluniverse-cancer-classification"
+      ],
+      "expected_top1_any": [
+        "__missing_spanish_ner_skill__"
+      ],
+      "expected_top3_any": [
+        "__missing_spanish_ner_skill__"
       ]
     }
   ]

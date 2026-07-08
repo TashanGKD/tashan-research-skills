@@ -243,10 +243,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "tooluniverse-electron-microscopy",
+        "trackpy-particle-tracking",
         "pdb-database",
         "bader-charge-analysis",
-        "napari-image-viewer",
-        "trackpy-particle-tracking"
+        "napari-image-viewer"
       ],
       "expected_top1_any": [
         "tooluniverse-electron-microscopy"
@@ -268,10 +268,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "tooluniverse-electron-microscopy",
+        "trackpy-particle-tracking",
         "pdb-database",
-        "bader-charge-analysis",
         "napari-image-viewer",
-        "trackpy-particle-tracking"
+        "bader-charge-analysis"
       ],
       "expected_top1_any": [
         "tooluniverse-electron-microscopy"
@@ -410,11 +410,11 @@
       "top3_match_type": "real_skill",
       "expected_match_type": "real_skill",
       "top5": [
-        "single-cell-annotation",
         "scrnaseq-cell-type-annotation",
+        "single-cell-annotation",
         "cellchat-cell-communication",
-        "single-cell-rna-qc",
-        "arboreto"
+        "scrnaseq-clustering",
+        "scrnaseq-quality-control"
       ],
       "expected_top1_any": [
         "single-cell-annotation",
@@ -551,11 +551,11 @@
       "top3_match_type": "real_skill",
       "expected_match_type": "real_skill",
       "top5": [
-        "sci-zotero",
-        "ieee-export",
-        "zotero-mcp",
         "citation-management",
-        "paper-compilation"
+        "citation-reference-reviewer",
+        "citation-check",
+        "academic-citation-manager",
+        "ieee-export"
       ],
       "expected_top1_any": [
         "citation-management",
@@ -853,9 +853,9 @@
       "top5": [
         "hpc-fenics",
         "hpc-calculix",
-        "hpc-elmerfem",
-        "simulation-architect",
-        "mesh-generation"
+        "mesh-generation",
+        "numerical-integration",
+        "simulation-architect"
       ],
       "expected_top1_any": [
         "hpc-fenics",
@@ -907,10 +907,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "alphafold2",
-        "boltz",
-        "openfold3",
         "chai1",
-        "esmfold2"
+        "alphafold-database-access",
+        "protein-structure-analysis",
+        "alphafold-database"
       ],
       "expected_top1_any": [
         "alphafold2",
@@ -969,10 +969,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "time-series-guide",
+        "aeon",
+        "data-anomaly-detection",
         "tooluniverse-acmg-variant-classification",
-        "tooluniverse-cancer-classification",
-        "time-stepping",
-        "aeon"
+        "tooluniverse-cancer-classification"
       ],
       "expected_top1_any": [
         "aeon",
@@ -996,10 +996,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "time-series-guide",
-        "time-stepping",
         "statsmodels-statistical-modeling",
-        "jqte-econometric-methods",
-        "r-econometrics"
+        "aeon",
+        "data-anomaly-detection",
+        "jqte-econometric-methods"
       ],
       "expected_top1_any": [
         "time-series-guide"
@@ -1023,10 +1023,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "iv-regression-guide",
-        "causal-inference-r",
-        "r-econometrics",
-        "mostly-harmless-guide",
-        "aeja-identification"
+        "time-series-guide",
+        "causal-inference",
+        "statsmodels-statistical-modeling",
+        "jqte-econometric-methods"
       ],
       "expected_top1_any": [
         "iv-regression-guide"
@@ -3804,10 +3804,10 @@
       "expected_match_type": "real_skill",
       "top5": [
         "scrnaseq-trajectory-analysis",
-        "scrnaseq-cell-type-annotation",
-        "single-cell-annotation",
         "single-cell-rna-qc",
-        "scrnaseq-clustering"
+        "single-cell-annotation",
+        "scrnaseq-clustering",
+        "scrnaseq-differential-expression"
       ],
       "expected_top1_any": [
         "scrnaseq-trajectory-analysis"
@@ -4093,11 +4093,11 @@
       "top3_match_type": "real_skill",
       "expected_match_type": "real_skill",
       "top5": [
-        "single-cell-annotation",
-        "single-cell-rna-qc",
         "scrnaseq-cell-type-annotation",
+        "single-cell-annotation",
         "scrnaseq-clustering",
-        "differential-expression-analysis"
+        "single-cell-rna-qc",
+        "scgpt"
       ],
       "expected_top1_any": [
         "single-cell-annotation",
@@ -4550,9 +4550,9 @@
       "expected_match_type": "real_skill",
       "top5": [
         "hpc-gromacs",
+        "hpc-lammps",
+        "simulation-orchestrator",
         "hpc-su2",
-        "hpc-elmerfem",
-        "hpc-gpu-stack",
         "hpc-fenics"
       ],
       "expected_top1_any": [
@@ -4600,8 +4600,8 @@
       "expected_match_type": "real_skill",
       "top5": [
         "orca-freq",
-        "chem-dft-orca-advanced-calculation",
         "chem-dft-orca-optimization",
+        "chem-dft-orca-advanced-calculation",
         "chem-dft-orca-singlepoint",
         "single-point"
       ],
@@ -4653,9 +4653,9 @@
       "top5": [
         "chem-dft-orca-optimization",
         "chem-dft-orca-singlepoint",
-        "orca-freq",
-        "chem-dft-orca-advanced-calculation",
-        "single-point"
+        "single-point",
+        "orca-opt",
+        "orca-freq"
       ],
       "expected_top1_any": [
         "chem-dft-orca-optimization",
@@ -4706,8 +4706,8 @@
         "hpc-vasp",
         "vasp-freq",
         "dos-analysis",
-        "hpc-calculix",
-        "hpc-openfoam"
+        "hpc-quantum-espresso",
+        "quantum-espresso"
       ],
       "expected_top1_any": [
         "hpc-vasp"

@@ -177,7 +177,7 @@ def result_ids(hit: dict) -> list[str]:
 
 
 def is_registry_gap_id(value: str) -> bool:
-    return value.startswith("__missing_") and value.endswith("__")
+    return value.startswith("__") and value.endswith("__")
 
 
 def matched_expected_ids(hits: list[dict], expected: list[str], upto: int) -> list[str]:

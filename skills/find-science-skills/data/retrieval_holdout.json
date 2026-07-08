@@ -10,7 +10,10 @@
       "difficulty": "confusing",
       "query": "climate netcdf xarray analysis",
       "reason": "Earth/environment array-data wording currently drifts toward generic data analysis; desired behavior is to surface an array/chunked-data or climate-data skill.",
-      "expected_top3_any": ["zarr-python", "__missing_climate_xarray_skill__"]
+      "expected_top3_any": [
+        "zarr-python",
+        "__missing_climate_xarray_skill__"
+      ]
     },
     {
       "id": "holdout_find_biomedical_ner",
@@ -19,7 +22,9 @@
       "difficulty": "confusing",
       "query": "named entity recognition biomedical NLP",
       "reason": "Registry has biomedical search and NLP-adjacent skills, but no clear canonical biomedical NER skill; keep as a coverage-gap probe.",
-      "expected_top3_any": ["__missing_biomedical_ner_skill__"]
+      "expected_top3_any": [
+        "__missing_biomedical_ner_skill__"
+      ]
     },
     {
       "id": "holdout_find_object_detection_yolo",
@@ -28,7 +33,9 @@
       "difficulty": "confusing",
       "query": "object detection computer vision YOLO",
       "reason": "General CV/object-detection wording currently gets pulled into bioimage or adverse-event skills; desired skill may be absent.",
-      "expected_top3_any": ["__missing_object_detection_yolo_skill__"]
+      "expected_top3_any": [
+        "__missing_object_detection_yolo_skill__"
+      ]
     },
     {
       "id": "holdout_find_neuroimaging_nifti",
@@ -37,7 +44,9 @@
       "difficulty": "confusing",
       "query": "neuroimaging NIfTI MRI fMRI analysis",
       "reason": "Neuroimaging/NIfTI appears undercovered; track as a likely registry gap rather than passing release case.",
-      "expected_top3_any": ["__missing_neuroimaging_nifti_skill__"]
+      "expected_top3_any": [
+        "__missing_neuroimaging_nifti_skill__"
+      ]
     },
     {
       "id": "holdout_find_spatial_transcriptomics",
@@ -46,7 +55,11 @@
       "difficulty": "confusing",
       "query": "spatial transcriptomics Seurat cell communication",
       "reason": "Spatial transcriptomics mixes single-cell, Seurat, and communication concepts; ranking should eventually choose spatial or integration skills.",
-      "expected_top3_any": ["spatial-communication", "scrnaseq-integration", "cellchat-cell-communication"]
+      "expected_top3_any": [
+        "spatial-communication",
+        "scrnaseq-integration",
+        "cellchat-cell-communication"
+      ]
     },
     {
       "id": "holdout_find_metabolomics_lcms",
@@ -55,7 +68,10 @@
       "difficulty": "confusing",
       "query": "metabolomics LC-MS pathway enrichment",
       "reason": "Metabolomics-specific coverage appears thin; track whether broad omics planning or missing-skill handling improves.",
-      "expected_top3_any": ["bulk-omics-integrative-planner", "__missing_metabolomics_lcms_skill__"]
+      "expected_top3_any": [
+        "bulk-omics-integrative-planner",
+        "__missing_metabolomics_lcms_skill__"
+      ]
     },
     {
       "id": "holdout_find_flow_cytometry_fcs",
@@ -64,7 +80,10 @@
       "difficulty": "confusing",
       "query": "flow cytometry FCS gating analysis",
       "reason": "Flow cytometry should prefer FCS parsing/flow skills instead of generic plotting or figure-writing results.",
-      "expected_top3_any": ["flowio", "flowio-flow-cytometry"]
+      "expected_top3_any": [
+        "flowio",
+        "flowio-flow-cytometry"
+      ]
     },
     {
       "id": "holdout_find_cytof_mass_cytometry",
@@ -73,7 +92,9 @@
       "difficulty": "confusing",
       "query": "CyTOF mass cytometry clustering gating analysis",
       "reason": "CyTOF/mass-cytometry analysis needs marker transformation, clustering, gating, and population abundance interpretation; current registry only has generic flow/FCS parsing or generic clustering.",
-      "expected_top3_any": ["__missing_cytof_mass_cytometry_skill__"]
+      "expected_top3_any": [
+        "__missing_cytof_mass_cytometry_skill__"
+      ]
     },
     {
       "id": "holdout_find_chipseq_peak_calling",
@@ -82,7 +103,9 @@
       "difficulty": "confusing",
       "query": "ChIP-seq MACS2 peak calling differential binding DiffBind",
       "reason": "ChIP-seq peak-calling and differential-binding wording currently drifts to ATAC-seq peak-calling skills; track as a missing ChIP-seq analysis workflow rather than treating ATAC-seq as a full substitute.",
-      "expected_top3_any": ["__missing_chipseq_peak_calling_skill__"]
+      "expected_top3_any": [
+        "__missing_chipseq_peak_calling_skill__"
+      ]
     },
     {
       "id": "holdout_find_gwas_finemapping_coloc",
@@ -91,7 +114,9 @@
       "difficulty": "confusing",
       "query": "GWAS summary statistics fine mapping colocalization",
       "reason": "Genetic association fine-mapping wording currently risks drifting into generic statistics or LLM fine-tuning because of the token 'fine'. Track as a missing genomics-analysis skill.",
-      "expected_top3_any": ["__missing_gwas_finemapping_coloc_skill__"]
+      "expected_top3_any": [
+        "__missing_gwas_finemapping_coloc_skill__"
+      ]
     },
     {
       "id": "holdout_find_microbiome_qiime2_abundance",
@@ -100,7 +125,9 @@
       "difficulty": "confusing",
       "query": "microbiome differential abundance qiime2",
       "reason": "Microbiome/QIIME2 differential-abundance wording currently drifts to RNA-seq differential-expression or clinical differential-diagnosis skills; track as missing microbiome abundance coverage.",
-      "expected_top3_any": ["__missing_microbiome_qiime2_abundance_skill__"]
+      "expected_top3_any": [
+        "__missing_microbiome_qiime2_abundance_skill__"
+      ]
     },
     {
       "id": "holdout_find_elisa_standard_curve",
@@ -109,7 +136,9 @@
       "difficulty": "confusing",
       "query": "ELISA standard curve analysis",
       "reason": "ELISA standard-curve wording currently drifts to decision-curve or generic data-analysis skills; track as missing wet-lab assay quantification coverage.",
-      "expected_top3_any": ["__missing_elisa_standard_curve_skill__"]
+      "expected_top3_any": [
+        "__missing_elisa_standard_curve_skill__"
+      ]
     },
     {
       "id": "holdout_find_western_blot_densitometry",
@@ -118,7 +147,9 @@
       "difficulty": "confusing",
       "query": "western blot densitometry quantification",
       "reason": "Western blot densitometry wording currently drifts to figure-legends or RNA-seq transcript quantification; track as missing wet-lab image quantification coverage.",
-      "expected_top3_any": ["__missing_western_blot_densitometry_skill__"]
+      "expected_top3_any": [
+        "__missing_western_blot_densitometry_skill__"
+      ]
     },
     {
       "id": "holdout_find_qpcr_ddct_analysis",
@@ -127,7 +158,9 @@
       "difficulty": "confusing",
       "query": "qPCR Ct ddCt gene expression analysis",
       "reason": "qPCR Ct/ddCt expression-analysis wording currently drifts to expression-matrix normalization, RNA-seq differential-expression, or primer-design skills; track as missing assay quantification coverage.",
-      "expected_top3_any": ["__missing_qpcr_ddct_analysis_skill__"]
+      "expected_top3_any": [
+        "__missing_qpcr_ddct_analysis_skill__"
+      ]
     },
     {
       "id": "holdout_find_immunofluorescence_colocalization",
@@ -136,7 +169,9 @@
       "difficulty": "confusing",
       "query": "immunofluorescence colocalization microscopy Pearson Manders",
       "reason": "Pearson/Manders IF colocalization wording currently drifts to electron microscopy, pathology, or broad bioimage-processing skills; track as a missing microscopy quantification skill while preserving generic bioimage queries.",
-      "expected_top3_any": ["__missing_immunofluorescence_colocalization_skill__"]
+      "expected_top3_any": [
+        "__missing_immunofluorescence_colocalization_skill__"
+      ]
     },
     {
       "id": "holdout_find_luciferase_reporter_assay",
@@ -145,7 +180,9 @@
       "difficulty": "confusing",
       "query": "luciferase reporter assay normalization dual luciferase",
       "reason": "Luciferase reporter normalization wording currently drifts to drug bioactivity or broad expression-normalization skills; track as missing reporter-assay quantification coverage.",
-      "expected_top3_any": ["__missing_luciferase_reporter_assay_skill__"]
+      "expected_top3_any": [
+        "__missing_luciferase_reporter_assay_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_climate_xarray_netcdf",
@@ -155,7 +192,10 @@
       "query": "climate netcdf xarray analysis",
       "reason": "Static Wiki search should eventually surface array or climate-data evidence pages for this wording.",
       "doc_type": "skill",
-      "expected_top3_any": ["zarr-python", "__missing_climate_xarray_skill__"]
+      "expected_top3_any": [
+        "zarr-python",
+        "__missing_climate_xarray_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_biomedical_ner",
@@ -165,7 +205,9 @@
       "query": "named entity recognition biomedical NLP",
       "reason": "Static Wiki search should expose the biomedical NER registry gap instead of satisfying the query with generic literature-search or writing pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_biomedical_ner_skill__"]
+      "expected_top3_any": [
+        "__missing_biomedical_ner_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_object_detection_yolo",
@@ -175,7 +217,9 @@
       "query": "object detection computer vision YOLO",
       "reason": "Tracks whether Wiki search can distinguish general object detection from bioimage processing.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_object_detection_yolo_skill__"]
+      "expected_top3_any": [
+        "__missing_object_detection_yolo_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_spatial_transcriptomics",
@@ -185,7 +229,11 @@
       "query": "spatial transcriptomics Seurat cell communication",
       "reason": "Wiki evidence should eventually surface spatial communication, single-cell integration, or cell communication pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["spatial-communication", "scrnaseq-integration", "cellchat-cell-communication"]
+      "expected_top3_any": [
+        "spatial-communication",
+        "scrnaseq-integration",
+        "cellchat-cell-communication"
+      ]
     },
     {
       "id": "holdout_wiki_metabolomics_lcms",
@@ -195,7 +243,10 @@
       "query": "metabolomics LC-MS pathway enrichment",
       "reason": "Static Wiki search should surface the broad multi-omics planning skill ahead of MS/MS prediction or RNA-seq-only enrichment pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["bulk-omics-integrative-planner", "__missing_metabolomics_lcms_skill__"]
+      "expected_top3_any": [
+        "bulk-omics-integrative-planner",
+        "__missing_metabolomics_lcms_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_flow_cytometry_fcs",
@@ -205,7 +256,10 @@
       "query": "flow cytometry FCS gating analysis",
       "reason": "Tracks whether Wiki search can prioritize flow cytometry/FCS parsing over generic figure text pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["flowio", "flowio-flow-cytometry"]
+      "expected_top3_any": [
+        "flowio",
+        "flowio-flow-cytometry"
+      ]
     },
     {
       "id": "holdout_wiki_cytof_mass_cytometry",
@@ -215,7 +269,9 @@
       "query": "CyTOF mass cytometry clustering gating analysis",
       "reason": "Static Wiki search should expose the CyTOF/mass-cytometry registry gap instead of satisfying the query with generic clustering or FCS parsing pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_cytof_mass_cytometry_skill__"]
+      "expected_top3_any": [
+        "__missing_cytof_mass_cytometry_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_chipseq_peak_calling",
@@ -225,7 +281,9 @@
       "query": "ChIP-seq MACS2 peak calling differential binding DiffBind",
       "reason": "Static Wiki search should expose the ChIP-seq registry gap instead of satisfying the query with ATAC-seq peak-calling or differential-accessibility pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_chipseq_peak_calling_skill__"]
+      "expected_top3_any": [
+        "__missing_chipseq_peak_calling_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_gwas_finemapping_coloc",
@@ -235,7 +293,9 @@
       "query": "GWAS summary statistics fine mapping colocalization",
       "reason": "Static Wiki search should not satisfy GWAS fine-mapping wording with LLM fine-tuning or broad clinical-statistics pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_gwas_finemapping_coloc_skill__"]
+      "expected_top3_any": [
+        "__missing_gwas_finemapping_coloc_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_microbiome_qiime2_abundance",
@@ -245,7 +305,9 @@
       "query": "microbiome differential abundance qiime2",
       "reason": "Static Wiki search should expose the microbiome/QIIME2 differential-abundance registry gap instead of satisfying the query with RNA-seq differential-expression pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_microbiome_qiime2_abundance_skill__"]
+      "expected_top3_any": [
+        "__missing_microbiome_qiime2_abundance_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_elisa_standard_curve",
@@ -255,7 +317,9 @@
       "query": "ELISA standard curve analysis",
       "reason": "Static Wiki search should expose the ELISA standard-curve registry gap instead of satisfying the query with decision-curve or generic analysis pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_elisa_standard_curve_skill__"]
+      "expected_top3_any": [
+        "__missing_elisa_standard_curve_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_western_blot_densitometry",
@@ -265,7 +329,9 @@
       "query": "western blot densitometry quantification",
       "reason": "Static Wiki search should expose the western blot densitometry registry gap instead of satisfying the query with transcript quantification or figure-writing pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_western_blot_densitometry_skill__"]
+      "expected_top3_any": [
+        "__missing_western_blot_densitometry_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_qpcr_ddct_analysis",
@@ -275,7 +341,9 @@
       "query": "qPCR Ct ddCt gene expression analysis",
       "reason": "Static Wiki search should expose the qPCR Ct/ddCt registry gap instead of satisfying the query with primer design, generic expression-matrix, or RNA-seq pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_qpcr_ddct_analysis_skill__"]
+      "expected_top3_any": [
+        "__missing_qpcr_ddct_analysis_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_immunofluorescence_colocalization",
@@ -285,7 +353,9 @@
       "query": "immunofluorescence colocalization microscopy Pearson Manders",
       "reason": "Static Wiki search should expose the IF colocalization registry gap instead of satisfying the query with electron-microscopy, pathology, or broad bioimage-processing pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_immunofluorescence_colocalization_skill__"]
+      "expected_top3_any": [
+        "__missing_immunofluorescence_colocalization_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_luciferase_reporter_assay",
@@ -295,7 +365,9 @@
       "query": "luciferase reporter assay normalization dual luciferase",
       "reason": "Static Wiki search should expose the luciferase reporter-assay registry gap instead of satisfying the query with drug-bioactivity or generic expression-normalization pages.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_luciferase_reporter_assay_skill__"]
+      "expected_top3_any": [
+        "__missing_luciferase_reporter_assay_skill__"
+      ]
     },
     {
       "id": "holdout_wiki_neuroimaging_nifti",
@@ -305,7 +377,82 @@
       "query": "neuroimaging NIfTI MRI fMRI analysis",
       "reason": "Likely missing-domain query for future registry expansion.",
       "doc_type": "skill",
-      "expected_top3_any": ["__missing_neuroimaging_nifti_skill__"]
+      "expected_top3_any": [
+        "__missing_neuroimaging_nifti_skill__"
+      ]
+    },
+    {
+      "id": "holdout_find_phylogenetic_tree_inference",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "phylogenetic tree inference",
+      "reason": "Expert tail probe: correct biology skills exist but top-1 is currently decision-tree-analysis because tree is interpreted as an ML decision tree.",
+      "expected_top3_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ]
+    },
+    {
+      "id": "holdout_find_vae_generative_model",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "变分自编码器 生成模型",
+      "reason": "Expert tail probe: VAE generative modeling is undercovered and currently drifts to sparse autoencoder, BLIP, or code-model evaluation false positives.",
+      "expected_top3_any": [
+        "__missing_vae_generative_model_skill__"
+      ]
+    },
+    {
+      "id": "holdout_find_spanish_ner",
+      "target": "find",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "西班牙语 命名实体识别",
+      "reason": "Expert tail probe: Spanish NER currently drifts to Spanish grant-writing because language and task intent are not separated.",
+      "expected_top3_any": [
+        "__missing_spanish_ner_skill__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_phylogenetic_tree_inference",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "phylogenetic tree inference",
+      "reason": "Static Wiki should eventually surface phylogenetics/ETE evidence pages ahead of decision-tree and generic inference pages.",
+      "doc_type": "skill",
+      "expected_top3_any": [
+        "etetoolkit",
+        "phylogenetics",
+        "__ranking_phylogenetic_tree_inference__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_vae_generative_model",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "变分自编码器 生成模型",
+      "reason": "Static Wiki should expose the VAE/generative-modeling coverage gap rather than satisfying the query with sparse-autoencoder or multimodal-model pages.",
+      "doc_type": "skill",
+      "expected_top3_any": [
+        "__missing_vae_generative_model_skill__"
+      ]
+    },
+    {
+      "id": "holdout_wiki_spanish_ner",
+      "target": "wiki",
+      "level": "complex",
+      "difficulty": "confusing",
+      "query": "西班牙语 命名实体识别",
+      "reason": "Static Wiki should expose the Spanish NER coverage gap instead of Spanish grant-writing or generic document parsing pages.",
+      "doc_type": "skill",
+      "expected_top3_any": [
+        "__missing_spanish_ner_skill__"
+      ]
     }
   ]
 }

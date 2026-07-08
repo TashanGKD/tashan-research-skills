@@ -1,0 +1,813 @@
+{
+  "schema": "find_science_skills_intent_rules_v1",
+  "version": "2026-07-09",
+  "description": "Shared lexical intent aliases, intent keyword groups, and explicit named-tool ranking adjustments used by find_skills.py and search_wiki.py. These rules are curated regression guards, not evidence of general semantic retrieval accuracy.",
+  "semantic_aliases": {
+    "冷冻电镜": "cryo em cryo-em electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction 电子显微镜",
+    "电子显微镜": "cryo em cryo-em electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction 冷冻电镜",
+    "cryo em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction",
+    "cryo-em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph empiar particle picking 3d reconstruction",
+    "有限元": "finite element fem mesh meshing solver simulation numerical pde",
+    "finite element": "有限元 fem mesh meshing solver simulation numerical pde",
+    "fem": "有限元 finite element mesh meshing solver simulation numerical pde",
+    "第一性原理": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "密度泛函": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "dft": "第一性原理 密度泛函 density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "orca": "quantum chemistry dft density functional theory frequency vibrational thermochemistry optimization single point ir spectrum",
+    "vasp": "dft density functional theory plane wave paw poscar incar kpoints potcar band structure dos electronic structure materials hpc",
+    "分子动力学": "molecular dynamics md gromacs lammps openmm simulation trajectory force field",
+    "molecular dynamics": "分子动力学 md gromacs lammps openmm simulation trajectory force field",
+    "gromacs": "molecular dynamics md trajectory rmsd rmsf topology mdp force field hpc 分子动力学",
+    "rmsd": "molecular dynamics gromacs md trajectory rmsf structural fluctuation 分子动力学",
+    "rmsf": "molecular dynamics gromacs md trajectory rmsd structural fluctuation 分子动力学",
+    "单细胞": "single cell single-cell scrna scRNA-seq scanpy seurat transcriptomics",
+    "single cell": "单细胞 single-cell scrna scRNA-seq scanpy seurat transcriptomics",
+    "scrna": "单细胞 single cell single-cell scRNA-seq scanpy seurat transcriptomics",
+    "时间序列": "time series forecasting temporal sequential anomaly detection arima sarimax aeon",
+    "time series": "时间序列 forecasting temporal sequential anomaly detection arima sarimax aeon",
+    "arima": "time series econometrics var sarimax cointegration statsmodels 时间序列 计量经济学 协整",
+    "cointegration": "time series econometrics arima var statsmodels 时间序列 计量经济学 协整",
+    "协整": "time series econometrics arima var cointegration statsmodels 时间序列 计量经济学",
+    "计量经济学": "econometrics time series arima var cointegration statsmodels 时间序列 协整",
+    "2sls": "instrumental variables iv regression weak instruments endogeneity 工具变量 两阶段最小二乘 弱工具变量 内生性",
+    "instrumental variables": "iv regression 2sls weak instruments endogeneity econometrics 工具变量 两阶段最小二乘 弱工具变量 内生性",
+    "工具变量": "instrumental variables iv regression 2sls weak instruments endogeneity 两阶段最小二乘 弱工具变量 内生性",
+    "蛋白质结构预测": "protein structure prediction alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "protein structure prediction": "蛋白质结构预测 alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "alphafold": "蛋白质结构预测 protein structure prediction alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "netcdf": "zarr xarray dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
+    "xarray": "zarr netcdf dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
+    "climate data": "netcdf xarray zarr dask chunked array n-dimensional arrays scientific computing",
+    "metabolomics": "代谢组 代谢组学 multi omics multi-omics bulk omics proteomics transcriptomics integrative planner biomedical direction pathway enrichment lcms lc ms",
+    "lc-ms": "metabolomics 代谢组 代谢组学 lcms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
+    "lcms": "metabolomics 代谢组 代谢组学 lc ms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
+    "metagenomics": "metagenome taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "metagenome": "metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "kraken2": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "metaphlan": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken 宏基因组 微生物群落 分类谱",
+    "immunofluorescence": "fluorescence microscopy colocalization colocalisation bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "colocalization": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "colocalisation": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "mtt": "cell viability assay dose response concentration response ic50 4pl hill curve fitting drug screening",
+    "cck8": "cell viability assay dose response concentration response ic50 od450 4pl hill curve fitting drug screening",
+    "cell viability": "mtt cck8 dose response concentration response ic50 ec50 4pl hill curve fitting drug screening",
+    "marker gene": "标记基因 single cell annotation cell type scrnaseq",
+    "rna velocity": "single cell scrna scrnaseq trajectory pseudotime scvelo monocle3 velocity 拟时序 轨迹推断",
+    "pseudotime": "single cell scrna scrnaseq trajectory rna velocity scvelo monocle3 拟时序 轨迹推断",
+    "引用管理": "citation management reference bibtex zotero 参考文献",
+    "citation management": "引用管理 reference bibtex zotero 参考文献",
+    "bibtex": "citation management 引用管理 reference zotero 参考文献",
+    "zotero": "citation management 引用管理 bibtex reference 参考文献"
+  },
+  "intent_keywords": {
+    "execution": {
+      "query": [
+        "预测",
+        "prediction",
+        "predict",
+        "simulate",
+        "simulation",
+        "模拟",
+        "对接",
+        "docking",
+        "annotation",
+        "注释",
+        "run",
+        "运行"
+      ],
+      "prefer": [
+        "预测",
+        "simulation",
+        "simulate",
+        "docking",
+        "annotation",
+        "workflow",
+        "模型",
+        "structure prediction",
+        "分子动力学",
+        "第一性原理"
+      ],
+      "avoid": [
+        "database",
+        "数据库",
+        "access",
+        "fetch",
+        "download",
+        "retriev",
+        "检索",
+        "search",
+        "guide",
+        "教程",
+        "overview"
+      ]
+    },
+    "database": {
+      "query": [
+        "数据库",
+        "database",
+        "db",
+        "emdb",
+        "pdb",
+        "uniprot",
+        "retriev",
+        "search",
+        "检索"
+      ],
+      "prefer": [
+        "database",
+        "数据库",
+        "access",
+        "retriev",
+        "search",
+        "检索"
+      ],
+      "avoid": [
+        "predict",
+        "prediction",
+        "预测",
+        "simulate",
+        "simulation",
+        "模拟",
+        "run",
+        "运行"
+      ]
+    },
+    "array_data": {
+      "query": [
+        "netcdf",
+        "xarray",
+        "zarr",
+        "climate data",
+        "chunked array"
+      ],
+      "prefer": [
+        "zarr",
+        "xarray",
+        "dask",
+        "chunked",
+        "n-d arrays",
+        "parallel i/o",
+        "scientific computing"
+      ],
+      "avoid": [
+        "excel",
+        "csv",
+        "pivot",
+        "clinical",
+        "decision curve",
+        "cerna",
+        "tabular",
+        "feature importance"
+      ]
+    },
+    "econometric_time_series": {
+      "query": [
+        "arima",
+        "sarimax",
+        "cointegration",
+        "协整",
+        "计量经济学"
+      ],
+      "prefer": [
+        "arima",
+        "sarimax",
+        "var",
+        "cointegration",
+        "econometric",
+        "计量经济学",
+        "协整",
+        "statsmodels"
+      ],
+      "avoid": [
+        "classification",
+        "clustering",
+        "segmentation",
+        "similarity search",
+        "machine learning tasks"
+      ]
+    },
+    "instrumental_variables": {
+      "query": [
+        "instrumental variables",
+        "iv regression",
+        "2sls",
+        "weak instruments",
+        "工具变量",
+        "弱工具变量",
+        "内生性"
+      ],
+      "prefer": [
+        "instrumental variables",
+        "iv regression",
+        "2sls",
+        "weak instruments",
+        "endogeneity",
+        "工具变量法",
+        "两阶段最小二乘",
+        "弱工具变量",
+        "内生性"
+      ],
+      "avoid": [
+        "arima",
+        "sarimax",
+        "var",
+        "cointegration",
+        "协整",
+        "time series",
+        "时间序列",
+        "manuscript",
+        "journal"
+      ]
+    },
+    "omics_integrative": {
+      "query": [
+        "metabolomics",
+        "metabolome",
+        "lc-ms",
+        "lcms",
+        "代谢组",
+        "代谢组学"
+      ],
+      "prefer": [
+        "metabolomics",
+        "代谢组",
+        "bulk omics",
+        "multi omics",
+        "multi-omics",
+        "integrative",
+        "pathway enrichment"
+      ],
+      "avoid": [
+        "predict",
+        "prediction",
+        "spectrum",
+        "spectra",
+        "ms2",
+        "adverse outcome",
+        "rnaseq"
+      ]
+    },
+    "metagenomics_taxonomy": {
+      "query": [
+        "metagenomics",
+        "metagenome",
+        "kraken2",
+        "bracken",
+        "metaphlan",
+        "宏基因组"
+      ],
+      "prefer": [
+        "metagenome",
+        "metagenomics",
+        "taxonomic profiling",
+        "taxonomy",
+        "microbial community",
+        "kraken2",
+        "bracken",
+        "metaphlan",
+        "宏基因组"
+      ],
+      "avoid": [
+        "acmg",
+        "variant classification",
+        "cancer classification",
+        "tumor",
+        "oncotree",
+        "clinical significance",
+        "classification criteria"
+      ]
+    },
+    "bioimage_colocalization": {
+      "query": [
+        "immunofluorescence",
+        "colocalization",
+        "colocalisation"
+      ],
+      "prefer": [
+        "fiji",
+        "imagej",
+        "pyimagej",
+        "scikit-image",
+        "microscopy",
+        "bioimage",
+        "image processing",
+        "image analysis",
+        "region properties",
+        "analyze particles"
+      ],
+      "avoid": [
+        "excel",
+        "csv",
+        "pivot",
+        "decision curve",
+        "clinical utility",
+        "cerna",
+        "expression matrix",
+        "feature importance"
+      ]
+    },
+    "dose_response_assay": {
+      "query": [
+        "mtt",
+        "cck8",
+        "cell viability",
+        "ic50",
+        "ec50",
+        "dose response",
+        "concentration response"
+      ],
+      "prefer": [
+        "dose response",
+        "concentration response",
+        "ic50",
+        "ec50",
+        "hill slope",
+        "4 parameter logistic",
+        "4pl",
+        "cell assays",
+        "drug screening"
+      ],
+      "avoid": [
+        "decision curve",
+        "decision-tree",
+        "clinical utility",
+        "rebuttal",
+        "author response",
+        "reviewer",
+        "single cell",
+        "cell type annotation"
+      ]
+    },
+    "gromacs_md_trajectory": {
+      "query": [
+        "gromacs",
+        "rmsd",
+        "rmsf"
+      ],
+      "prefer": [
+        "gromacs",
+        "molecular dynamics",
+        "trajectory",
+        "rmsd",
+        "rmsf",
+        "topology",
+        "mdp",
+        "force field"
+      ],
+      "avoid": [
+        "lammps",
+        "reaxff",
+        "single cell",
+        "scrna",
+        "rna velocity",
+        "pseudotime",
+        "cell type annotation"
+      ]
+    },
+    "orca_quantum_chemistry": {
+      "query": [
+        "orca"
+      ],
+      "prefer": [
+        "orca",
+        "frequency",
+        "frequencies",
+        "vibrational",
+        "thermochemistry",
+        "dft",
+        "single point",
+        "optimization"
+      ],
+      "avoid": [
+        "quantum espresso",
+        "phonopy",
+        "vasp",
+        "abinit",
+        "gpaw",
+        "dftbplus",
+        "qe"
+      ]
+    },
+    "vasp_materials_dft": {
+      "query": [
+        "vasp"
+      ],
+      "prefer": [
+        "vasp",
+        "incar",
+        "poscar",
+        "kpoints",
+        "potcar",
+        "band structure",
+        "dos",
+        "plane wave",
+        "paw",
+        "electronic structure"
+      ],
+      "avoid": [
+        "quantum espresso",
+        "orca",
+        "phonopy",
+        "abinit",
+        "gpaw",
+        "dftbplus",
+        "qe"
+      ]
+    }
+  },
+  "named_tool_rules": {
+    "gromacs_md_trajectory": {
+      "find": {
+        "ordered_adjustments": [
+          {
+            "hay_contains_any": [
+              "hpc-gromacs"
+            ],
+            "score": 14.0
+          },
+          {
+            "hay_contains_any": [
+              "drug-protein-ligand-md"
+            ],
+            "score": 4.0
+          }
+        ],
+        "additive_boosts": [
+          {
+            "hay_contains_any": [
+              "gromacs",
+              "molecular dynamics",
+              "trajectory",
+              "rmsd",
+              "rmsf",
+              "topology",
+              "mdp",
+              "force field"
+            ],
+            "score": 4.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "hay_contains_any": [
+              "lammps",
+              "reaxff",
+              "deepmd"
+            ],
+            "score": -8.0
+          },
+          {
+            "hay_contains_any": [
+              "scrnaseq",
+              "single cell",
+              "rna velocity",
+              "pseudotime",
+              "cell type annotation"
+            ],
+            "score": -8.0
+          }
+        ]
+      },
+      "wiki": {
+        "ordered_adjustments": [
+          {
+            "title_contains_any": [
+              "hpc-gromacs"
+            ],
+            "score": 58.0
+          },
+          {
+            "title_contains_any": [
+              "drug-protein-ligand-md"
+            ],
+            "score": 10.0
+          },
+          {
+            "hay_contains_any": [
+              "gromacs",
+              "molecular dynamics",
+              "rmsd",
+              "rmsf",
+              "topology",
+              "mdp",
+              "force field"
+            ],
+            "score": 18.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "title_contains_any": [
+              "lammps",
+              "reaxff",
+              "deepmd"
+            ],
+            "score": -36.0
+          },
+          {
+            "hay_contains_any": [
+              "lammps",
+              "reaxff",
+              "deepmd"
+            ],
+            "score": -16.0
+          },
+          {
+            "title_contains_any": [
+              "scrnaseq",
+              "single-cell",
+              "single-cell-rna"
+            ],
+            "score": -120.0
+          },
+          {
+            "hay_contains_any": [
+              "rna velocity",
+              "pseudotime",
+              "single cell",
+              "cell type annotation"
+            ],
+            "score": -60.0
+          }
+        ]
+      }
+    },
+    "orca_quantum_chemistry": {
+      "find": {
+        "ordered_adjustments": [
+          {
+            "query_tokens_any": [
+              "freq",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "hay_contains_any": [
+              "orca-freq"
+            ],
+            "score": 42.0
+          },
+          {
+            "query_tokens_any": [
+              "geometry",
+              "optimization",
+              "optimize",
+              "optimisation",
+              "optimise"
+            ],
+            "hay_contains_any": [
+              "orca-opt",
+              "orca-optimization"
+            ],
+            "score": 34.0
+          },
+          {
+            "query_tokens_any": [
+              "geometry",
+              "optimization",
+              "optimize",
+              "optimisation",
+              "optimise"
+            ],
+            "hay_contains_any": [
+              "orca-freq"
+            ],
+            "score": 4.0
+          },
+          {
+            "hay_contains_any": [
+              "orca"
+            ],
+            "score": 16.0
+          }
+        ],
+        "additive_boosts": [
+          {
+            "hay_contains_any": [
+              "orca",
+              "density functional",
+              "dft",
+              "single point",
+              "optimization",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "score": 7.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "hay_contains_any": [
+              "quantum-espresso",
+              "quantum espresso",
+              "phonopy",
+              "vasp",
+              "abinit",
+              "gpaw",
+              "dftbplus"
+            ],
+            "score": -28.0
+          }
+        ]
+      },
+      "wiki": {
+        "ordered_adjustments": [
+          {
+            "query_tokens_any": [
+              "freq",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "title_contains_any": [
+              "orca-freq"
+            ],
+            "score": 96.0
+          },
+          {
+            "title_contains_any": [
+              "orca"
+            ],
+            "score": 34.0
+          },
+          {
+            "hay_contains_any": [
+              "orca",
+              "density functional",
+              "dft",
+              "single point",
+              "optimization",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "score": 14.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "title_contains_any": [
+              "quantum-espresso",
+              "phonopy",
+              "vasp",
+              "abinit",
+              "gpaw",
+              "dftbplus"
+            ],
+            "score": -70.0
+          }
+        ]
+      }
+    },
+    "vasp_materials_dft": {
+      "find": {
+        "ordered_adjustments": [
+          {
+            "query_tokens_any": [
+              "band",
+              "bands",
+              "dos",
+              "electronic"
+            ],
+            "hay_contains_any": [
+              "hpc-vasp"
+            ],
+            "score": 38.0
+          },
+          {
+            "query_tokens_any": [
+              "freq",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "hay_contains_any": [
+              "vasp-freq"
+            ],
+            "score": 96.0
+          },
+          {
+            "hay_contains_any": [
+              "hpc-vasp",
+              "vasp-freq"
+            ],
+            "score": 34.0
+          },
+          {
+            "hay_contains_any": [
+              "vasp"
+            ],
+            "score": 14.0
+          }
+        ],
+        "additive_boosts": [
+          {
+            "hay_contains_any": [
+              "vasp",
+              "incar",
+              "poscar",
+              "kpoints",
+              "potcar",
+              "band structure",
+              "density of states",
+              "plane wave",
+              "paw",
+              "electronic structure"
+            ],
+            "score": 7.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "hay_contains_any": [
+              "quantum-espresso",
+              "quantum espresso",
+              "orca",
+              "phonopy",
+              "abinit",
+              "gpaw",
+              "dftbplus"
+            ],
+            "score": -120.0
+          }
+        ]
+      },
+      "wiki": {
+        "ordered_adjustments": [
+          {
+            "query_tokens_any": [
+              "band",
+              "bands",
+              "dos",
+              "electronic"
+            ],
+            "title_contains_any": [
+              "hpc-vasp"
+            ],
+            "score": 72.0
+          },
+          {
+            "query_tokens_any": [
+              "freq",
+              "frequency",
+              "frequencies",
+              "vibrational",
+              "thermochemistry"
+            ],
+            "title_contains_any": [
+              "vasp-freq"
+            ],
+            "score": 124.0
+          },
+          {
+            "title_contains_any": [
+              "hpc-vasp",
+              "vasp-freq"
+            ],
+            "score": 44.0
+          },
+          {
+            "title_contains_any": [
+              "vasp"
+            ],
+            "score": 28.0
+          },
+          {
+            "hay_contains_any": [
+              "vasp",
+              "incar",
+              "poscar",
+              "kpoints",
+              "potcar",
+              "band structure",
+              "density of states",
+              "plane wave",
+              "paw",
+              "electronic structure"
+            ],
+            "score": 14.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "title_contains_any": [
+              "quantum-espresso",
+              "orca",
+              "phonopy",
+              "abinit",
+              "gpaw",
+              "dftbplus"
+            ],
+            "score": -70.0
+          }
+        ]
+      }
+    }
+  }
+}

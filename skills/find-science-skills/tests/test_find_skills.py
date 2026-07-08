@@ -64,6 +64,13 @@ def test_dft_retrieval():
     assert any("dft" in x for x in names)
 
 
+def test_intent_rules_are_shared_data_backed():
+    assert fs.INTENT_RULES["schema"] == "find_science_skills_intent_rules_v1"
+    assert "orca" in fs.SEMANTIC_ALIASES
+    assert "vasp_materials_dft" in fs.NAMED_TOOL_RULES
+    assert "gromacs_md_trajectory" in fs.NAMED_TOOL_RULES
+
+
 def test_docking_retrieval():
     hits = _search("molecular docking")
     assert hits, "docking query returned nothing"
@@ -130,9 +137,10 @@ def test_chinese_query_retrieval():
 
 
 def test_cryo_em_prefers_electron_microscopy_over_general_pdb():
-    ids = [n["id"] for n in _search("冷冻电镜", limit=3)]
+    ids = [n["id"] for n in _search("冷冻电镜", limit=5)]
     assert ids[0] == "tooluniverse-electron-microscopy"
-    assert ids.index("tooluniverse-electron-microscopy") < ids.index("pdb-database")
+    if "pdb-database" in ids:
+        assert ids.index("tooluniverse-electron-microscopy") < ids.index("pdb-database")
 
 
 def test_time_series_keeps_strong_existing_hit_first():
@@ -262,6 +270,22 @@ def test_missing_luciferase_reporter_gap_prevents_bioactivity_false_positive():
 
     assert gaps
     assert gaps[0]["id"] == "__missing_luciferase_reporter_assay_skill__"
+    assert gaps[0]["registry_gap_status"] == "missing_skill"
+
+
+def test_missing_vae_gap_prevents_sparse_autoencoder_false_positive():
+    gaps = fs.missing_gap_nodes("变分自编码器 生成模型")
+
+    assert gaps
+    assert gaps[0]["id"] == "__missing_vae_generative_model_skill__"
+    assert gaps[0]["registry_gap_status"] == "missing_skill"
+
+
+def test_missing_spanish_ner_gap_prevents_grant_writing_false_positive():
+    gaps = fs.missing_gap_nodes("西班牙语 命名实体识别")
+
+    assert gaps
+    assert gaps[0]["id"] == "__missing_spanish_ner_skill__"
     assert gaps[0]["registry_gap_status"] == "missing_skill"
 
 

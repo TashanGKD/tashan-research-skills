@@ -314,16 +314,20 @@ def test_holdout_report_separates_real_skill_hits_from_registry_gap_hits(capsys)
         "holdout_wiki_cytof_mass_cytometry",
         "holdout_find_chipseq_peak_calling",
         "holdout_wiki_chipseq_peak_calling",
+        "holdout_find_vae_generative_model",
+        "holdout_wiki_vae_generative_model",
+        "holdout_find_spanish_ner",
+        "holdout_wiki_spanish_ner",
     }
 
     resolution = report["resolution_summary"]["overall"]
     expected_resolution = report["expected_resolution_summary"]["overall"]
     assert resolution["count"] == len(holdout["cases"])
-    assert resolution["top3_real_skill"] == 8
+    assert resolution["top3_real_skill"] == 9
     assert resolution["top3_registry_gap"] == len(expected_gap_case_ids)
     assert resolution["top1_real_skill"] == 8
     assert resolution["top1_registry_gap"] == len(expected_gap_case_ids)
-    assert expected_resolution["expected_real_skill"] == 8
+    assert expected_resolution["expected_real_skill"] == 10
     assert expected_resolution["expected_registry_gap"] == len(expected_gap_case_ids)
 
     gap_rows = [row for row in report["cases"] if row["top1_match_type"] == "registry_gap"]
@@ -353,6 +357,10 @@ def test_holdout_report_separates_real_skill_hits_from_registry_gap_hits(capsys)
     assert "__missing_cytof_mass_cytometry_skill__" in out
     assert "holdout_wiki_chipseq_peak_calling" in out
     assert "__missing_chipseq_peak_calling_skill__" in out
+    assert "holdout_wiki_vae_generative_model" in out
+    assert "__missing_vae_generative_model_skill__" in out
+    assert "holdout_wiki_spanish_ner" in out
+    assert "__missing_spanish_ner_skill__" in out
 
 
 def test_markdown_printer_handles_non_gating_holdout_report(capsys):
@@ -387,7 +395,7 @@ def test_missing_skill_placeholders_are_tracked_as_registry_gaps():
     expected_missing = set()
     for case in holdout["cases"]:
         for skill_id in case.get("expected_top3_any", []):
-            if skill_id.startswith("__missing_") and skill_id.endswith("__"):
+            if skill_id.startswith("__") and skill_id.endswith("__"):
                 expected_missing.add(skill_id)
 
     gap_ids = {gap["id"] for gap in gaps["gaps"]}

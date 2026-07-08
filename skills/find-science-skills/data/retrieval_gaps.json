@@ -272,6 +272,81 @@
         "holdout_find_chipseq_peak_calling",
         "holdout_wiki_chipseq_peak_calling"
       ]
+    },
+    {
+      "id": "__ranking_phylogenetic_tree_inference__",
+      "status": "ranking_gap",
+      "title": "Phylogenetic tree inference ranking",
+      "query_examples": [
+        "phylogenetic tree inference",
+        "系统发育树 推断 构建",
+        "phylogeny tree reconstruction"
+      ],
+      "desired_behavior": "Prefer phylogenetics/ETE toolkit skills for evolutionary tree inference; avoid decision-tree machine-learning false positives caused by the token tree.",
+      "user_facing_problem": "A user asking for phylogenetic tree inference wants evolutionary/bioinformatics tree construction, not decision-tree classification or generic statistical inference.",
+      "avoid_false_positives": [
+        "Decision-tree analysis is a machine-learning model and does not infer evolutionary or taxonomic phylogenies.",
+        "Generic computational-inference pages match the word inference but do not provide phylogenetic tree workflows."
+      ],
+      "acceptance_criteria": [
+        "Ranks etetoolkit or phylogenetics ahead of decision-tree-analysis for phylogenetic tree queries.",
+        "Explains that tree means evolutionary phylogeny in this context, not ML decision trees.",
+        "Keeps biology-specific tree reconstruction terms such as phylogeny, phylogenetic, clade, and ETE together."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_phylogenetic_tree_inference",
+        "holdout_wiki_phylogenetic_tree_inference"
+      ]
+    },
+    {
+      "id": "__missing_vae_generative_model_skill__",
+      "status": "missing_skill",
+      "title": "Variational autoencoder generative modeling",
+      "query_examples": [
+        "变分自编码器 生成模型",
+        "variational autoencoder VAE generative model",
+        "VAE latent generative modeling"
+      ],
+      "desired_behavior": "Recommend a VAE/generative-modeling skill when available; avoid sparse-autoencoder interpretability, BLIP vision-language, or code-model evaluation false positives.",
+      "user_facing_problem": "A user asking for VAE generative modeling needs latent-variable model design/training/evaluation, not sparse autoencoder interpretability or unrelated multimodal model pages.",
+      "avoid_false_positives": [
+        "Sparse autoencoders in mechanistic interpretability are not variational autoencoders for generative modeling.",
+        "BLIP-style vision-language pages and code-model evaluation do not teach or run VAE training."
+      ],
+      "acceptance_criteria": [
+        "Covers encoder/decoder, latent distribution, KL term, reconstruction loss, and sampling.",
+        "Supports VAE training or experiment setup for images, tabular data, or scientific latent models.",
+        "Reports model diagnostics such as reconstruction quality, latent traversal, and posterior collapse risks."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_vae_generative_model",
+        "holdout_wiki_vae_generative_model"
+      ]
+    },
+    {
+      "id": "__missing_spanish_ner_skill__",
+      "status": "missing_skill",
+      "title": "Spanish named entity recognition",
+      "query_examples": [
+        "西班牙语 命名实体识别",
+        "Spanish named entity recognition",
+        "NER para textos en español"
+      ],
+      "desired_behavior": "Recommend a Spanish NER / multilingual information-extraction skill when available; avoid Spanish grant-writing or generic literature-search false positives.",
+      "user_facing_problem": "A user asking for Spanish NER needs entity extraction from Spanish text, not grant-writing in Spanish.",
+      "avoid_false_positives": [
+        "Spanish grant-writing skills share the language token but solve a writing task, not NER.",
+        "Generic literature search or document parsing does not provide named-entity tagging for Spanish text."
+      ],
+      "acceptance_criteria": [
+        "Supports Spanish or multilingual NER model selection and inference.",
+        "Defines entity labels, evaluation metrics, and input/output format.",
+        "Handles biomedical or general-domain Spanish text when the query specifies the domain."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_spanish_ner",
+        "holdout_wiki_spanish_ner"
+      ]
     }
   ]
 }

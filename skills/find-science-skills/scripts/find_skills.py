@@ -58,122 +58,51 @@ CAP_ALIASES = {
     "可视化展示": ["可视化", "展示", "figure", "plot", "poster", "slides", "ppt", "报告", "配图"],
 }
 
-# High-value scientific synonyms used as a lightweight semantic layer. This keeps
-# runtime fully standard-library while covering common cross-language terms that
-# lexical token overlap misses or under-ranks.
-SEMANTIC_ALIASES = {
-    "冷冻电镜": "cryo em cryo-em electron microscopy emdb density map micrograph cryoet tomography 电子显微镜",
-    "电子显微镜": "cryo em cryo-em electron microscopy emdb density map micrograph cryoet tomography 冷冻电镜",
-    "cryo em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph cryoet tomography",
-    "cryo-em": "冷冻电镜 电子显微镜 electron microscopy emdb density map micrograph cryoet tomography",
-    "有限元": "finite element fem mesh meshing solver simulation numerical pde",
-    "finite element": "有限元 fem mesh meshing solver simulation numerical pde",
-    "fem": "有限元 finite element mesh meshing solver simulation numerical pde",
-    "第一性原理": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
-    "密度泛函": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
-    "dft": "第一性原理 密度泛函 density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
-    "orca": "quantum chemistry dft density functional theory frequency vibrational thermochemistry optimization single point ir spectrum",
-    "vasp": "dft density functional theory plane wave paw poscar incar kpoints potcar band structure dos electronic structure materials hpc",
-    "分子动力学": "molecular dynamics md gromacs lammps openmm simulation trajectory force field",
-    "molecular dynamics": "分子动力学 md gromacs lammps openmm simulation trajectory force field",
-    "gromacs": "molecular dynamics md trajectory rmsd rmsf topology mdp force field hpc 分子动力学",
-    "rmsd": "molecular dynamics gromacs md trajectory rmsf structural fluctuation 分子动力学",
-    "rmsf": "molecular dynamics gromacs md trajectory rmsd structural fluctuation 分子动力学",
-    "单细胞": "single cell single-cell scrna scRNA-seq scanpy seurat transcriptomics",
-    "single cell": "单细胞 single-cell scrna scRNA-seq scanpy seurat transcriptomics",
-    "scrna": "单细胞 single cell single-cell scRNA-seq scanpy seurat transcriptomics",
-    "时间序列": "time series forecasting temporal sequential anomaly detection arima sarimax aeon",
-    "time series": "时间序列 forecasting temporal sequential anomaly detection arima sarimax aeon",
-    "arima": "time series econometrics var sarimax cointegration statsmodels 时间序列 计量经济学 协整",
-    "cointegration": "time series econometrics arima var statsmodels 时间序列 计量经济学 协整",
-    "协整": "time series econometrics arima var cointegration statsmodels 时间序列 计量经济学",
-    "计量经济学": "econometrics time series arima var cointegration statsmodels 时间序列 协整",
-    "2sls": "instrumental variables iv regression weak instruments endogeneity 工具变量 两阶段最小二乘 弱工具变量 内生性",
-    "instrumental variables": "iv regression 2sls weak instruments endogeneity econometrics 工具变量 两阶段最小二乘 弱工具变量 内生性",
-    "工具变量": "instrumental variables iv regression 2sls weak instruments endogeneity 两阶段最小二乘 弱工具变量 内生性",
-    "蛋白质结构预测": "protein structure prediction alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
-    "protein structure prediction": "蛋白质结构预测 alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
-    "alphafold": "蛋白质结构预测 protein structure prediction alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
-    "netcdf": "zarr xarray dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
-    "xarray": "zarr netcdf dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
-    "climate data": "netcdf xarray zarr dask chunked array n-dimensional arrays scientific computing",
-    "metabolomics": "代谢组 代谢组学 multi omics multi-omics bulk omics proteomics transcriptomics integrative planner biomedical direction pathway enrichment lcms lc ms",
-    "lc-ms": "metabolomics 代谢组 代谢组学 lcms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
-    "lcms": "metabolomics 代谢组 代谢组学 lc ms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
-    "metagenomics": "metagenome taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "metagenome": "metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "kraken2": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads bracken metaphlan 宏基因组 微生物群落 分类谱",
-    "metaphlan": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken 宏基因组 微生物群落 分类谱",
-    "immunofluorescence": "fluorescence microscopy colocalization colocalisation bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "colocalization": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "colocalisation": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
-    "mtt": "cell viability assay dose response concentration response ic50 4pl hill curve fitting drug screening",
-    "cck8": "cell viability assay dose response concentration response ic50 od450 4pl hill curve fitting drug screening",
-    "cell viability": "mtt cck8 dose response concentration response ic50 ec50 4pl hill curve fitting drug screening",
-}
+INTENT_RULES_CANDIDATE = SKILL_DIR / "data" / "intent_rules.json"
 
-INTENT_KEYWORDS = {
-    "execution": {
-        "query": ["预测", "prediction", "predict", "simulate", "simulation", "模拟", "对接", "docking", "annotation", "注释", "run", "运行"],
-        "prefer": ["预测", "simulation", "simulate", "docking", "annotation", "workflow", "模型", "structure prediction", "分子动力学", "第一性原理"],
-        "avoid": ["database", "数据库", "access", "fetch", "download", "retriev", "检索", "search", "guide", "教程", "overview"],
-    },
-    "database": {
-        "query": ["数据库", "database", "db", "emdb", "pdb", "uniprot", "retriev", "search", "检索"],
-        "prefer": ["database", "数据库", "access", "retriev", "search", "检索"],
-        "avoid": ["predict", "prediction", "预测", "simulate", "simulation", "模拟", "run", "运行"],
-    },
-    "array_data": {
-        "query": ["netcdf", "xarray", "zarr", "climate data", "chunked array"],
-        "prefer": ["zarr", "xarray", "dask", "chunked", "n-d arrays", "parallel i/o", "scientific computing"],
-        "avoid": ["excel", "csv", "pivot", "clinical", "decision curve", "cerna", "tabular", "feature importance"],
-    },
-    "econometric_time_series": {
-        "query": ["arima", "sarimax", "cointegration", "协整", "计量经济学"],
-        "prefer": ["arima", "sarimax", "var", "cointegration", "econometric", "计量经济学", "协整", "statsmodels"],
-        "avoid": ["classification", "clustering", "segmentation", "similarity search", "machine learning tasks"],
-    },
-    "instrumental_variables": {
-        "query": ["instrumental variables", "iv regression", "2sls", "weak instruments", "工具变量", "弱工具变量", "内生性"],
-        "prefer": ["instrumental variables", "iv regression", "2sls", "weak instruments", "endogeneity", "工具变量法", "两阶段最小二乘", "弱工具变量", "内生性"],
-        "avoid": ["arima", "sarimax", "var", "cointegration", "协整", "time series", "时间序列", "manuscript", "journal"],
-    },
-    "omics_integrative": {
-        "query": ["metabolomics", "metabolome", "lc-ms", "lcms", "代谢组", "代谢组学"],
-        "prefer": ["metabolomics", "代谢组", "bulk omics", "multi omics", "multi-omics", "integrative", "pathway enrichment"],
-        "avoid": ["predict", "prediction", "spectrum", "spectra", "ms2", "adverse outcome", "rnaseq"],
-    },
-    "metagenomics_taxonomy": {
-        "query": ["metagenomics", "metagenome", "kraken2", "bracken", "metaphlan", "宏基因组"],
-        "prefer": ["metagenome", "metagenomics", "taxonomic profiling", "taxonomy", "microbial community", "kraken2", "bracken", "metaphlan", "宏基因组"],
-        "avoid": ["acmg", "variant classification", "cancer classification", "tumor", "oncotree", "clinical significance", "classification criteria"],
-    },
-    "bioimage_colocalization": {
-        "query": ["immunofluorescence", "colocalization", "colocalisation"],
-        "prefer": ["fiji", "imagej", "pyimagej", "scikit-image", "microscopy", "bioimage", "image processing", "image analysis", "region properties", "analyze particles"],
-        "avoid": ["excel", "csv", "pivot", "decision curve", "clinical utility", "cerna", "expression matrix", "feature importance"],
-    },
-    "dose_response_assay": {
-        "query": ["mtt", "cck8", "cell viability", "ic50", "ec50", "dose response", "concentration response"],
-        "prefer": ["dose response", "concentration response", "ic50", "ec50", "hill slope", "4 parameter logistic", "4pl", "cell assays", "drug screening"],
-        "avoid": ["decision curve", "decision-tree", "clinical utility", "rebuttal", "author response", "reviewer", "single cell", "cell type annotation"],
-    },
-    "gromacs_md_trajectory": {
-        "query": ["gromacs", "rmsd", "rmsf"],
-        "prefer": ["gromacs", "molecular dynamics", "trajectory", "rmsd", "rmsf", "topology", "mdp", "force field"],
-        "avoid": ["lammps", "reaxff", "single cell", "scrna", "rna velocity", "pseudotime", "cell type annotation"],
-    },
-    "orca_quantum_chemistry": {
-        "query": ["orca"],
-        "prefer": ["orca", "frequency", "frequencies", "vibrational", "thermochemistry", "dft", "single point", "optimization"],
-        "avoid": ["quantum espresso", "phonopy", "vasp", "abinit", "gpaw", "dftbplus", "qe"],
-    },
-    "vasp_materials_dft": {
-        "query": ["vasp"],
-        "prefer": ["vasp", "incar", "poscar", "kpoints", "potcar", "band structure", "dos", "plane wave", "paw", "electronic structure"],
-        "avoid": ["quantum espresso", "orca", "phonopy", "abinit", "gpaw", "dftbplus", "qe"],
-    },
-}
+
+def load_intent_rules(path: pathlib.Path = INTENT_RULES_CANDIDATE) -> dict:
+    if not path.exists():
+        return {"semantic_aliases": {}, "intent_keywords": {}, "named_tool_rules": {}}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+INTENT_RULES = load_intent_rules()
+
+# Lightweight semantic layer and intent rules are data-backed so installer search
+# and static Wiki search do not drift into separate hand-tuned truth sources.
+SEMANTIC_ALIASES = INTENT_RULES.get("semantic_aliases", {})
+INTENT_KEYWORDS = INTENT_RULES.get("intent_keywords", {})
+NAMED_TOOL_RULES = INTENT_RULES.get("named_tool_rules", {})
+
+
+def _contains_any(hay: str, needles: list[str] | None) -> bool:
+    return any(str(needle).lower() in hay for needle in (needles or []))
+
+
+def _rule_matches(rule: dict, q_tokens: set[str], hay: str, title_hay: str) -> bool:
+    q_any = {str(token).lower() for token in (rule.get("query_tokens_any") or [])}
+    if q_any and not (q_tokens & q_any):
+        return False
+    if rule.get("hay_contains_any") and not _contains_any(hay, rule.get("hay_contains_any")):
+        return False
+    if rule.get("title_contains_any") and not _contains_any(title_hay, rule.get("title_contains_any")):
+        return False
+    return True
+
+
+def apply_intent_adjustments(rule_set: dict, q_tokens: set[str], hay: str, title_hay: str = "") -> float:
+    total = 0.0
+    for rule in rule_set.get("ordered_adjustments") or []:
+        if _rule_matches(rule, q_tokens, hay, title_hay):
+            total += float(rule.get("score") or 0.0)
+            break
+    for bucket in ("additive_boosts", "additive_penalties"):
+        for rule in rule_set.get(bucket) or []:
+            if _rule_matches(rule, q_tokens, hay, title_hay):
+                total += float(rule.get("score") or 0.0)
+    return total
+
 
 R, B, D, C, Y, G = "\x1b[0m", "\x1b[1m", "\x1b[2m", "\x1b[36m", "\x1b[33m", "\x1b[32m"
 if os.environ.get("NO_COLOR") or not sys.stdout.isatty():
@@ -497,52 +426,14 @@ def score_node(node, q_tokens, name_tokens, idf=None, intent_cap=None, query_int
                 intentq += 2.5
             if any(marker in name_desc for marker in ["decision curve", "decision-tree", "clinical utility", "rebuttal", "author response", "reviewer", "single cell", "cell type annotation"]):
                 intentq -= 6.0
-        elif query_intent == "gromacs_md_trajectory":
+        elif query_intent in NAMED_TOOL_RULES:
             name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
-            if "hpc-gromacs" in name_desc:
-                intentq += 14.0
-            elif "drug-protein-ligand-md" in name_desc:
-                intentq += 4.0
-            if any(marker in name_desc for marker in ["gromacs", "molecular dynamics", "trajectory", "rmsd", "rmsf", "topology", "mdp", "force field"]):
-                intentq += 4.0
-            if any(marker in name_desc for marker in ["lammps", "reaxff", "deepmd"]):
-                intentq -= 8.0
-            if any(marker in name_desc for marker in ["scrnaseq", "single cell", "rna velocity", "pseudotime", "cell type annotation"]):
-                intentq -= 8.0
-        elif query_intent == "orca_quantum_chemistry":
-            qset = set(q_tokens)
-            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
-            frequency_query = bool(qset & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
-            optimization_query = bool(qset & {"geometry", "optimization", "optimize", "optimisation", "optimise"})
-            if frequency_query and "orca-freq" in name_desc:
-                intentq += 42.0
-            elif optimization_query and ("orca-opt" in name_desc or "orca-optimization" in name_desc):
-                intentq += 34.0
-            elif optimization_query and "orca-freq" in name_desc:
-                intentq += 4.0
-            elif "orca" in name_desc:
-                intentq += 16.0
-            if any(marker in name_desc for marker in ["orca", "density functional", "dft", "single point", "optimization", "frequency", "frequencies", "vibrational", "thermochemistry"]):
-                intentq += 7.0
-            if any(marker in name_desc for marker in ["quantum-espresso", "quantum espresso", "phonopy", "vasp", "abinit", "gpaw", "dftbplus"]):
-                intentq -= 28.0
-        elif query_intent == "vasp_materials_dft":
-            qset = set(q_tokens)
-            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
-            band_query = bool(qset & {"band", "bands", "dos", "electronic"})
-            freq_query = bool(qset & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
-            if band_query and "hpc-vasp" in name_desc:
-                intentq += 38.0
-            elif freq_query and "vasp-freq" in name_desc:
-                intentq += 96.0
-            elif "hpc-vasp" in name_desc or "vasp-freq" in name_desc:
-                intentq += 34.0
-            elif "vasp" in name_desc:
-                intentq += 14.0
-            if any(marker in name_desc for marker in ["vasp", "incar", "poscar", "kpoints", "potcar", "band structure", "density of states", "plane wave", "paw", "electronic structure"]):
-                intentq += 7.0
-            if any(marker in name_desc for marker in ["quantum-espresso", "quantum espresso", "orca", "phonopy", "abinit", "gpaw", "dftbplus"]):
-                intentq -= 120.0
+            intentq += apply_intent_adjustments(
+                NAMED_TOOL_RULES[query_intent].get("find", {}),
+                set(q_tokens),
+                name_desc,
+                name_desc,
+            )
     pen = 0.85 if node.get("review") else 1.0
     return (base + ev + qs + deepb + intentb + intentq) * pen
 
