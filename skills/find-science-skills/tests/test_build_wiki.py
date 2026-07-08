@@ -707,6 +707,46 @@ def test_search_wiki_metagenomics_taxonomy_prefers_kraken_skill_over_generic_cla
     assert hits[0]["skill_id"] == "metagenome-taxonomic-profiling"
 
 
+def test_search_wiki_phylogenetic_tree_query_avoids_decision_tree_false_positive():
+    index = {
+        "documents": [
+            {
+                "path": "wiki/skills/decision-tree-analysis.md",
+                "title": "decision-tree-analysis",
+                "type": "skill",
+                "tags": ["统计分析", "机器学习"],
+                "skill_id": "decision-tree-analysis",
+                "quality_score": 72,
+                "text": "Decision tree model in R with feature importance, classification and regression outputs.",
+            },
+            {
+                "path": "wiki/skills/etetoolkit.md",
+                "title": "etetoolkit",
+                "type": "skill",
+                "tags": ["数据库检索", "生物信息学"],
+                "skill_id": "etetoolkit",
+                "quality_score": 67,
+                "text": "Phylogenetic tree toolkit ETE for Newick tree manipulation, evolutionary event detection, orthology, paralogy, and NCBI taxonomy.",
+            },
+            {
+                "path": "wiki/skills/phylogenetics.md",
+                "title": "phylogenetics",
+                "type": "skill",
+                "tags": ["数据处理", "生物信息学"],
+                "skill_id": "phylogenetics",
+                "quality_score": 64,
+                "text": "Build and analyze phylogenetic trees using MAFFT, IQ-TREE 2, FastTree, ETE3, and FigTree for evolutionary analysis.",
+            },
+        ]
+    }
+
+    hits = sw.search(index, "phylogenetic tree inference", limit=3, doc_type="skill")
+    ids = [hit["skill_id"] for hit in hits]
+    assert ids[0] in {"etetoolkit", "phylogenetics"}
+    assert {"etetoolkit", "phylogenetics"} <= set(ids[:2])
+    assert "decision-tree-analysis" not in ids[:2]
+
+
 def test_search_wiki_immunofluorescence_colocalization_prefers_bioimage_tools():
     index = {
         "documents": [

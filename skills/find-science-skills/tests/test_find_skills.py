@@ -201,6 +201,14 @@ def test_metagenomics_taxonomy_prefers_kraken_skill_over_generic_classification(
     assert "tooluniverse-cancer-classification" not in ids[:3]
 
 
+def test_phylogenetic_tree_query_prefers_evolutionary_tree_skills_over_decision_tree():
+    ids = [n["id"] for n in _search("phylogenetic tree inference", limit=5)]
+
+    assert ids[0] in {"etetoolkit", "phylogenetics"}
+    assert {"etetoolkit", "phylogenetics"} <= set(ids[:3])
+    assert "decision-tree-analysis" not in ids[:3]
+
+
 def test_immunofluorescence_colocalization_prefers_bioimage_tools_over_generic_analysis():
     ids = [n["id"] for n in _search("immunofluorescence colocalization analysis", limit=5)]
 

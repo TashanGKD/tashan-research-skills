@@ -323,9 +323,9 @@ def test_holdout_report_separates_real_skill_hits_from_registry_gap_hits(capsys)
     resolution = report["resolution_summary"]["overall"]
     expected_resolution = report["expected_resolution_summary"]["overall"]
     assert resolution["count"] == len(holdout["cases"])
-    assert resolution["top3_real_skill"] == 9
+    assert resolution["top3_real_skill"] == 10
     assert resolution["top3_registry_gap"] == len(expected_gap_case_ids)
-    assert resolution["top1_real_skill"] == 8
+    assert resolution["top1_real_skill"] == 10
     assert resolution["top1_registry_gap"] == len(expected_gap_case_ids)
     assert expected_resolution["expected_real_skill"] == 10
     assert expected_resolution["expected_registry_gap"] == len(expected_gap_case_ids)

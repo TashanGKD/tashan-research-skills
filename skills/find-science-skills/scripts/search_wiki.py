@@ -62,6 +62,11 @@ def apply_intent_adjustments(rule_set: dict, q_tokens: set[str], hay: str, title
     return total
 
 
+def named_rule_query_matches(rule_bundle: dict, q_tokens: set[str]) -> bool:
+    q_any = {str(token).lower() for token in (rule_bundle.get("query_tokens_any") or [])}
+    return bool(q_any and (q_tokens & q_any))
+
+
 def tok(text: str) -> list[str]:
     text = (text or "").lower()
     latin = re.findall(r"[a-z0-9]+", text)
@@ -324,30 +329,9 @@ def intent_score(doc: dict, query: str) -> float:
             bonus += 8.0
         if any(marker in hay for marker in ["decision curve", "decision-tree", "clinical utility", "rebuttal", "author response", "reviewer", "single cell", "cell type annotation"]):
             bonus -= 16.0
-    gromacs_md_query = "gromacs" in q_tokens or "rmsd" in q_tokens or "rmsf" in q_tokens
-    if gromacs_md_query:
-        bonus += apply_intent_adjustments(
-            NAMED_TOOL_RULES.get("gromacs_md_trajectory", {}).get("wiki", {}),
-            q_tokens,
-            hay,
-            title_hay,
-        )
-    orca_query = "orca" in q_tokens
-    if orca_query:
-        bonus += apply_intent_adjustments(
-            NAMED_TOOL_RULES.get("orca_quantum_chemistry", {}).get("wiki", {}),
-            q_tokens,
-            hay,
-            title_hay,
-        )
-    vasp_query = "vasp" in q_tokens
-    if vasp_query:
-        bonus += apply_intent_adjustments(
-            NAMED_TOOL_RULES.get("vasp_materials_dft", {}).get("wiki", {}),
-            q_tokens,
-            hay,
-            title_hay,
-        )
+    for rule_bundle in NAMED_TOOL_RULES.values():
+        if named_rule_query_matches(rule_bundle, q_tokens):
+            bonus += apply_intent_adjustments(rule_bundle.get("wiki", {}), q_tokens, hay, title_hay)
     return bonus
 
 

@@ -57,7 +57,12 @@
     "引用管理": "citation management reference bibtex zotero 参考文献",
     "citation management": "引用管理 reference bibtex zotero 参考文献",
     "bibtex": "citation management 引用管理 reference zotero 参考文献",
-    "zotero": "citation management 引用管理 bibtex reference 参考文献"
+    "zotero": "citation management 引用管理 bibtex reference 参考文献",
+    "phylogenetic": "phylogeny phylogenetics phylogenetic tree evolutionary tree evolution clade taxonomy newick ete ete3 etetoolkit iq-tree iqtree fasttree mafft figtree 系统发育树 系统发育 进化树",
+    "phylogeny": "phylogenetic phylogenetics phylogenetic tree evolutionary tree evolution clade taxonomy newick ete ete3 etetoolkit iq-tree iqtree fasttree mafft figtree 系统发育树 系统发育 进化树",
+    "phylogenetics": "phylogenetic phylogeny phylogenetic tree evolutionary tree evolution clade taxonomy newick ete ete3 etetoolkit iq-tree iqtree fasttree mafft figtree 系统发育树 系统发育 进化树",
+    "系统发育": "phylogenetic phylogeny phylogenetics phylogenetic tree evolutionary tree evolution clade taxonomy newick ete ete3 etetoolkit iq-tree iqtree fasttree mafft figtree 系统发育树 进化树",
+    "系统发育树": "phylogenetic phylogeny phylogenetics phylogenetic tree evolutionary tree evolution clade taxonomy newick ete ete3 etetoolkit iq-tree iqtree fasttree mafft figtree 系统发育 进化树"
   },
   "intent_keywords": {
     "execution": {
@@ -413,6 +418,41 @@
         "dftbplus",
         "qe"
       ]
+    },
+    "phylogenetic_tree_inference": {
+      "query": [
+        "phylogenetic",
+        "phylogeny",
+        "phylogenetics",
+        "系统发育",
+        "系统发育树",
+        "进化树"
+      ],
+      "prefer": [
+        "phylogenetic",
+        "phylogeny",
+        "phylogenetics",
+        "evolutionary tree",
+        "newick",
+        "iq-tree",
+        "iqtree",
+        "fasttree",
+        "mafft",
+        "ete",
+        "ete3",
+        "figtree",
+        "系统发育",
+        "系统发育树",
+        "进化树"
+      ],
+      "avoid": [
+        "decision tree",
+        "decision-tree",
+        "feature importance",
+        "classification and regression",
+        "causal inference",
+        "computational inference"
+      ]
     }
   },
   "named_tool_rules": {
@@ -530,7 +570,12 @@
             "score": -60.0
           }
         ]
-      }
+      },
+      "query_tokens_any": [
+        "gromacs",
+        "rmsd",
+        "rmsf"
+      ]
     },
     "orca_quantum_chemistry": {
       "find": {
@@ -662,7 +707,10 @@
             "score": -70.0
           }
         ]
-      }
+      },
+      "query_tokens_any": [
+        "orca"
+      ]
     },
     "vasp_materials_dft": {
       "find": {
@@ -805,6 +853,146 @@
               "dftbplus"
             ],
             "score": -70.0
+          }
+        ]
+      },
+      "query_tokens_any": [
+        "vasp"
+      ]
+    },
+    "phylogenetic_tree_inference": {
+      "query_tokens_any": [
+        "phylogenetic",
+        "phylogeny",
+        "phylogenetics",
+        "系统",
+        "发育",
+        "进化"
+      ],
+      "find": {
+        "additive_boosts": [
+          {
+            "hay_contains_any": [
+              "phylogenetic",
+              "phylogeny",
+              "phylogenetics",
+              "evolutionary tree",
+              "phylogenomics",
+              "newick",
+              "iq-tree",
+              "iqtree",
+              "fasttree",
+              "mafft",
+              "ete3",
+              "figtree",
+              "系统发育",
+              "系统发育树",
+              "进化树"
+            ],
+            "score": 12.0
+          },
+          {
+            "hay_contains_any": [
+              "ncbi taxonomy",
+              "orthology",
+              "paralogy",
+              "clade",
+              "evolutionary analysis",
+              "microbial genomics",
+              "viral phylodynamics"
+            ],
+            "score": 4.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "hay_contains_any": [
+              "decision-tree",
+              "decision tree",
+              "feature importance",
+              "classification and regression"
+            ],
+            "score": -22.0
+          },
+          {
+            "hay_contains_any": [
+              "causal inference",
+              "computational inference",
+              "treatment effect",
+              "instrumental variables"
+            ],
+            "score": -6.0
+          }
+        ]
+      },
+      "wiki": {
+        "additive_boosts": [
+          {
+            "hay_contains_any": [
+              "phylogenetic",
+              "phylogeny",
+              "phylogenetics",
+              "evolutionary tree",
+              "phylogenomics",
+              "newick",
+              "iq-tree",
+              "iqtree",
+              "fasttree",
+              "mafft",
+              "ete3",
+              "figtree",
+              "系统发育",
+              "系统发育树",
+              "进化树"
+            ],
+            "score": 40.0
+          },
+          {
+            "hay_contains_any": [
+              "ncbi taxonomy",
+              "orthology",
+              "paralogy",
+              "clade",
+              "evolutionary analysis",
+              "microbial genomics",
+              "viral phylodynamics"
+            ],
+            "score": 10.0
+          }
+        ],
+        "additive_penalties": [
+          {
+            "title_contains_any": [
+              "decision-tree"
+            ],
+            "score": -70.0
+          },
+          {
+            "hay_contains_any": [
+              "decision tree",
+              "feature importance",
+              "classification and regression"
+            ],
+            "score": -35.0
+          },
+          {
+            "title_contains_any": [
+              "causal-inference",
+              "computational-inference",
+              "deepmd-inference",
+              "arboreto-grn-inference"
+            ],
+            "score": -18.0
+          },
+          {
+            "hay_contains_any": [
+              "causal inference",
+              "treatment effect",
+              "instrumental variables",
+              "deeppmd",
+              "grn inference"
+            ],
+            "score": -8.0
           }
         ]
       }
