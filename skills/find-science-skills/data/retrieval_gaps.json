@@ -1,0 +1,277 @@
+{
+  "schema": "find_science_skills_retrieval_gaps_v1",
+  "version": "2026-07-08",
+  "description": "Registry and ranking gaps surfaced by non-gating holdout queries. These items are candidates for new skills, data backfill, or targeted ranking work; they are not passing release-bench expectations.",
+  "gaps": [
+    {
+      "id": "__missing_climate_xarray_skill__",
+      "status": "data_gap",
+      "title": "Climate NetCDF/xarray analysis",
+      "query_examples": [
+        "climate netcdf xarray analysis"
+      ],
+      "desired_behavior": "Surface a climate or labeled-array workflow skill, or at least rank zarr-python/chunked-array tooling ahead of generic data-analysis skills.",
+      "source_holdout_ids": [
+        "holdout_find_climate_xarray_netcdf",
+        "holdout_wiki_climate_xarray_netcdf"
+      ]
+    },
+    {
+      "id": "__missing_biomedical_ner_skill__",
+      "status": "missing_skill",
+      "title": "Biomedical named entity recognition",
+      "query_examples": [
+        "named entity recognition biomedical NLP"
+      ],
+      "desired_behavior": "Recommend a biomedical NER or information-extraction skill rather than literature-search or writing skills.",
+      "source_holdout_ids": [
+        "holdout_find_biomedical_ner",
+        "holdout_wiki_biomedical_ner"
+      ]
+    },
+    {
+      "id": "__missing_object_detection_yolo_skill__",
+      "status": "missing_skill",
+      "title": "General object detection / YOLO",
+      "query_examples": [
+        "object detection computer vision YOLO"
+      ],
+      "desired_behavior": "Recommend a general object-detection skill when available; avoid presenting bioimage-only or adverse-event skills as a confident match.",
+      "source_holdout_ids": [
+        "holdout_find_object_detection_yolo",
+        "holdout_wiki_object_detection_yolo"
+      ]
+    },
+    {
+      "id": "__missing_neuroimaging_nifti_skill__",
+      "status": "missing_skill",
+      "title": "Neuroimaging NIfTI / MRI / fMRI analysis",
+      "query_examples": [
+        "neuroimaging NIfTI MRI fMRI analysis"
+      ],
+      "desired_behavior": "Recommend a neuroimaging/NIfTI skill when one is present, or clearly report a registry gap instead of generic data-analysis matches.",
+      "source_holdout_ids": [
+        "holdout_find_neuroimaging_nifti",
+        "holdout_wiki_neuroimaging_nifti"
+      ]
+    },
+    {
+      "id": "__missing_metabolomics_lcms_skill__",
+      "status": "ranking_gap",
+      "title": "Metabolomics LC-MS pathway enrichment",
+      "query_examples": [
+        "metabolomics LC-MS pathway enrichment"
+      ],
+      "desired_behavior": "Prefer a metabolomics-specific skill if added; meanwhile keep broad multi-omics planning ahead of MS/MS prediction or RNA-seq-only enrichment pages.",
+      "source_holdout_ids": [
+        "holdout_find_metabolomics_lcms",
+        "holdout_wiki_metabolomics_lcms"
+      ]
+    },
+    {
+      "id": "__missing_gwas_finemapping_coloc_skill__",
+      "status": "missing_skill",
+      "title": "GWAS fine-mapping and colocalization",
+      "query_examples": [
+        "GWAS summary statistics fine mapping colocalization",
+        "genetic association fine mapping coloc",
+        "genome wide association summary stats fine mapping"
+      ],
+      "desired_behavior": "Recommend a GWAS fine-mapping, coloc, or summary-statistics genetics skill when available; avoid broad clinical-statistics pages or LLM fine-tuning skills.",
+      "source_holdout_ids": [
+        "holdout_find_gwas_finemapping_coloc",
+        "holdout_wiki_gwas_finemapping_coloc"
+      ]
+    },
+    {
+      "id": "__missing_microbiome_qiime2_abundance_skill__",
+      "status": "missing_skill",
+      "title": "Microbiome QIIME2 differential abundance",
+      "query_examples": [
+        "microbiome differential abundance qiime2",
+        "QIIME2 ANCOM differential abundance microbiome",
+        "microbiome LEfSe ALDEx2 differential abundance"
+      ],
+      "desired_behavior": "Recommend a microbiome differential-abundance skill for QIIME2/ANCOM/LEfSe/ALDEx2 workflows when available; avoid RNA-seq differential-expression or clinical differential-diagnosis false positives.",
+      "source_holdout_ids": [
+        "holdout_find_microbiome_qiime2_abundance",
+        "holdout_wiki_microbiome_qiime2_abundance"
+      ]
+    },
+    {
+      "id": "__missing_elisa_standard_curve_skill__",
+      "status": "missing_skill",
+      "title": "ELISA standard-curve analysis",
+      "query_examples": [
+        "ELISA standard curve analysis",
+        "enzyme linked immunosorbent assay standard curve",
+        "ELISA absorbance concentration 4PL curve fitting"
+      ],
+      "desired_behavior": "Recommend an ELISA/immunoassay standard-curve analysis skill when available; avoid decision-curve, decision-tree, or generic spreadsheet-analysis false positives.",
+      "user_facing_problem": "A user with ELISA plate absorbance and standards needs concentration interpolation and 4PL/5PL curve fitting, not a clinical decision-curve or generic spreadsheet helper.",
+      "avoid_false_positives": [
+        "Decision-curve or decision-tree skills evaluate clinical models; they do not fit ELISA standard curves.",
+        "Generic spreadsheet analysis can be a manual workaround, but it is not a validated immunoassay quantification workflow."
+      ],
+      "acceptance_criteria": [
+        "Accepts standard concentrations and absorbance/OD values.",
+        "Fits 4PL or 5PL standard curves and reports sample concentration interpolation.",
+        "Explains dilution factors, replicate handling, outlier flags, and curve-fit diagnostics."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_elisa_standard_curve",
+        "holdout_wiki_elisa_standard_curve"
+      ]
+    },
+    {
+      "id": "__missing_western_blot_densitometry_skill__",
+      "status": "missing_skill",
+      "title": "Western blot densitometry quantification",
+      "query_examples": [
+        "western blot densitometry quantification",
+        "western blot band intensity quantification",
+        "immunoblot densitometry normalized protein bands"
+      ],
+      "desired_behavior": "Recommend a western blot/immunoblot densitometry analysis skill when available; avoid figure-legend, RNA-seq transcript-quantification, or generic bioinformatics false positives.",
+      "user_facing_problem": "A user needs lane/band intensity measurement and normalization to loading controls, not RNA-seq transcript quantification or manuscript figure text.",
+      "avoid_false_positives": [
+        "RNA-seq quantification skills operate on sequencing reads or count matrices, not gel/blot images.",
+        "Figure-legend or image-caption skills can describe a blot but do not quantify band intensity."
+      ],
+      "acceptance_criteria": [
+        "Handles band ROI intensity, background subtraction, and loading-control normalization.",
+        "Supports replicate summaries and fold-change reporting.",
+        "States image quality assumptions such as non-saturated bands and comparable exposure."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_western_blot_densitometry",
+        "holdout_wiki_western_blot_densitometry"
+      ]
+    },
+    {
+      "id": "__missing_qpcr_ddct_analysis_skill__",
+      "status": "missing_skill",
+      "title": "qPCR Ct/ddCt expression analysis",
+      "query_examples": [
+        "qPCR Ct ddCt gene expression analysis",
+        "RT-qPCR delta delta Ct analysis",
+        "qPCR Ct values relative expression normalization"
+      ],
+      "desired_behavior": "Recommend a qPCR Ct/ddCt expression-analysis skill when available; keep qPCR primer-design skills for primer design queries, and avoid generic expression-matrix or RNA-seq differential-expression false positives.",
+      "user_facing_problem": "A user has Ct values and needs delta-delta Ct relative expression, not primer design or RNA-seq differential-expression analysis.",
+      "avoid_false_positives": [
+        "qPCR primer-design skills help before the experiment; they do not analyze Ct tables.",
+        "RNA-seq differential-expression skills assume count matrices and statistical models, not Ct normalization."
+      ],
+      "acceptance_criteria": [
+        "Accepts target/reference gene Ct tables with control and treatment groups.",
+        "Computes delta Ct, delta-delta Ct, fold change, and replicate summaries.",
+        "Flags missing reference genes, high Ct values, and inconsistent technical replicates."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_qpcr_ddct_analysis",
+        "holdout_wiki_qpcr_ddct_analysis"
+      ]
+    },
+    {
+      "id": "__missing_immunofluorescence_colocalization_skill__",
+      "status": "missing_skill",
+      "title": "Immunofluorescence colocalization quantification",
+      "query_examples": [
+        "immunofluorescence colocalization microscopy Pearson Manders",
+        "fluorescence microscopy Pearson Manders colocalization analysis",
+        "IF colocalization coefficient quantification"
+      ],
+      "desired_behavior": "Recommend an immunofluorescence colocalization analysis skill with Pearson, Manders, and channel-overlap quantification when available; keep generic Fiji/scikit-image skills for broad microscopy processing queries and avoid electron-microscopy false positives.",
+      "user_facing_problem": "A user needs channel colocalization coefficients and thresholding guidance, not broad microscopy viewing or electron-microscopy database search.",
+      "avoid_false_positives": [
+        "Generic Fiji/scikit-image skills can process images but do not guarantee Pearson/Manders colocalization workflow decisions.",
+        "Electron-microscopy skills target EM density/map retrieval, not fluorescence channel overlap quantification."
+      ],
+      "acceptance_criteria": [
+        "Supports Pearson, Manders, and thresholded overlap metrics.",
+        "Explains channel preprocessing, background subtraction, ROI selection, and threshold choices.",
+        "Reports per-image/per-cell summaries with reproducible parameters."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_immunofluorescence_colocalization",
+        "holdout_wiki_immunofluorescence_colocalization"
+      ]
+    },
+    {
+      "id": "__missing_luciferase_reporter_assay_skill__",
+      "status": "missing_skill",
+      "title": "Luciferase reporter assay normalization",
+      "query_examples": [
+        "luciferase reporter assay normalization dual luciferase",
+        "dual luciferase reporter assay firefly renilla normalization",
+        "reporter gene assay luciferase activity normalization"
+      ],
+      "desired_behavior": "Recommend a luciferase reporter-assay analysis skill with Firefly/Renilla normalization and reporter activity quantification when available; avoid drug bioactivity, expression-matrix normalization, or transcriptome-planning false positives.",
+      "user_facing_problem": "A user has Firefly/Renilla luminescence readings and needs reporter-activity normalization, not drug bioactivity scoring or expression-matrix normalization.",
+      "avoid_false_positives": [
+        "Bioactivity skills may analyze compound response but do not normalize dual-luciferase reporter controls.",
+        "Expression-matrix normalization skills operate on gene/protein matrices, not paired Firefly/Renilla assay readings."
+      ],
+      "acceptance_criteria": [
+        "Accepts Firefly and Renilla readings with blank/control groups.",
+        "Computes normalized reporter activity, fold change, and replicate summaries.",
+        "Explains blank subtraction, transfection-control normalization, and outlier handling."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_luciferase_reporter_assay",
+        "holdout_wiki_luciferase_reporter_assay"
+      ]
+    },
+    {
+      "id": "__missing_cytof_mass_cytometry_skill__",
+      "status": "missing_skill",
+      "title": "CyTOF / mass cytometry analysis",
+      "query_examples": [
+        "CyTOF mass cytometry clustering gating analysis",
+        "mass cytometry arcsinh transformation FlowSOM clustering",
+        "CyTOF marker expression cell population abundance analysis"
+      ],
+      "desired_behavior": "Recommend a CyTOF/mass-cytometry analysis skill when available; keep FCS parsing and generic clustering skills as weak references rather than complete substitutes.",
+      "user_facing_problem": "A user with CyTOF marker-intensity data needs mass-cytometry preprocessing, clustering, gating, and population abundance interpretation, not just FCS file parsing or generic clustering.",
+      "avoid_false_positives": [
+        "flowio/flow cytometry parsing skills can read FCS-like data but do not provide CyTOF-specific transformation, clustering, marker annotation, or abundance interpretation.",
+        "Generic clustering skills can cluster matrices but do not explain CyTOF marker panels, arcsinh transformation, batch effects, or cell-population labeling."
+      ],
+      "acceptance_criteria": [
+        "Supports CyTOF or mass-cytometry marker-intensity matrices with arcsinh/cofactor transformation.",
+        "Provides clustering or gating workflows such as FlowSOM/Phenograph-style population discovery.",
+        "Reports marker-based population labels, abundance summaries, and reproducible preprocessing parameters."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_cytof_mass_cytometry",
+        "holdout_wiki_cytof_mass_cytometry"
+      ]
+    },
+    {
+      "id": "__missing_chipseq_peak_calling_skill__",
+      "status": "missing_skill",
+      "title": "ChIP-seq peak calling and differential binding",
+      "query_examples": [
+        "ChIP-seq MACS2 peak calling differential binding DiffBind",
+        "chromatin immunoprecipitation sequencing peak calling MACS2",
+        "ChIP-seq differential binding analysis DiffBind"
+      ],
+      "desired_behavior": "Recommend a ChIP-seq peak-calling and differential-binding skill when available; keep ATAC-seq peak-calling skills as weak references rather than complete substitutes.",
+      "user_facing_problem": "A user with ChIP-seq aligned reads needs immunoprecipitation peak calling, control/input handling, annotation, and differential binding analysis, not ATAC-seq accessibility analysis.",
+      "avoid_false_positives": [
+        "ATAC-seq peak-calling skills target open-chromatin accessibility and ATAC-specific parameters, not ChIP immunoprecipitation controls.",
+        "Generic differential-expression skills compare expression matrices, not genomic binding peaks or occupancy changes."
+      ],
+      "acceptance_criteria": [
+        "Supports ChIP-seq peak calling with input/control handling and MACS2/MACS3-style parameters.",
+        "Annotates peaks to genes or genomic features and reports QC such as FRiP or peak counts.",
+        "Supports differential binding workflows such as DiffBind-style contrasts with reproducible design metadata."
+      ],
+      "source_holdout_ids": [
+        "holdout_find_chipseq_peak_calling",
+        "holdout_wiki_chipseq_peak_calling"
+      ]
+    }
+  ]
+}

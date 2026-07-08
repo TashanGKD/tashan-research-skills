@@ -83,6 +83,8 @@ python scripts/find_skills.py "冷冻电镜" --no-semantic       # 只用原始�
 python scripts/search_wiki.py "冷冻电镜 EMDB"                # 搜静态 Wiki 解释页
 python scripts/search_wiki.py "引用管理 bibtex" --type skill # 只搜 skill 证据页
 python scripts/build_wiki.py                               # 维护者：重建静态 Wiki + 图谱页
+python scripts/bench_retrieval.py                          # 维护者：跑基础/中等/复杂检索 bench
+python scripts/bench_retrieval.py --holdout                # 维护者：跑非门控薄弱查询观察集
 ```
 
 示例回复：
@@ -108,6 +110,11 @@ python scripts/build_wiki.py                               # 维护者：重建�
 - `wiki/`：Karpathy-style LLM Wiki，可读解释层；包含索引、概览、能力组页、学科页和每个 skill 的证据页。
 - `wiki/search_index.json`：静态 Wiki 搜索索引，供 `scripts/search_wiki.py` 使用。
 - `site/graph.html`：无需数据库的静态可视化入口；本地打开或经 GitHub Pages 托管均可浏览。
+- `data/retrieval_bench.json`：100+ case 检索质量基准，按基础/中等/复杂分层，并覆盖典型与混淆科研需求；同时评估安装推荐与 Wiki 搜索。
+- `data/retrieval_bench_report.json`：最近一次 bench 结果；维护排序逻辑、语义扩展或 Wiki 生成后应刷新。
+- `data/retrieval_holdout.json`：非门控观察集，记录当前薄弱、缺技能或易误召回查询；用于指导下一轮打磨，不阻塞发布。
+- `data/retrieval_holdout_report.json`：最近一次 holdout 结果；失败清单即后续排序/registry 扩容候选。
+- `data/retrieval_gaps.json`：由 holdout 暴露出的 registry/ranking/data 缺口清单；`__missing_*__` 占位目标必须在这里登记。
 - 数据由 TopicLab 科研技能发现流水线定期重建并推送进本仓库；用户侧只需 `git pull`（或 `--update`）即可拿到最新版本。
 - 脚本仅依赖 Python 标准库，无需安装额外包即可检索；语义扩展在脚本内完成，不依赖运行时 API key。
 
@@ -119,10 +126,14 @@ python scripts/build_wiki.py                               # 维护者：重建�
 
 ```bash
 python scripts/build_wiki.py
+python scripts/bench_retrieval.py
+python scripts/bench_retrieval.py --holdout
 ```
 
-该命令会从 `data/skill_graph_index.json` 重新生成 `wiki/`、`wiki/search_index.json`、`data/skill_graph_view.json` 和 `site/graph.html`。
-如果只是在 GitHub 上挂载本 skill，用户无需运行生成器，直接使用随仓库分发的静态产物即可。
+`build_wiki.py` 会从 `data/skill_graph_index.json` 重新生成 `wiki/`、`wiki/search_index.json`、`data/skill_graph_view.json` 和 `site/graph.html`。
+随后用 `bench_retrieval.py` 确认安装推荐和 Wiki 搜索仍达到发布阈值，并用 `--holdout` 查看非门控薄弱查询。
+如果只是在 GitHub 上挂载本 skill，
+用户无需运行生成器或 bench，直接使用随仓库分发的静态产物即可。
 
 ## 与通用 skill 市场的关系
 

@@ -16,11 +16,13 @@ import json
 import pathlib
 import re
 import shutil
+import time
 from collections import defaultdict
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
 DATA_PATH = SKILL_DIR / "data" / "skill_graph_index.json"
+GAPS_PATH = SKILL_DIR / "data" / "retrieval_gaps.json"
 
 EDGE_LABELS = {
     "alternative": "可替代",
@@ -32,6 +34,36 @@ EDGE_LABELS = {
 
 def today() -> str:
     return dt.date.today().isoformat()
+
+
+def resolve_generated_at(graph: dict, data_path: pathlib.Path = DATA_PATH) -> str:
+    direct = graph.get("generated_at")
+    if direct:
+        return str(direct)
+    version_path = data_path.parent / "data_version.json"
+    if version_path.exists():
+        try:
+            meta = json.loads(version_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            meta = {}
+        generated_at = meta.get("generated_at")
+        if generated_at:
+            return str(generated_at)
+    if data_path.exists():
+        ts = dt.datetime.fromtimestamp(data_path.stat().st_mtime)
+        return ts.isoformat(timespec="seconds")
+    return today()
+
+
+def graph_generated_at(graph: dict) -> str:
+    return str(graph.get("_generated_at") or graph.get("generated_at") or today())
+
+
+def graph_date(graph: dict) -> str:
+    stamp = graph_generated_at(graph)
+    if "T" in stamp:
+        return stamp.split("T", 1)[0]
+    return stamp
 
 
 def yaml_quote(value) -> str:
@@ -51,7 +83,16 @@ def wiki_link(page: str, label: str | None = None) -> str:
 
 def ensure_clean_dir(path: pathlib.Path) -> None:
     if path.exists():
-        shutil.rmtree(path)
+        last_error = None
+        for _ in range(3):
+            try:
+                shutil.rmtree(path)
+                break
+            except OSError as exc:
+                last_error = exc
+                time.sleep(0.2)
+        else:
+            raise last_error
     path.mkdir(parents=True, exist_ok=True)
 
 
@@ -68,6 +109,14 @@ def clean_markdown(text: str) -> str:
 
 
 def load_graph(path: pathlib.Path = DATA_PATH) -> dict:
+    graph = json.loads(path.read_text(encoding="utf-8"))
+    graph["_generated_at"] = resolve_generated_at(graph, path)
+    return graph
+
+
+def load_gaps(path: pathlib.Path = GAPS_PATH) -> dict:
+    if not path.exists():
+        return {"schema": "find_science_skills_retrieval_gaps_v1", "gaps": []}
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -121,8 +170,8 @@ def skill_page(node: dict, graph: dict, inbound: dict[str, list[tuple[str, str, 
         "title": node["name"],
         "type": "skill",
         "tags": [node.get("group"), node.get("domain_l2"), node.get("tier")],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced" if not node.get("review") else "draft",
         "skill_id": node["id"],
         "quality_score": node.get("score") or 0,
@@ -180,13 +229,68 @@ def skill_page(node: dict, graph: dict, inbound: dict[str, list[tuple[str, str, 
     return "".join(lines)
 
 
-def listing_page(title: str, page_type: str, tag: str, nodes: list[dict], summary: str) -> str:
+def gap_page(gap: dict, generated_date: str | None = None) -> str:
+    generated_date = generated_date or today()
+    fields = {
+        "title": gap.get("title") or gap["id"],
+        "type": "skill_gap",
+        "tags": ["registry-gap", gap.get("status") or "unknown"],
+        "date": generated_date,
+        "updated": generated_date,
+        "confidence": "gap_backlog",
+        "skill_id": gap["id"],
+        "quality_score": 0,
+        "registry_gap_status": gap.get("status") or "",
+    }
+    lines = [frontmatter(fields), f"# {gap.get('title') or gap['id']}\n\n"]
+    lines.append("## 缺口定位\n")
+    lines.append(f"- Gap ID：`{gap['id']}`\n")
+    lines.append(f"- 状态：`{gap.get('status') or 'unknown'}`\n")
+    lines.append(f"- 期望行为：{gap.get('desired_behavior') or '暂无'}\n\n")
+    lines.append("## 用户结论\n")
+    lines.append("- 当前 registry 还没有可安装的对应技能；这里命中的是缺口记录，不是推荐安装项。\n")
+    lines.append("- 如果检索结果同时出现弱相关技能，应优先把它们理解为候选参考，而不是已验证替代方案。\n\n")
+    if gap.get("user_facing_problem") or gap.get("avoid_false_positives") or gap.get("acceptance_criteria"):
+        lines.append("## 问题说明\n")
+        if gap.get("user_facing_problem"):
+            lines.append(f"- 用户会看到的问题：{gap['user_facing_problem']}\n")
+        if gap.get("avoid_false_positives"):
+            lines.append("- 为什么不是现有弱相关技能：\n")
+            for item in gap.get("avoid_false_positives") or []:
+                lines.append(f"  - {item}\n")
+        if gap.get("acceptance_criteria"):
+            lines.append("- 补真技能验收标准：\n")
+            for item in gap.get("acceptance_criteria") or []:
+                lines.append(f"  - {item}\n")
+        lines.append("\n")
+    lines.append("## 查询样例\n")
+    for query in gap.get("query_examples") or []:
+        lines.append(f"- `{query}`\n")
+    lines.append("\n## 关联 holdout\n")
+    for case_id in gap.get("source_holdout_ids") or []:
+        lines.append(f"- `{case_id}`\n")
+    lines.append("\n## 维护口径\n")
+    lines.append("- 这是 registry gap，不是可安装技能。\n")
+    lines.append("- 补真技能时，需要覆盖查询样例里的核心任务，并能解释为什么旧的弱相关命中不再应排在前面。\n")
+    lines.append("- 只有补入真实技能或注册表数据后，才应把相关 holdout 期望替换为真实 skill id。\n")
+    return "".join(lines)
+
+
+def listing_page(
+    title: str,
+    page_type: str,
+    tag: str,
+    nodes: list[dict],
+    summary: str,
+    generated_date: str | None = None,
+) -> str:
+    generated_date = generated_date or today()
     fields = {
         "title": title,
         "type": page_type,
         "tags": [tag],
-        "date": today(),
-        "updated": today(),
+        "date": generated_date,
+        "updated": generated_date,
         "confidence": "well_sourced",
     }
     lines = [frontmatter(fields), f"# {title}\n\n", summary.strip() + "\n\n"]
@@ -211,8 +315,8 @@ def index_page(graph: dict) -> str:
         "title": "Find Science Skills Wiki Index",
         "type": "index",
         "tags": ["find-science-skills", "index"],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced",
     }
     lines = [frontmatter(fields), "# Find Science Skills Wiki Index\n\n"]
@@ -247,8 +351,8 @@ def overview_page(graph: dict) -> str:
         "title": "全局概览",
         "type": "overview",
         "tags": ["overview", "find-science-skills"],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced",
     }
     lines = [frontmatter(fields), "# 全局概览\n\n"]
@@ -271,8 +375,8 @@ def synthesis_page(graph: dict) -> str:
         "title": "跨能力链路综合",
         "type": "synthesis",
         "tags": ["synthesis", "skill-graph"],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced",
     }
     lines = [frontmatter(fields), "# 跨能力链路综合\n\n"]
@@ -291,8 +395,8 @@ def conflicts_page(graph: dict) -> str:
         "title": "待复核与冲突汇总",
         "type": "comparison",
         "tags": ["conflicts", "review"],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced",
     }
     review_nodes = [n for n in graph["nodes"].values() if n.get("review")]
@@ -314,25 +418,26 @@ def log_page(graph: dict) -> str:
         "title": "生成日志",
         "type": "log",
         "tags": ["log"],
-        "date": today(),
-        "updated": today(),
+        "date": graph_date(graph),
+        "updated": graph_date(graph),
         "confidence": "well_sourced",
     }
     return (
         frontmatter(fields)
         + "# 生成日志\n\n"
-        + f"- {today()}: 从 `data/skill_graph_index.json` 生成静态 Wiki、graph view 和 HTML 图谱。"
+        + f"- {graph_date(graph)}: 从 `data/skill_graph_index.json` 生成静态 Wiki、graph view 和 HTML 图谱。"
         + f"节点数 {len(graph['nodes'])}。\n"
     )
 
 
-def schema_page() -> str:
+def schema_page(generated_date: str | None = None) -> str:
+    generated_date = generated_date or today()
     fields = {
         "title": "LLM Wiki 维护约定",
         "type": "schema",
         "tags": ["schema", "maintenance"],
-        "date": today(),
-        "updated": today(),
+        "date": generated_date,
+        "updated": generated_date,
         "confidence": "well_sourced",
     }
     return (
@@ -390,7 +495,7 @@ def compact_text(text: str, max_chars: int = 900) -> str:
     return text[:max_chars]
 
 
-def build_search_index(wiki_dir: pathlib.Path) -> dict:
+def build_search_index(wiki_dir: pathlib.Path, generated_at: str) -> dict:
     documents = []
     for page in sorted(wiki_dir.rglob("*.md")):
         if page.name == "search_index.json":
@@ -422,17 +527,18 @@ def build_search_index(wiki_dir: pathlib.Path) -> dict:
         })
     return {
         "schema": "find_science_skills_wiki_search_v1",
-        "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
+        "generated_at": generated_at,
         "document_count": len(documents),
         "documents": documents,
     }
 
 
-def build_graph_view(graph: dict, edge_limit_per_type: int = 4) -> dict:
+def build_graph_view(graph: dict, gaps: dict | None = None, edge_limit_per_type: int = 4) -> dict:
     nodes = []
     for node in graph["nodes"].values():
         nodes.append({
             "id": node["id"],
+            "type": "skill",
             "label": node.get("name") or node["id"],
             "group": node.get("group") or "",
             "family": node.get("family") or "",
@@ -444,6 +550,22 @@ def build_graph_view(graph: dict, edge_limit_per_type: int = 4) -> dict:
             "repo_count": node.get("repo_count") or 1,
             "review": bool(node.get("review")),
             "wiki": f"../wiki/skills/{node['id']}.md",
+        })
+    for gap in (gaps or {}).get("gaps") or []:
+        nodes.append({
+            "id": gap["id"],
+            "type": "skill_gap",
+            "label": gap.get("title") or gap["id"],
+            "group": "Registry gaps",
+            "family": "Retrieval coverage",
+            "domain": "Find Science Skills",
+            "domain_l2": gap.get("status") or "gap",
+            "score": 0,
+            "tier": gap.get("status") or "gap",
+            "stars": 0,
+            "repo_count": 0,
+            "review": True,
+            "wiki": f"../wiki/gaps/{gap['id']}.md",
         })
     edges = []
     seen = set()
@@ -465,7 +587,7 @@ def build_graph_view(graph: dict, edge_limit_per_type: int = 4) -> dict:
                 })
     return {
         "schema": "research_skill_graph_view_v1",
-        "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
+        "generated_at": graph_generated_at(graph),
         "nodes": nodes,
         "edges": edges,
     }
@@ -566,7 +688,7 @@ function visibleState() {{
       .forEach(n => ids.add(n.id));
   }} else {{
     for (const n of graphData.nodes) {{
-      const blob = `${{n.id}} ${{n.label}} ${{n.group}} ${{n.domain}} ${{n.domain_l2}}`.toLowerCase();
+      const blob = `${{n.id}} ${{n.label}} ${{n.type}} ${{n.group}} ${{n.domain}} ${{n.domain_l2}}`.toLowerCase();
       if ((!group || n.group === group) && (!q || blob.includes(q))) ids.add(n.id);
     }}
     for (const e of graphData.edges) {{
@@ -639,7 +761,7 @@ function draw() {{
     }}
   }}
   ctx.restore();
-  document.getElementById("count").textContent = `${{state.nodes.length}} shown / ${{graphData.nodes.length}} skills · ${{edgesToDraw.length}} visible / ${{graphData.edges.length}} relations`;
+  document.getElementById("count").textContent = `${{state.nodes.length}} shown / ${{graphData.nodes.length}} nodes · ${{edgesToDraw.length}} visible / ${{graphData.edges.length}} relations`;
 }}
 
 function refresh() {{
@@ -675,6 +797,7 @@ function showPanel(d) {{
       <h2>${{d.label}}</h2>
       <div class="meta">
         <span>能力组</span><strong>${{d.group || ""}}</strong>
+        <span>类型</span><strong>${{d.type || "skill"}}</strong>
         <span>学科</span><strong>${{d.domain_l2 || ""}}</strong>
         <span>质量分</span><strong>${{d.score}}</strong>
         <span>Tier</span><strong>${{d.tier || ""}}</strong>
@@ -738,7 +861,10 @@ loadData().then(data => {{
 """
 
 
-def generate_static_knowledge_base(graph: dict, out_root: pathlib.Path) -> None:
+def generate_static_knowledge_base(graph: dict, out_root: pathlib.Path, gaps: dict | None = None) -> None:
+    graph.setdefault("_generated_at", graph_generated_at(graph))
+    generated_at = graph_generated_at(graph)
+    generated_date = graph_date(graph)
     wiki_dir = out_root / "wiki"
     site_dir = out_root / "site"
     ensure_clean_dir(wiki_dir)
@@ -748,16 +874,32 @@ def generate_static_knowledge_base(graph: dict, out_root: pathlib.Path) -> None:
     inbound = collect_inbound(graph)
     for node in sorted_nodes(graph):
         write_text(wiki_dir / "skills" / f"{node['id']}.md", skill_page(node, graph, inbound))
+    for gap in (gaps or {}).get("gaps") or []:
+        write_text(wiki_dir / "gaps" / f"{gap['id']}.md", gap_page(gap, generated_date))
 
     for group, bucket in collect_groups(graph, "group").items():
         write_text(
             wiki_dir / "capabilities" / f"{group}.md",
-            listing_page(group, "capability", group, bucket, f"`{group}` 能力组下共有 {len(bucket)} 个技能。"),
+            listing_page(
+                group,
+                "capability",
+                group,
+                bucket,
+                f"`{group}` 能力组下共有 {len(bucket)} 个技能。",
+                generated_date,
+            ),
         )
     for domain, bucket in collect_groups(graph, "domain_l2").items():
         write_text(
             wiki_dir / "domains" / f"{domain}.md",
-            listing_page(domain, "domain", domain, bucket, f"`{domain}` 学科细分下共有 {len(bucket)} 个技能。"),
+            listing_page(
+                domain,
+                "domain",
+                domain,
+                bucket,
+                f"`{domain}` 学科细分下共有 {len(bucket)} 个技能。",
+                generated_date,
+            ),
         )
 
     write_text(wiki_dir / "index.md", index_page(graph))
@@ -765,11 +907,11 @@ def generate_static_knowledge_base(graph: dict, out_root: pathlib.Path) -> None:
     write_text(wiki_dir / "synthesis.md", synthesis_page(graph))
     write_text(wiki_dir / "comparisons" / "conflicts.md", conflicts_page(graph))
     write_text(wiki_dir / "log.md", log_page(graph))
-    write_text(wiki_dir / "wiki-schema.md", schema_page())
-    search_index = build_search_index(wiki_dir)
+    write_text(wiki_dir / "wiki-schema.md", schema_page(generated_date))
+    search_index = build_search_index(wiki_dir, generated_at)
     write_text(wiki_dir / "search_index.json", json.dumps(search_index, ensure_ascii=False, separators=(",", ":")))
 
-    view = build_graph_view(graph)
+    view = build_graph_view(graph, gaps=gaps)
     write_text(out_root / "data" / "skill_graph_view.json", json.dumps(view, ensure_ascii=False, separators=(",", ":")))
     write_text(site_dir / "graph.html", graph_html(view))
 
@@ -780,8 +922,9 @@ def main() -> int:
     ap.add_argument("--out", default=str(SKILL_DIR), help="find-science-skills package directory")
     args = ap.parse_args()
     graph = load_graph(pathlib.Path(args.data))
+    gaps = load_gaps()
     out_root = pathlib.Path(args.out)
-    generate_static_knowledge_base(graph, out_root)
+    generate_static_knowledge_base(graph, out_root, gaps=gaps)
     view = json.loads((out_root / "data" / "skill_graph_view.json").read_text(encoding="utf-8"))
     print(json.dumps({
         "wiki_pages": len(list((out_root / "wiki").rglob("*.md"))),

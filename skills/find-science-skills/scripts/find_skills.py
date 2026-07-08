@@ -40,6 +40,7 @@ DATA_CANDIDATES = [
     SCRIPT_DIR / "skill_graph_index.json",
     SCRIPT_DIR / "research_skill_graph_index.json",
 ]
+GAPS_CANDIDATE = SKILL_DIR / "data" / "retrieval_gaps.json"
 
 # 能力簇别名（中英/同义 -> 标准功能组），让中英文过滤都命中
 CAP_ALIASES = {
@@ -71,13 +72,107 @@ SEMANTIC_ALIASES = {
     "第一性原理": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
     "密度泛函": "dft density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
     "dft": "第一性原理 密度泛函 density functional theory quantum chemistry ab initio vasp orca qe quantum espresso",
+    "orca": "quantum chemistry dft density functional theory frequency vibrational thermochemistry optimization single point ir spectrum",
+    "vasp": "dft density functional theory plane wave paw poscar incar kpoints potcar band structure dos electronic structure materials hpc",
     "分子动力学": "molecular dynamics md gromacs lammps openmm simulation trajectory force field",
     "molecular dynamics": "分子动力学 md gromacs lammps openmm simulation trajectory force field",
+    "gromacs": "molecular dynamics md trajectory rmsd rmsf topology mdp force field hpc 分子动力学",
+    "rmsd": "molecular dynamics gromacs md trajectory rmsf structural fluctuation 分子动力学",
+    "rmsf": "molecular dynamics gromacs md trajectory rmsd structural fluctuation 分子动力学",
     "单细胞": "single cell single-cell scrna scRNA-seq scanpy seurat transcriptomics",
     "single cell": "单细胞 single-cell scrna scRNA-seq scanpy seurat transcriptomics",
     "scrna": "单细胞 single cell single-cell scRNA-seq scanpy seurat transcriptomics",
     "时间序列": "time series forecasting temporal sequential anomaly detection arima sarimax aeon",
     "time series": "时间序列 forecasting temporal sequential anomaly detection arima sarimax aeon",
+    "arima": "time series econometrics var sarimax cointegration statsmodels 时间序列 计量经济学 协整",
+    "cointegration": "time series econometrics arima var statsmodels 时间序列 计量经济学 协整",
+    "协整": "time series econometrics arima var cointegration statsmodels 时间序列 计量经济学",
+    "计量经济学": "econometrics time series arima var cointegration statsmodels 时间序列 协整",
+    "2sls": "instrumental variables iv regression weak instruments endogeneity 工具变量 两阶段最小二乘 弱工具变量 内生性",
+    "instrumental variables": "iv regression 2sls weak instruments endogeneity econometrics 工具变量 两阶段最小二乘 弱工具变量 内生性",
+    "工具变量": "instrumental variables iv regression 2sls weak instruments endogeneity 两阶段最小二乘 弱工具变量 内生性",
+    "蛋白质结构预测": "protein structure prediction alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "protein structure prediction": "蛋白质结构预测 alphafold alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "alphafold": "蛋白质结构预测 protein structure prediction alphafold2 alphafold3 colabfold chai1 openfold esmfold multimer",
+    "netcdf": "zarr xarray dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
+    "xarray": "zarr netcdf dask chunked array n-dimensional arrays scientific computing climate data cloud storage parallel io",
+    "climate data": "netcdf xarray zarr dask chunked array n-dimensional arrays scientific computing",
+    "metabolomics": "代谢组 代谢组学 multi omics multi-omics bulk omics proteomics transcriptomics integrative planner biomedical direction pathway enrichment lcms lc ms",
+    "lc-ms": "metabolomics 代谢组 代谢组学 lcms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
+    "lcms": "metabolomics 代谢组 代谢组学 lc ms mass spectrometry multi omics bulk omics integrative planner pathway enrichment",
+    "metagenomics": "metagenome taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "metagenome": "metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "kraken2": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads bracken metaphlan 宏基因组 微生物群落 分类谱",
+    "metaphlan": "metagenome metagenomics taxonomic profiling taxonomy microbial community microbiome shotgun reads kraken2 bracken 宏基因组 微生物群落 分类谱",
+    "immunofluorescence": "fluorescence microscopy colocalization colocalisation bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "colocalization": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "colocalisation": "immunofluorescence fluorescence microscopy bioimage imagej fiji pyimagej scikit image channel pearson manders",
+    "mtt": "cell viability assay dose response concentration response ic50 4pl hill curve fitting drug screening",
+    "cck8": "cell viability assay dose response concentration response ic50 od450 4pl hill curve fitting drug screening",
+    "cell viability": "mtt cck8 dose response concentration response ic50 ec50 4pl hill curve fitting drug screening",
+}
+
+INTENT_KEYWORDS = {
+    "execution": {
+        "query": ["预测", "prediction", "predict", "simulate", "simulation", "模拟", "对接", "docking", "annotation", "注释", "run", "运行"],
+        "prefer": ["预测", "simulation", "simulate", "docking", "annotation", "workflow", "模型", "structure prediction", "分子动力学", "第一性原理"],
+        "avoid": ["database", "数据库", "access", "fetch", "download", "retriev", "检索", "search", "guide", "教程", "overview"],
+    },
+    "database": {
+        "query": ["数据库", "database", "db", "emdb", "pdb", "uniprot", "retriev", "search", "检索"],
+        "prefer": ["database", "数据库", "access", "retriev", "search", "检索"],
+        "avoid": ["predict", "prediction", "预测", "simulate", "simulation", "模拟", "run", "运行"],
+    },
+    "array_data": {
+        "query": ["netcdf", "xarray", "zarr", "climate data", "chunked array"],
+        "prefer": ["zarr", "xarray", "dask", "chunked", "n-d arrays", "parallel i/o", "scientific computing"],
+        "avoid": ["excel", "csv", "pivot", "clinical", "decision curve", "cerna", "tabular", "feature importance"],
+    },
+    "econometric_time_series": {
+        "query": ["arima", "sarimax", "cointegration", "协整", "计量经济学"],
+        "prefer": ["arima", "sarimax", "var", "cointegration", "econometric", "计量经济学", "协整", "statsmodels"],
+        "avoid": ["classification", "clustering", "segmentation", "similarity search", "machine learning tasks"],
+    },
+    "instrumental_variables": {
+        "query": ["instrumental variables", "iv regression", "2sls", "weak instruments", "工具变量", "弱工具变量", "内生性"],
+        "prefer": ["instrumental variables", "iv regression", "2sls", "weak instruments", "endogeneity", "工具变量法", "两阶段最小二乘", "弱工具变量", "内生性"],
+        "avoid": ["arima", "sarimax", "var", "cointegration", "协整", "time series", "时间序列", "manuscript", "journal"],
+    },
+    "omics_integrative": {
+        "query": ["metabolomics", "metabolome", "lc-ms", "lcms", "代谢组", "代谢组学"],
+        "prefer": ["metabolomics", "代谢组", "bulk omics", "multi omics", "multi-omics", "integrative", "pathway enrichment"],
+        "avoid": ["predict", "prediction", "spectrum", "spectra", "ms2", "adverse outcome", "rnaseq"],
+    },
+    "metagenomics_taxonomy": {
+        "query": ["metagenomics", "metagenome", "kraken2", "bracken", "metaphlan", "宏基因组"],
+        "prefer": ["metagenome", "metagenomics", "taxonomic profiling", "taxonomy", "microbial community", "kraken2", "bracken", "metaphlan", "宏基因组"],
+        "avoid": ["acmg", "variant classification", "cancer classification", "tumor", "oncotree", "clinical significance", "classification criteria"],
+    },
+    "bioimage_colocalization": {
+        "query": ["immunofluorescence", "colocalization", "colocalisation"],
+        "prefer": ["fiji", "imagej", "pyimagej", "scikit-image", "microscopy", "bioimage", "image processing", "image analysis", "region properties", "analyze particles"],
+        "avoid": ["excel", "csv", "pivot", "decision curve", "clinical utility", "cerna", "expression matrix", "feature importance"],
+    },
+    "dose_response_assay": {
+        "query": ["mtt", "cck8", "cell viability", "ic50", "ec50", "dose response", "concentration response"],
+        "prefer": ["dose response", "concentration response", "ic50", "ec50", "hill slope", "4 parameter logistic", "4pl", "cell assays", "drug screening"],
+        "avoid": ["decision curve", "decision-tree", "clinical utility", "rebuttal", "author response", "reviewer", "single cell", "cell type annotation"],
+    },
+    "gromacs_md_trajectory": {
+        "query": ["gromacs", "rmsd", "rmsf"],
+        "prefer": ["gromacs", "molecular dynamics", "trajectory", "rmsd", "rmsf", "topology", "mdp", "force field"],
+        "avoid": ["lammps", "reaxff", "single cell", "scrna", "rna velocity", "pseudotime", "cell type annotation"],
+    },
+    "orca_quantum_chemistry": {
+        "query": ["orca"],
+        "prefer": ["orca", "frequency", "frequencies", "vibrational", "thermochemistry", "dft", "single point", "optimization"],
+        "avoid": ["quantum espresso", "phonopy", "vasp", "abinit", "gpaw", "dftbplus", "qe"],
+    },
+    "vasp_materials_dft": {
+        "query": ["vasp"],
+        "prefer": ["vasp", "incar", "poscar", "kpoints", "potcar", "band structure", "dos", "plane wave", "paw", "electronic structure"],
+        "avoid": ["quantum espresso", "orca", "phonopy", "abinit", "gpaw", "dftbplus", "qe"],
+    },
 }
 
 R, B, D, C, Y, G = "\x1b[0m", "\x1b[1m", "\x1b[2m", "\x1b[36m", "\x1b[33m", "\x1b[32m"
@@ -122,6 +217,13 @@ def load_graph():
     sys.exit(f"缺少技能图谱数据。请确认 {DATA_CANDIDATES[0]} 存在，或先 `git pull` / `--update`。")
 
 
+def load_gaps(path: pathlib.Path = GAPS_CANDIDATE) -> list[dict]:
+    if not path.exists():
+        return []
+    data = json.load(open(path, encoding="utf-8"))
+    return data.get("gaps") or []
+
+
 def tok(s: str):
     """Latin alnum runs (splits hyphen/dot so chem-dft-orca -> chem,dft,orca)
     + CJK bigrams（避免短中文查询靠单字乱命中）。"""
@@ -141,8 +243,19 @@ def query_tokens(query: str, semantic: bool = True):
     if not semantic or not query:
         return tokens
     q = query.lower()
+    pdb_retrieval_context = (
+        "pdb" in q
+        and ("retrieve" in q or "retriev" in q or "access" in q or "fetch" in q or "database" in q)
+        and ("not predict" in q or "not prediction" in q or "不是预测" in q or "不预测" in q)
+    )
     extra = []
     for trigger, aliases in SEMANTIC_ALIASES.items():
+        if pdb_retrieval_context and trigger.lower() in {
+            "alphafold",
+            "protein structure prediction",
+            "蛋白质结构预测",
+        }:
+            continue
         if trigger.lower() in q:
             extra.extend(tok(aliases))
     if not extra:
@@ -154,6 +267,71 @@ def query_tokens(query: str, semantic: bool = True):
             seen.add(t)
             merged.append(t)
     return merged
+
+
+def gap_match_score(query: str, gap: dict) -> float:
+    if gap.get("status") != "missing_skill":
+        return -1.0
+    q_tokens = set(tok(query))
+    if not q_tokens:
+        return -1.0
+    best = 0.0
+    for example in gap.get("query_examples") or []:
+        example_tokens = set(tok(example))
+        if not example_tokens:
+            continue
+        matched = q_tokens & example_tokens
+        example_cov = len(matched) / max(1, len(example_tokens))
+        query_cov = len(matched) / max(1, len(q_tokens))
+        if len(matched) >= 3 and example_cov >= 0.75 and query_cov >= 0.6:
+            best = max(best, 100.0 + example_cov * 10.0 + query_cov)
+    return best if best else -1.0
+
+
+def missing_gap_nodes(query: str, gaps: list[dict] | None = None) -> list[dict]:
+    scored = []
+    source_gaps = gaps if gaps is not None else load_gaps()
+    for gap in source_gaps:
+        score = gap_match_score(query, gap)
+        if score >= 0:
+            scored.append((score, gap))
+    scored.sort(key=lambda item: (-item[0], item[1].get("id", "")))
+    nodes = []
+    for score, gap in scored:
+        nodes.append({
+            "id": gap["id"],
+            "name": gap.get("title") or gap["id"],
+            "cap": "registry gap",
+            "group": "技能缺口",
+            "domain_l2": "未覆盖",
+            "desc": gap.get("desired_behavior", ""),
+            "example_repo": "",
+            "repo_count": 0,
+            "stars": 0,
+            "score": round(score, 4),
+            "tier": "gap",
+            "review": True,
+            "registry_gap_status": gap.get("status"),
+            "registry_gap": True,
+            "source_holdout_ids": gap.get("source_holdout_ids") or [],
+            "edges": {"alternative": [], "companion": [], "workflow": [], "related": []},
+        })
+    return nodes
+
+
+def infer_intent(query: str) -> str | None:
+    q = (query or "").lower()
+    matched = []
+    for intent, rules in INTENT_KEYWORDS.items():
+        score = sum(1 for kw in rules["query"] if kw.lower() in q)
+        if score:
+            matched.append((score, intent))
+    if not matched:
+        return None
+    matched.sort(reverse=True)
+    if len(matched) > 1 and matched[0][0] == matched[1][0]:
+        return None
+    return matched[0][1]
 
 
 def resolve_cap(term: str):
@@ -187,7 +365,7 @@ def blob_of(node):
     ])))
 
 
-def score_node(node, q_tokens, name_tokens, idf=None, intent_cap=None):
+def score_node(node, q_tokens, name_tokens, idf=None, intent_cap=None, query_intent: str | None = None):
     if not q_tokens:
         base = 0.0
     else:
@@ -211,8 +389,162 @@ def score_node(node, q_tokens, name_tokens, idf=None, intent_cap=None):
     deepb = 0.8 if node.get("deep") == "建议安装" else (-0.6 if node.get("deep") == "先修复" else 0)
     # intent alignment: query implies a capability group -> boost that group
     intentb = 1.2 if (intent_cap and node.get("group") == intent_cap) else 0.0
+    intentq = 0.0
+    if query_intent:
+        hay = " ".join([
+            node.get("name", ""), node.get("desc", ""), node.get("group", ""),
+            node.get("cap", ""), node.get("family", ""), node.get("zh", ""),
+        ]).lower()
+        rules = INTENT_KEYWORDS[query_intent]
+        prefer_hits = sum(1 for kw in rules["prefer"] if kw.lower() in hay)
+        avoid_hits = sum(1 for kw in rules["avoid"] if kw.lower() in hay)
+        intentq = min(1.4, prefer_hits * 0.45) - min(1.6, avoid_hits * 0.55)
+        group = node.get("group") or ""
+        family = node.get("family") or ""
+        if query_intent == "execution":
+            name_desc = " ".join([node.get("name", ""), node.get("desc", "")]).lower()
+            if group == "数据库检索":
+                intentq -= 2.2
+            if family == "发现获取":
+                intentq -= 0.8
+            if group == "建模仿真":
+                intentq += 0.8
+            if family == "执行实验":
+                intentq += 0.35
+            if any(marker in name_desc for marker in ["database", "access", "fetch", "download", "uniprot id"]):
+                intentq -= 2.1
+        elif query_intent == "database":
+            qset = set(q_tokens)
+            name_desc = " ".join([
+                node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", ""),
+            ]).lower()
+            if group == "数据库检索":
+                intentq += 1.6
+            if family == "发现获取":
+                intentq += 0.5
+            if "pdb" in qset and "pdb-database" in name_desc:
+                intentq += 8.0
+            if {"pdb", "retrieve"} <= qset and any(
+                marker in name_desc for marker in ["alphafold2", "chai1", "openfold", "esmfold", "boltz"]
+            ):
+                intentq -= 5.0
+            if "not" in qset and ("predict" in qset or "prediction" in qset) and any(
+                marker in name_desc for marker in ["structure prediction", "蛋白质结构预测", "alphafold2", "chai1"]
+            ):
+                intentq -= 5.0
+        elif query_intent == "array_data":
+            name_desc = " ".join([node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if group == "数据处理":
+                intentq += 1.2
+            if any(marker in name_desc for marker in ["zarr", "xarray", "chunked", "n-d arrays", "并行i/o"]):
+                intentq += 4.0
+            if any(marker in name_desc for marker in ["dask", "parallel", "scientific computing", "科学计算"]):
+                intentq += 1.2
+            if group == "统计分析" and not any(marker in name_desc for marker in ["scientific data file", "xarray", "zarr"]):
+                intentq -= 2.4
+        elif query_intent == "econometric_time_series":
+            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if "time-series-guide" in name_desc:
+                intentq += 8.0
+            if "statsmodels-statistical-modeling" in name_desc:
+                intentq += 5.0
+            if "jqte-econometric-methods" in name_desc:
+                intentq += 3.0
+            if any(marker in name_desc for marker in ["arima", "sarimax", "var", "cointegration", "协整", "计量经济学", "econometric"]):
+                intentq += 4.5
+            if "aeon" in name_desc or any(
+                marker in name_desc
+                for marker in ["classification", "clustering", "segmentation", "similarity search", "machine learning tasks"]
+            ):
+                intentq -= 4.0
+        elif query_intent == "instrumental_variables":
+            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if "iv-regression-guide" in name_desc:
+                intentq += 9.0
+            if any(marker in name_desc for marker in ["causal-inference-r", "r-econometrics", "stata-causal-inference"]):
+                intentq += 4.0
+            if any(marker in name_desc for marker in ["instrumental variables", "iv regression", "2sls", "weak instruments", "工具变量法", "两阶段最小二乘", "弱工具变量", "内生性"]):
+                intentq += 5.0
+            if any(marker in name_desc for marker in ["time-series-guide", "arima", "sarimax", "cointegration", "协整", "time series", "时间序列"]):
+                intentq -= 5.0
+            if any(marker in name_desc for marker in ["manuscript", "journal", "投稿", "写作"]):
+                intentq -= 1.5
+        elif query_intent == "metagenomics_taxonomy":
+            name_desc = " ".join([node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if any(marker in name_desc for marker in ["metagenome", "metagenomics", "kraken2", "bracken", "metaphlan", "宏基因组"]):
+                intentq += 7.5
+            if any(marker in name_desc for marker in ["taxonomic profiling", "taxonomy", "microbial community", "微生物群落", "分类谱"]):
+                intentq += 3.0
+            if any(marker in name_desc for marker in ["acmg", "variant classification", "cancer classification", "tumor", "oncotree", "clinical significance"]):
+                intentq -= 4.5
+        elif query_intent == "bioimage_colocalization":
+            name_desc = " ".join([node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if any(marker in name_desc for marker in ["pyimagej", "fiji", "imagej", "scikit-image"]):
+                intentq += 7.5
+            if any(marker in name_desc for marker in ["microscopy", "bioimage", "image processing", "image analysis", "region properties", "analyze particles", "bio-formats"]):
+                intentq += 3.0
+            if node.get("group") == "数据处理":
+                intentq += 1.0
+            if any(marker in name_desc for marker in ["excel", "csv", "pivot", "decision curve", "clinical utility", "cerna", "expression matrix", "feature importance"]):
+                intentq -= 4.5
+        elif query_intent == "dose_response_assay":
+            name_desc = " ".join([node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if "tooluniverse-dose-response" in name_desc:
+                intentq += 10.0
+            elif any(marker in name_desc for marker in ["dose response", "concentration response", "ic50", "ec50", "hill slope", "4 parameter logistic", "4pl"]):
+                intentq += 7.0
+            if any(marker in name_desc for marker in ["cell assays", "cell assay", "cell viability", "drug screening", "enzyme/cell assays"]):
+                intentq += 2.5
+            if any(marker in name_desc for marker in ["decision curve", "decision-tree", "clinical utility", "rebuttal", "author response", "reviewer", "single cell", "cell type annotation"]):
+                intentq -= 6.0
+        elif query_intent == "gromacs_md_trajectory":
+            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            if "hpc-gromacs" in name_desc:
+                intentq += 14.0
+            elif "drug-protein-ligand-md" in name_desc:
+                intentq += 4.0
+            if any(marker in name_desc for marker in ["gromacs", "molecular dynamics", "trajectory", "rmsd", "rmsf", "topology", "mdp", "force field"]):
+                intentq += 4.0
+            if any(marker in name_desc for marker in ["lammps", "reaxff", "deepmd"]):
+                intentq -= 8.0
+            if any(marker in name_desc for marker in ["scrnaseq", "single cell", "rna velocity", "pseudotime", "cell type annotation"]):
+                intentq -= 8.0
+        elif query_intent == "orca_quantum_chemistry":
+            qset = set(q_tokens)
+            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            frequency_query = bool(qset & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
+            optimization_query = bool(qset & {"geometry", "optimization", "optimize", "optimisation", "optimise"})
+            if frequency_query and "orca-freq" in name_desc:
+                intentq += 42.0
+            elif optimization_query and ("orca-opt" in name_desc or "orca-optimization" in name_desc):
+                intentq += 34.0
+            elif optimization_query and "orca-freq" in name_desc:
+                intentq += 4.0
+            elif "orca" in name_desc:
+                intentq += 16.0
+            if any(marker in name_desc for marker in ["orca", "density functional", "dft", "single point", "optimization", "frequency", "frequencies", "vibrational", "thermochemistry"]):
+                intentq += 7.0
+            if any(marker in name_desc for marker in ["quantum-espresso", "quantum espresso", "phonopy", "vasp", "abinit", "gpaw", "dftbplus"]):
+                intentq -= 28.0
+        elif query_intent == "vasp_materials_dft":
+            qset = set(q_tokens)
+            name_desc = " ".join([node.get("id", ""), node.get("name", ""), node.get("desc", ""), node.get("zh", "")]).lower()
+            band_query = bool(qset & {"band", "bands", "dos", "electronic"})
+            freq_query = bool(qset & {"freq", "frequency", "frequencies", "vibrational", "thermochemistry"})
+            if band_query and "hpc-vasp" in name_desc:
+                intentq += 38.0
+            elif freq_query and "vasp-freq" in name_desc:
+                intentq += 96.0
+            elif "hpc-vasp" in name_desc or "vasp-freq" in name_desc:
+                intentq += 34.0
+            elif "vasp" in name_desc:
+                intentq += 14.0
+            if any(marker in name_desc for marker in ["vasp", "incar", "poscar", "kpoints", "potcar", "band structure", "density of states", "plane wave", "paw", "electronic structure"]):
+                intentq += 7.0
+            if any(marker in name_desc for marker in ["quantum-espresso", "quantum espresso", "orca", "phonopy", "abinit", "gpaw", "dftbplus"]):
+                intentq -= 120.0
     pen = 0.85 if node.get("review") else 1.0
-    return (base + ev + qs + deepb + intentb) * pen
+    return (base + ev + qs + deepb + intentb + intentq) * pen
 
 
 def deep_tag(node):
@@ -231,13 +563,29 @@ def qtag(node):
     return f"{col}{sc}{R}"
 
 
+def display_taxonomy(node):
+    family = node.get("family") or "未分家族"
+    group = node.get("group") or "未分组"
+    domain = node.get("domain_l2") or node.get("domain") or "未分领域"
+    return f"{family} / {group} · {domain}"
+
+
 def print_hit(node, nodes, show_graph, indent=""):
+    if node.get("registry_gap"):
+        print(f"{indent}{B}{node['name']}{R}  {Y}[registry gap: {node.get('registry_gap_status')}]{R}")
+        desc = node.get("desc")
+        if desc:
+            print(f"{indent}  {D}{desc}{R}")
+        if node.get("source_holdout_ids"):
+            print(f"{indent}  {D}└ holdout: {', '.join(node['source_holdout_ids'])}{R}")
+        print()
+        return
     stars = stars_str(node.get("stars") or 0)
     prov = f"{node['repo_count']} 仓库" if node.get("repo_count", 1) > 1 else node.get("example_repo", "")
     flag = f" {Y}[待复核]{R}" if node.get("review") else ""
     q = qtag(node)
     qpart = f"  {D}质量分 {q}{R}" if q else ""
-    print(f"{indent}{B}{node['name']}{R}  {D}{node.get('cap','')} / {node.get('group','')} · {node.get('domain_l2','')}{R}{flag}{deep_tag(node)}")
+    print(f"{indent}{B}{node['name']}{R}  {D}{display_taxonomy(node)}{R}{flag}{deep_tag(node)}")
     print(f"{indent}  {C}{node.get('example_repo','')}{R} {D}{stars} · {prov}{R}{qpart}")
     if node.get("path"):
         print(f"{indent}  {D}└ {node['path']}{R}")
@@ -288,6 +636,7 @@ def run_search(args, data):
     q_tokens = query_tokens(args.query, semantic=not args.no_semantic)
     # infer intent capability from the query itself (only when unambiguous)
     intent_cap = None if cap else resolve_cap(args.query)
+    query_intent = infer_intent(args.query)
 
     scored = []
     for sid, n in nodes.items():
@@ -295,23 +644,28 @@ def run_search(args, data):
             continue
         if args.owner and args.owner.lower() not in (n.get("example_repo", "").split("/")[0].lower()):
             continue
-        s = score_node(n, q_tokens, set(tok(n.get("name", "") + " " + sid)), idf, intent_cap)
+        s = score_node(n, q_tokens, set(tok(n.get("name", "") + " " + sid)), idf, intent_cap, query_intent)
         if s >= 0:
             scored.append((s, n))
     scored.sort(key=lambda x: (-x[0], -(x[1].get("score") or 0), -(x[1].get("stars") or 0)))
-    results = [n for _, n in scored[: args.limit]]
+    gap_results = [] if cap or args.owner else missing_gap_nodes(args.query)
+    results = (gap_results + [n for _, n in scored])[: args.limit]
 
     if args.json:
         slim = []
         for n in results:
             e = n.get("edges", {})
             slim.append({
-                "id": n["id"], "name": n["name"], "capability": n.get("cap"),
-                "group": n.get("group"), "domain": n.get("domain"), "domain_l2": n.get("domain_l2"),
+                "id": n["id"], "name": n["name"], "capability": n.get("group"),
+                "family": n.get("family"), "group": n.get("group"),
+                "legacy_capability": n.get("cap"),
+                "display_taxonomy": display_taxonomy(n),
+                "domain": n.get("domain"), "domain_l2": n.get("domain_l2"),
                 "stars": n.get("stars"), "repo_count": n.get("repo_count"),
                 "example_repo": n.get("example_repo"), "path": n.get("path"),
                 "quality_score": n.get("score"), "tier": n.get("tier"),
                 "deep_verdict": n.get("deep"), "needs_review": n.get("review"),
+                "registry_gap_status": n.get("registry_gap_status"),
                 "alternative": [p[0] for p in e.get("alternative", [])[:5]],
                 "companion": [p[0] for p in e.get("companion", [])[:5]],
                 "workflow_next": [p[0] for p in e.get("workflow", [])[:5]],
