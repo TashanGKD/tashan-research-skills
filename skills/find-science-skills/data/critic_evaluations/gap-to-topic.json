@@ -1,0 +1,46 @@
+{
+  "schema": "science_skill_critic_evaluation_v1",
+  "id": "gap-to-topic",
+  "critic_source_sha256": "1c7d4579b3866c150d4ce713a4242ae9a9dc758935d852e7cd16e0907908fb7a",
+  "evaluated_at": "2026-07-12T20:45:00+08:00",
+  "method": "isolated_subagents_with_original_criticagent_kernel",
+  "formal_kernel_run": true,
+  "known_limit": "Trigger decisions are model self-reports; behavior cases exercise underspecified-input boundaries rather than a completed literature-search dossier.",
+  "agents": {
+    "without_skill": "019f56dc-266a-7ea0-9329-57406d810a43",
+    "with_skill": "019f56dc-2a76-7c60-bf0b-63901a9f5069",
+    "trigger": "019f56dc-266a-7ea0-9329-57406d810a43"
+  },
+  "kernel_probe": {
+    "implementation_root": "C:/Users/16571/Documents/Codex/2026-07-05/tashangkd-mcp-criticagent-https-github-com/work/MCP-CriticAgent",
+    "implementation_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c+uncommitted-skill-core",
+    "behavior_report_sha256": "a13d918e0422217b16dc3a01aaf0ab5bb834b051e07e910e4e69693921a67a5f",
+    "trigger_report_sha256": "91eabb7dc430002a34598cb14b70c7d6c7f59a51187b517dfde1893706151d99",
+    "static_validation_passed": true
+  },
+  "behavior_evaluation": {
+    "status": "pass",
+    "case_count": 3,
+    "with_skill_passed": 3,
+    "without_skill_passed": 0,
+    "with_skill_pass_rate": 1.0,
+    "without_skill_pass_rate": 0.0,
+    "pass_rate_delta": 1.0,
+    "checked_assertions": 6,
+    "unverifiable_assertions": 0,
+    "non_discriminating_assertions": 0,
+    "always_failing_assertions": 0,
+    "evidence": "The skill consistently withheld the final worth-it decision, did not invent a thesis topic, disclosed that no search had run, and warned that literature absence cannot prove universal absence."
+  },
+  "trigger_evaluation": {
+    "status": "pass",
+    "query_count": 8,
+    "runs_per_query": 3,
+    "correct_decisions": 24,
+    "decision_count": 24,
+    "accuracy": 1.0,
+    "positive_queries": 4,
+    "negative_queries": 4,
+    "failed_queries": []
+  }
+}

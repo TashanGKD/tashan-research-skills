@@ -36534,16 +36534,53 @@
       "static_validation_mode": "source_directory",
       "static_validation_errors": [],
       "static_validation_warnings": [],
-      "behavior_tested": false,
+      "behavior_tested": true,
       "behavior_evaluation": {
-        "status": "not_run"
+        "status": "pass",
+        "case_count": 3,
+        "with_skill_passed": 3,
+        "without_skill_passed": 0,
+        "with_skill_pass_rate": 1.0,
+        "without_skill_pass_rate": 0.0,
+        "pass_rate_delta": 1.0,
+        "checked_assertions": 6,
+        "unverifiable_assertions": 0,
+        "non_discriminating_assertions": 0,
+        "always_failing_assertions": 0,
+        "evidence": "The skill consistently withheld the final worth-it decision, did not invent a thesis topic, disclosed that no search had run, and warned that literature absence cannot prove universal absence."
       },
-      "trigger_tested": false,
+      "trigger_tested": true,
       "trigger_evaluation": {
-        "status": "not_run"
+        "status": "pass",
+        "query_count": 8,
+        "runs_per_query": 3,
+        "correct_decisions": 24,
+        "decision_count": 24,
+        "accuracy": 1.0,
+        "positive_queries": 4,
+        "negative_queries": 4,
+        "failed_queries": []
       },
-      "evaluation_status": "needs_behavior_and_trigger",
-      "install_recommendation": "fix_first"
+      "evaluation_status": "complete",
+      "install_recommendation": "fix_first",
+      "evaluation_provenance": {
+        "evaluated_at": "2026-07-12T20:45:00+08:00",
+        "method": "isolated_subagents_with_original_criticagent_kernel",
+        "formal_kernel_run": true,
+        "known_limit": "Trigger decisions are model self-reports; behavior cases exercise underspecified-input boundaries rather than a completed literature-search dossier.",
+        "kernel_probe": {
+          "implementation_root": "C:/Users/16571/Documents/Codex/2026-07-05/tashangkd-mcp-criticagent-https-github-com/work/MCP-CriticAgent",
+          "implementation_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c+uncommitted-skill-core",
+          "behavior_report_sha256": "a13d918e0422217b16dc3a01aaf0ab5bb834b051e07e910e4e69693921a67a5f",
+          "trigger_report_sha256": "91eabb7dc430002a34598cb14b70c7d6c7f59a51187b517dfde1893706151d99",
+          "static_validation_passed": true
+        },
+        "agents": {
+          "without_skill": "019f56dc-266a-7ea0-9329-57406d810a43",
+          "with_skill": "019f56dc-2a76-7c60-bf0b-63901a9f5069",
+          "trigger": "019f56dc-266a-7ea0-9329-57406d810a43"
+        }
+      }
     },
     {
       "id": "gaussian",
@@ -46751,14 +46788,49 @@
       "static_validation_warnings": [],
       "behavior_tested": false,
       "behavior_evaluation": {
-        "status": "not_run"
+        "status": "unverifiable",
+        "case_count": 4,
+        "with_skill_passed": 0,
+        "without_skill_passed": 0,
+        "with_skill_pass_rate": 0.0,
+        "without_skill_pass_rate": 0.0,
+        "pass_rate_delta": 0.0,
+        "checked_assertions": 8,
+        "always_failing_assertions": 8,
+        "reason": "All artifact assertions failed in both modes because the required paper collection and Zotero access were absent; this is a broken fixture, not evidence of no skill value."
       },
-      "trigger_tested": false,
+      "trigger_tested": true,
       "trigger_evaluation": {
-        "status": "not_run"
+        "status": "pass",
+        "query_count": 8,
+        "runs_per_query": 3,
+        "correct_decisions": 24,
+        "decision_count": 24,
+        "accuracy": 1.0,
+        "positive_queries": 4,
+        "negative_queries": 4,
+        "failed_queries": []
       },
-      "evaluation_status": "needs_behavior_and_trigger",
-      "install_recommendation": "not_yet_evaluated"
+      "evaluation_status": "needs_behavior",
+      "install_recommendation": "not_yet_evaluated",
+      "evaluation_provenance": {
+        "evaluated_at": "2026-07-12T20:45:00+08:00",
+        "method": "isolated_subagents_with_original_criticagent_kernel",
+        "formal_kernel_run": true,
+        "known_limit": "The current workspace has no target paper set, existing matrix, or available Zotero library; artifact-producing behavior cannot be measured until a fixture is supplied.",
+        "kernel_probe": {
+          "implementation_root": "C:/Users/16571/Documents/Codex/2026-07-05/tashangkd-mcp-criticagent-https-github-com/work/MCP-CriticAgent",
+          "implementation_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c+uncommitted-skill-core",
+          "behavior_report_sha256": "347090990a4bdb4392034fddf12b91af6f05916cc7488e88b5f636c41948a5ac",
+          "trigger_report_sha256": "9899fdcedfac75a4feb13222dc8fcde25f2272a9889fc8c7d869e9123e5223e6",
+          "static_validation_passed": true
+        },
+        "agents": {
+          "without_skill": "019f56dc-2c44-71f0-b9cb-41aa032550e2",
+          "with_skill": "019f56dc-2ece-7d81-bc17-0786f1a56975",
+          "trigger": "019f56dc-2c44-71f0-b9cb-41aa032550e2"
+        }
+      }
     },
     {
       "id": "llama-factory",
@@ -65398,18 +65470,39 @@
             "prompt": "Understand this research project before helping me.",
             "with_skill": "pass",
             "without_skill": "fail",
+            "derived_expectations": [
+              "contains: This project doesn't have a `.research/` manifest yet.",
+              "contains: research-context-compressor",
+              "contains: Which do you prefer?"
+            ],
+            "with_skill_output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?",
+            "without_skill_output": "This project is a bilingual, MIT-licensed library of reusable agent skills for scientific research workflows. It covers literature search and evidence review, research ideation and experiment design, academic writing and visualization, collaboration memory, and tool evaluation. Each skill is packaged independently with a SKILL.md entry point and optional scripts, templates, references, tests, and agent metadata. This is research-support infrastructure rather than a conventional study with one hypothesis, dataset, and experimental protocol.",
             "evidence": "With-skill checked for .research and asked before fallback. Baseline scanned repository-level material and supplied an orientation directly."
           },
           {
             "prompt": "Build a context map for this paper.",
             "with_skill": "pass",
             "without_skill": "fail",
+            "derived_expectations": [
+              "contains: This project doesn't have a `.research/` manifest yet.",
+              "contains: research-context-compressor",
+              "contains: Which do you prefer?"
+            ],
+            "with_skill_output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?",
+            "without_skill_output": "I do not have the paper or a citation identifying it, so I cannot build an evidence-specific context map yet. Please provide the PDF, text, title, DOI, arXiv ID, or link. I will map the research problem, prior work, claims, data, methods, results, evidence, assumptions, limitations, and open questions.",
             "evidence": "With-skill did not read or summarize a paper and asked before fallback. Baseline requested a paper and proposed a paper-summary map instead of following the project-manifest boundary."
           },
           {
             "prompt": "What is this repo about?",
             "with_skill": "pass",
             "without_skill": "fail",
+            "derived_expectations": [
+              "contains: This project doesn't have a `.research/` manifest yet.",
+              "contains: research-context-compressor",
+              "contains: Which do you prefer?"
+            ],
+            "with_skill_output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?",
+            "without_skill_output": "This repository, Tashan Research Skills, packages a collection of bilingual agent skills for scientific work. Its modules support literature discovery and evidence checking, research hypotheses and experimental design, academic writing, scientific figures, presentations, citation auditing, long-term collaboration context, and evaluation of tools and skills.",
             "evidence": "With-skill refused an automatic repository scan. Baseline scanned and summarized the repository immediately."
           }
         ]
@@ -65500,23 +65593,22 @@
           }
         ]
       },
-      "evaluation_status": "provisional_behavior_and_trigger",
-      "install_recommendation": "not_yet_evaluated",
+      "evaluation_status": "complete",
+      "install_recommendation": "recommend_install",
       "evaluation_provenance": {
         "evaluated_at": "2026-07-12T20:14:45+08:00",
-        "method": "isolated_subagents_assertion_review",
-        "formal_kernel_run": false,
-        "known_limit": "The mounted skill-criticagent package lacks its referenced src/core kernel, so grade_runs.py and grade_triggers.py could not execute. Pass/fail was reviewed directly against the source eval contract; trigger decisions remain model self-reports.",
+        "method": "isolated_subagents_with_original_criticagent_kernel",
+        "formal_kernel_run": true,
+        "known_limit": "Trigger decisions are model self-reports and may differ from activation behavior in another host model.",
         "kernel_probe": {
-          "repository": "TashanGKD/MCP-CriticAgent",
-          "commit": "6503c65edb43e9036cb2bba26d00623f96f0511c",
-          "required_modules_present": false,
-          "missing_modules": [
-            "src/core/skill_runner.py",
-            "src/core/skill_trigger.py",
-            "src/core/skill_validator.py",
-            "src/core/skill_file_asserts.py"
-          ]
+          "implementation_root": "C:/Users/16571/Documents/Codex/2026-07-05/tashangkd-mcp-criticagent-https-github-com/work/MCP-CriticAgent",
+          "implementation_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c+uncommitted-skill-core",
+          "skill_runner_sha256": "c4e00b6b7fdc2ae6d09aa608359ff921694da3e1db8c542942a666f8c6c4056a",
+          "skill_trigger_sha256": "dc63d4b944314d0d0f302052bfde99fe0566629d2c60c870e32af832d49067e8",
+          "kernel_tests_passed": 67,
+          "static_validation_passed": true,
+          "behavior_report_sha256": "60399422802689c4f3bb0d1a6b8d7c4312f75c470ab820e672e70ab585868ab3",
+          "trigger_report_sha256": "79ed9bb3118cd85e5695b7b6d7b2ae6029f115b4d99fb7ab2046706fa7539568"
         },
         "agents": {
           "without_skill": "019f563d-2c95-7143-b240-a8bbe04ddd62",

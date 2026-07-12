@@ -35,10 +35,11 @@ def apply_report(scorecard: dict, report: dict) -> dict:
 
     behavior = report.get("behavior_evaluation")
     trigger = report.get("trigger_evaluation")
-    if not isinstance(behavior, dict) or behavior.get("status") not in {"pass", "fail"}:
-        raise ValueError("behavior_evaluation requires pass or fail status")
-    if not isinstance(trigger, dict) or trigger.get("status") not in {"pass", "fail"}:
-        raise ValueError("trigger_evaluation requires pass or fail status")
+    allowed = {"pass", "fail", "unverifiable"}
+    if not isinstance(behavior, dict) or behavior.get("status") not in allowed:
+        raise ValueError("behavior_evaluation requires pass, fail, or unverifiable status")
+    if not isinstance(trigger, dict) or trigger.get("status") not in allowed:
+        raise ValueError("trigger_evaluation requires pass, fail, or unverifiable status")
     status, recommendation, behavior_tested, trigger_tested = decision_for_layers(
         static_status=record["static_validation_status"],
         static_errors=record.get("static_validation_errors", []),

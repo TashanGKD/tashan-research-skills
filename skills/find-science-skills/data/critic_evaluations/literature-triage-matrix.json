@@ -1,0 +1,44 @@
+{
+  "schema": "science_skill_critic_evaluation_v1",
+  "id": "literature-triage-matrix",
+  "critic_source_sha256": "84a2f9b441b4296b0d98012f18b03c0e3360fce631aedc512882b8aa16f92551",
+  "evaluated_at": "2026-07-12T20:45:00+08:00",
+  "method": "isolated_subagents_with_original_criticagent_kernel",
+  "formal_kernel_run": true,
+  "known_limit": "The current workspace has no target paper set, existing matrix, or available Zotero library; artifact-producing behavior cannot be measured until a fixture is supplied.",
+  "agents": {
+    "without_skill": "019f56dc-2c44-71f0-b9cb-41aa032550e2",
+    "with_skill": "019f56dc-2ece-7d81-bc17-0786f1a56975",
+    "trigger": "019f56dc-2c44-71f0-b9cb-41aa032550e2"
+  },
+  "kernel_probe": {
+    "implementation_root": "C:/Users/16571/Documents/Codex/2026-07-05/tashangkd-mcp-criticagent-https-github-com/work/MCP-CriticAgent",
+    "implementation_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c+uncommitted-skill-core",
+    "behavior_report_sha256": "347090990a4bdb4392034fddf12b91af6f05916cc7488e88b5f636c41948a5ac",
+    "trigger_report_sha256": "9899fdcedfac75a4feb13222dc8fcde25f2272a9889fc8c7d869e9123e5223e6",
+    "static_validation_passed": true
+  },
+  "behavior_evaluation": {
+    "status": "unverifiable",
+    "case_count": 4,
+    "with_skill_passed": 0,
+    "without_skill_passed": 0,
+    "with_skill_pass_rate": 0.0,
+    "without_skill_pass_rate": 0.0,
+    "pass_rate_delta": 0.0,
+    "checked_assertions": 8,
+    "always_failing_assertions": 8,
+    "reason": "All artifact assertions failed in both modes because the required paper collection and Zotero access were absent; this is a broken fixture, not evidence of no skill value."
+  },
+  "trigger_evaluation": {
+    "status": "pass",
+    "query_count": 8,
+    "runs_per_query": 3,
+    "correct_decisions": 24,
+    "decision_count": 24,
+    "accuracy": 1.0,
+    "positive_queries": 4,
+    "negative_queries": 4,
+    "failed_queries": []
+  }
+}

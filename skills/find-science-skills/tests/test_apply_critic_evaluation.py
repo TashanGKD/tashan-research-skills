@@ -72,3 +72,15 @@ def test_non_kernel_review_is_preserved_but_not_an_install_recommendation():
     assert record["trigger_tested"] is True
     assert record["evaluation_status"] == "provisional_behavior_and_trigger"
     assert record["install_recommendation"] == "not_yet_evaluated"
+
+
+def test_unverifiable_behavior_keeps_trigger_evidence_without_recommendation():
+    module = load_module()
+    report = fixture_report()
+    report["behavior_evaluation"] = {"status": "unverifiable", "reason": "fixture missing"}
+    result = module.apply_report(fixture_scorecard(), report)
+    record = result["scores"][0]
+    assert record["behavior_tested"] is False
+    assert record["trigger_tested"] is True
+    assert record["evaluation_status"] == "needs_behavior"
+    assert record["install_recommendation"] == "not_yet_evaluated"
