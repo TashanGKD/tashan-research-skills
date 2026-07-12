@@ -28,19 +28,23 @@ from pathlib import Path
 
 
 def _find_repo_root() -> Path:
-    """In-repo layout first; standalone copies set MCP_CRITICAGENT_ROOT."""
+    """Resolve an explicit, bundled, or in-repo CriticAgent kernel."""
 
-    candidate = Path(__file__).resolve().parents[3]
-    if (candidate / "src" / "core" / "skill_runner.py").is_file():
-        return candidate
     import os
 
     env_root = os.environ.get("MCP_CRITICAGENT_ROOT")
-    if env_root and (Path(env_root) / "src" / "core" / "skill_runner.py").is_file():
-        return Path(env_root)
+    candidates = [
+        Path(env_root) if env_root else None,
+        Path(__file__).resolve().parents[1] / "vendor" / "mcp_criticagent",
+        Path(__file__).resolve().parents[3],
+    ]
+    for candidate in candidates:
+        if candidate and (candidate / "src" / "core" / "skill_runner.py").is_file():
+            return candidate
+
     raise SystemExit(
-        "ERROR: evaluation kernel not found. Run from inside the MCP-CriticAgent "
-        "repository, or set MCP_CRITICAGENT_ROOT to the repository path."
+        "ERROR: evaluation kernel not found. Reinstall the complete skill package, "
+        "run from inside MCP-CriticAgent, or set MCP_CRITICAGENT_ROOT."
     )
 
 

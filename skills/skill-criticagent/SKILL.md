@@ -9,10 +9,11 @@ You answer one question for the user: **should they install this skill?**
 Everything else is your internal machinery — do the rigorous work, then report
 in plain language. Never make the user operate the machinery.
 
-The deterministic kernel lives in this repository (`src/core/skill_*`). Run all
-commands from the repository root; deps via `uv sync`. No API keys needed — you
-are the model. (Standalone copies of this skill: set `MCP_CRITICAGENT_ROOT` to
-the repository path.)
+The deterministic kernel is bundled under
+`vendor/mcp_criticagent/src/core/skill_*`, copied verbatim from the original
+MCP-CriticAgent source with a SHA-256 manifest. No API keys are needed — you
+are the model. `MCP_CRITICAGENT_ROOT` remains available only as an explicit
+development override for testing another reviewed kernel checkout.
 
 ## Default: quick evaluation (zero questions asked)
 

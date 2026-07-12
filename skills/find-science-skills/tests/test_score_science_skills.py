@@ -104,6 +104,14 @@ def test_directory_manifest_is_relative_and_deterministic(tmp_path):
     assert module.directory_manifest(skill) == ["SKILL.md", "references/guide.md"]
 
 
+def test_bundled_critic_kernel_is_the_default():
+    module = load_module()
+    critic_root = module.resolve_critic_root(None)
+    assert critic_root == module.BUNDLED_CRITIC_ROOT
+    assert (critic_root / "src" / "core" / "skill_validator.py").is_file()
+    assert module.load_validator(critic_root) is not None
+
+
 def test_generated_scorecard_covers_the_catalog_without_secret_material():
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     scorecard = json.loads(SCORECARD_PATH.read_text(encoding="utf-8"))

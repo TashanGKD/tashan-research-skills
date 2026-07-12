@@ -24,8 +24,12 @@ from finalize_critic_scores import SCHEMA, finalize_record  # noqa: E402
 
 
 SKILL_DIR = pathlib.Path(__file__).resolve().parent.parent
+REPO_ROOT = SKILL_DIR.parents[1]
 DEFAULT_CATALOG = SKILL_DIR / "data" / "science_skill_catalog.json"
 DEFAULT_OUTPUT = SKILL_DIR / "data" / "science_skill_critic_scores.json"
+BUNDLED_CRITIC_ROOT = (
+    REPO_ROOT / "skills" / "skill-criticagent" / "vendor" / "mcp_criticagent"
+)
 DEFAULT_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
 DEFAULT_MODEL = "deepseek-v4-flash-260425"
 RUBRIC_VERSION = "source-review-v2"
@@ -259,6 +263,16 @@ def load_validator(critic_root: pathlib.Path | None) -> Callable | None:
     return module.validate_skill_dir
 
 
+def resolve_critic_root(configured_root: str | None) -> pathlib.Path | None:
+    """Prefer an explicit kernel, otherwise use the repository-bundled copy."""
+
+    if configured_root:
+        return pathlib.Path(configured_root)
+    if (BUNDLED_CRITIC_ROOT / "src" / "core" / "skill_validator.py").is_file():
+        return BUNDLED_CRITIC_ROOT
+    return None
+
+
 def package_evidence(skill_md: pathlib.Path | None, validator: Callable | None) -> dict:
     if skill_md is None:
         return {"critic_package_status": "source_unavailable", "errors": [], "warnings": []}
@@ -364,7 +378,7 @@ def main(argv: list[str] | None = None) -> int:
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     catalog_hash = hashlib.sha256(catalog_path.read_bytes()).hexdigest()
     source_root = pathlib.Path(args.source_root) if args.source_root else None
-    critic_root = pathlib.Path(args.critic_root) if args.critic_root else None
+    critic_root = resolve_critic_root(args.critic_root)
     selected = catalog["skills"]
     if args.ids:
         wanted = set(args.ids)

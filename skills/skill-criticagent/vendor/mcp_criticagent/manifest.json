@@ -1,0 +1,18 @@
+{
+  "schema": "vendored_mcp_criticagent_kernel_v1",
+  "upstream_repository": "https://github.com/TashanGKD/MCP-CriticAgent",
+  "upstream_base_commit": "6503c65edb43e9036cb2bba26d00623f96f0511c",
+  "source_branch": "feat/agent-skill-evaluator-core",
+  "source_tree": "cc6a5c2da95e3d1f60a855c6fd65f4c85fad85a7",
+  "files": {
+    "src/__init__.py": "20017b23f34d85fc703895d72edcf04585a6ef64e580864fc1a0ec5ddebd0679",
+    "src/core/__init__.py": "3cef290e9b1edd8ba4ed45727945bfa336eddf4ae985e3d99a5e98028db91e80",
+    "src/core/skill_file_asserts.py": "b2bedcc5099bb99f8c277cc99fc0276dde40444e711508d4a0c6f3101108460c",
+    "src/core/skill_judge.py": "663f506a4d3ce51e4d1d67ce89e6f6ff4af1005367d0cb78ce2d3744a032d8d0",
+    "src/core/skill_runner.py": "c4e00b6b7fdc2ae6d09aa608359ff921694da3e1db8c542942a666f8c6c4056a",
+    "src/core/skill_security.py": "140805c0ff3aaab1130b403e2ed2350878a95a8644dc1f8ab5fb9bcf18810ccf",
+    "src/core/skill_tool_asserts.py": "bd641dfa42ccb98f9bfff1adb6f2a0cd997d2f219a0f71a2d81b1e60d32e6507",
+    "src/core/skill_trigger.py": "dc63d4b944314d0d0f302052bfde99fe0566629d2c60c870e32af832d49067e8",
+    "src/core/skill_validator.py": "9d1f62f7f3d1e32d4840312e58a5acbe37bc30d99f5f2a9b18e0342015d9166d"
+  }
+}
