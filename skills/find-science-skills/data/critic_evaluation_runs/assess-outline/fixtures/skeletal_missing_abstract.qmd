@@ -1,0 +1,24 @@
+---
+title: "Local Politics Project"
+abstract: ""
+---
+
+# Introduction
+
+TODO.
+
+# Literature Review
+
+Summarize previous studies.
+
+# Data
+
+ANES.
+
+# Results
+
+TODO.
+
+# Conclusion
+
+TODO.

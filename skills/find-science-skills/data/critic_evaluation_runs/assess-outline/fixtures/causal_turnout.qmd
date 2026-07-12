@@ -1,0 +1,45 @@
+---
+title: "Polling-Place Closures and Voter Turnout"
+abstract: |
+  What is the causal effect of polling-place closures on voter turnout? This question matters because unequal access to polling locations may distort democratic representation. We estimate the effect using a difference-in-differences design based on staggered county closures from 2012 to 2020. Relative to prior studies of travel distance and turnout, we contribute nationwide precinct-level evidence and a design that isolates within-county changes. We find that a closure reduces turnout by approximately 1.8 percentage points, with larger effects in low-income precincts.
+---
+
+# Introduction
+
+The section opens by explaining why equal access to polling places matters for democratic representation. It states the primary question: what is the causal effect of a polling-place closure on precinct-level turnout?
+
+## Main contribution
+
+The paper contributes nationwide precinct-level evidence on closures and turnout and estimates within-county changes rather than relying on cross-sectional comparisons.
+
+## Relationship to prior research
+
+Prior studies examine travel distance, voter identification laws, and local case studies. We explain how our national panel, closure measure, and staggered design differ from those approaches.
+
+# Theory and hypotheses
+
+The main message is that closures increase voting costs. H1 predicts lower turnout after a closure. H2 predicts a larger decline in low-income precincts. These implications will be tested using precinct turnout and census-derived income measures.
+
+# Data
+
+The population of interest is voting-age citizens in United States precincts from 2012 through 2020. The analysis combines state election returns, polling-place records, and American Community Survey data. The outcome is precinct turnout as a share of voting-age citizens. Key explanatory variables are closure exposure, post-closure status, and neighborhood income.
+
+# Research design and identification
+
+We use staggered difference-in-differences with county and election fixed effects. Identification requires parallel untreated turnout trends and no closure-timed confounders. Event-study estimates will assess pre-trends; placebo closure dates and covariate balance checks will evaluate assumption plausibility. Threats include selective closures, precinct-boundary changes, and concurrent election-administration reforms.
+
+# Results
+
+The section opens with the estimated average treatment effect of a closure on turnout. The primary estimand is the percentage-point change in precinct turnout. Difference-in-differences estimates indicate a decline of approximately 1.8 percentage points, followed by tests of heterogeneous effects by neighborhood income.
+
+## Robustness and sensitivity
+
+We will compare alternative treatment-timing estimators, exclude precincts with boundary changes, vary fixed effects, run placebo timing tests, and report sensitivity to differential pre-trends.
+
+# Conclusion
+
+The conclusion relates reduced turnout after closures to equitable election administration and states the limits of extrapolating beyond observed counties.
+
+# Replication appendix
+
+De-identified analysis data, variable-construction documentation, and replication code will be deposited in a public repository. The appendix will provide estimator details and additional diagnostics.

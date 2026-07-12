@@ -1,0 +1,158 @@
+{
+  "evals": [
+    {
+      "id": "causal_complete_outline",
+      "prompt": "Assess the research outline at C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\causal_turnout.qmd and write the report to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\causal_turnout-assessment.md. Do not modify the source outline.",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*TRUE|causal paper(?: detected)?\\s*:\\s*Yes"
+        },
+        {
+          "type": "contains",
+          "value": "_Causal paper detected: Yes_"
+        },
+        {
+          "type": "contains",
+          "value": "_Criteria assessed: 9_"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 7\\. Causal Identification Strategy \\| PASS \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|"
+        },
+        {
+          "type": "contains",
+          "value": "difference-in-differences"
+        },
+        {
+          "type": "contains",
+          "value": "parallel"
+        },
+        {
+          "type": "not_contains",
+          "value": "writing style"
+        },
+        {
+          "type": "not_contains",
+          "value": "prose quality"
+        }
+      ]
+    },
+    {
+      "id": "noncausal_complete_outline",
+      "prompt": "Review C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\descriptive_representation.qmd as a paper outline. Use the default output path and leave the input unchanged.",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE|causal paper(?: detected)?\\s*:\\s*No"
+        },
+        {
+          "type": "contains",
+          "value": "_Causal paper detected: No_"
+        },
+        {
+          "type": "contains",
+          "value": "_Criteria assessed: 8_"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 7\\. Causal Identification Strategy \\| N/A \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 5\\. Results and Inferential Approach \\| PASS \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 8\\. Transparency and Replication \\| PASS \\|"
+        },
+        {
+          "type": "not_contains",
+          "value": "must add an identification strategy"
+        },
+        {
+          "type": "not_contains",
+          "value": "causal effect of issue category"
+        },
+        {
+          "type": "contains",
+          "value": "descriptive_representation-outline-assessment.md"
+        }
+      ]
+    },
+    {
+      "id": "boundary_missing_abstract_skeletal_outline",
+      "prompt": "Assess C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\skeletal_missing_abstract.qmd and save the assessment to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\skeletal-assessment.md. The file may be incomplete; report only what is supported by the file, do not invent content, and do not modify it.",
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE|causal paper(?: detected)?\\s*:\\s*No"
+        },
+        {
+          "type": "contains",
+          "value": "_Causal paper detected: No_"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 1\\. Research Question and Motivation \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 2\\. Contributions to Existing Literature \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 3\\. Hypotheses and Testable Implications \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 4\\. Data \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 5\\. Results and Inferential Approach \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 6\\. Robustness and Sensitivity \\| FAIL \\|"
+        },
+        {
+          "type": "regex",
+          "value": "\\| 7\\. Causal Identification Strategy \\| N/A \\|"
+        },
+        {
+          "type": "regex",
+          "value": "(?i)(state|specify|add|identify|describe).{0,100}(research question|question)"
+        },
+        {
+          "type": "regex",
+          "value": "(?i)(population|time period|outcome variable|explanatory variable)"
+        },
+        {
+          "type": "not_contains",
+          "value": "difference-in-differences"
+        },
+        {
+          "type": "not_contains",
+          "value": "regression discontinuity"
+        },
+        {
+          "type": "not_contains",
+          "value": "significant effect"
+        },
+        {
+          "type": "not_contains",
+          "value": "turnout"
+        },
+        {
+          "type": "contains",
+          "value": "skeletal-assessment.md"
+        }
+      ]
+    }
+  ]
+}

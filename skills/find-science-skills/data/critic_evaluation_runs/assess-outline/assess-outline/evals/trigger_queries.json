@@ -1,0 +1,36 @@
+{
+  "trigger_queries": [
+    {
+      "query": "请用 assess-outline 检查 drafts/paper-outline.qmd 的研究问题、贡献、数据和稳健性设计。",
+      "should_trigger": true
+    },
+    {
+      "query": "Evaluate this abstract-and-outline .qmd and produce a structured PASS/PARTIAL/FAIL assessment.",
+      "should_trigger": true
+    },
+    {
+      "query": "Review my social science research plan in proposal.qmd, including whether its causal identification strategy is complete.",
+      "should_trigger": true
+    },
+    {
+      "query": "Check whether outline.qmd has a clear question, literature contribution, hypotheses, data, planned results, and replication details.",
+      "should_trigger": true
+    },
+    {
+      "query": "Rewrite the prose in paper.qmd to sound more concise and improve its academic writing style.",
+      "should_trigger": false
+    },
+    {
+      "query": "Turn these notes into a new section-by-section paper outline and reorder the writing tasks.",
+      "should_trigger": false
+    },
+    {
+      "query": "Run the regression models described in analysis.qmd and check whether the estimates are statistically significant.",
+      "should_trigger": false
+    },
+    {
+      "query": "Proofread the abstract in manuscript.qmd for grammar, spelling, citations, and sentence flow.",
+      "should_trigger": false
+    }
+  ]
+}

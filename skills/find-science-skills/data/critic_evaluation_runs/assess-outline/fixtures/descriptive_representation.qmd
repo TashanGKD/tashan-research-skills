@@ -1,0 +1,43 @@
+---
+title: "Who Receives Constituent Responses?"
+---
+
+# Abstract
+
+Which constituent requests receive responses from municipal governments, and how does responsiveness vary across issue types? The question matters because routine administrative responsiveness is an important but poorly measured dimension of local representation. Using 48,000 archived service requests from 30 cities, we describe response rates and estimate associations between issue category, neighborhood characteristics, and response receipt. Unlike prior work centered on surveys or single-city audits, this paper provides a harmonized multi-city comparison. Requests about public safety have the highest response rate, while housing-related requests have the lowest.
+
+# Introduction
+
+The section first motivates administrative responsiveness as a dimension of representation and states the question of which requests receive responses.
+
+## Contributions
+
+The paper contributes a harmonized multi-city dataset, separates acknowledgment from substantive response, and documents variation across issue categories.
+
+## Existing literature
+
+We compare these contributions with survey studies, responsiveness audits, and single-city administrative-data studies, specifying how their outcomes and coverage differ from ours.
+
+# Expectations
+
+H1 predicts that public-safety requests are more likely to receive a response than housing requests. H2 predicts lower response rates in neighborhoods with greater socioeconomic disadvantage. The observed implications are differences in response probabilities by issue type and neighborhood measures.
+
+# Data
+
+The population of interest is residents submitting municipal service requests in 30 United States cities between 2018 and 2023. The outcome is whether a substantive response was recorded within 30 days. Explanatory variables include issue category, median neighborhood income, request channel, city, and year.
+
+# Analysis and results
+
+The section begins with city-level and issue-level response rates. We use descriptive estimates and multilevel logistic regression to summarize conditional associations. The main quantity is the predicted probability of a response. Public-safety requests have the highest predicted response probability, while housing requests have the lowest.
+
+## Robustness checks
+
+We vary the response window, distinguish acknowledgments from substantive replies, estimate city-specific models, and reweight cities to equal influence.
+
+# Discussion
+
+The discussion interprets the patterns as descriptive associations, identifies limits caused by observing only submitted requests, and avoids claims about causal effects.
+
+# Reproducibility appendix
+
+The appendix will provide the data dictionary, harmonization rules, model specifications, and executable replication code. Legally shareable derived data will be archived publicly.

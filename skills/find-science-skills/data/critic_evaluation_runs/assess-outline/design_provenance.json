@@ -1,0 +1,17 @@
+{
+  "designed_by": "independent_subagent",
+  "agent_id": "codex-independent-eval-designer-assess-outline-20260713",
+  "source_skill": "C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\science_skill_discovery_clones\\brycewang-stanford__Auto-Empirical-Research-Skills\\skills\\22-christopherkenny-skills\\skills\\assess-outline\\SKILL.md",
+  "source_skill_sha256": "1CD805C938F04B5236A351DF265BC3F87B28DCA36094EAB87DE9B605693AD297",
+  "design_scope": {
+    "behavior_cases": 3,
+    "trigger_queries": 8,
+    "positive_trigger_queries": 4,
+    "negative_trigger_queries": 4
+  },
+  "constraints": {
+    "source_skill_must_remain_unchanged": true,
+    "evaluation_was_run": false,
+    "existing_scorecards_or_evaluation_answers_read": false
+  }
+}

@@ -3,6 +3,10 @@
   "verified_with_bundled_kernel": true,
   "kernel_manifest": "../../../skill-criticagent/vendor/mcp_criticagent/manifest.json",
   "runs": {
+    "assess-outline": {
+      "behavior_sha256": "d18cb387ab3acbe4b2edeceb7b1eeef2f08a5518da6a81f0f9786b3ef3623ffa",
+      "trigger_sha256": "6ce90a1f2d2b54cffa7990b510e8819dc23797b2c7c5342702a6d0d88b8611ff"
+    },
     "gap-to-topic": {
       "behavior_sha256": "a13d918e0422217b16dc3a01aaf0ab5bb834b051e07e910e4e69693921a67a5f",
       "trigger_sha256": "91eabb7dc430002a34598cb14b70c7d6c7f59a51187b517dfde1893706151d99"
