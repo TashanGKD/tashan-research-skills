@@ -10,8 +10,7 @@ Each folder contains one skill entrypoint named `SKILL.md`.
 | [`thesis-audit-reviewer`](thesis-audit-reviewer/SKILL.md) | Thesis Audit Reviewer | Literature evidence |
 | [`scispark`](scispark/SKILL.md) | Scispark | Research ideation |
 | [`research-baseline-builder`](research-baseline-builder/SKILL.md) | Research Baseline Builder | Research ideation |
-| [`experiment-design`](experiment-design/SKILL.md) | Experiment Design | Research ideation |
-| [`statistical-analysis`](statistical-analysis/SKILL.md) | Statistical Analysis | Research ideation |
+| [`experiment-design`](experiment-design/SKILL.md) | Experiment Design & Statistical Analysis | Research ideation |
 | [`scientific-humanization`](scientific-humanization/SKILL.md) | Scientific Humanization | Research expression |
 | [`academic-writing`](academic-writing/SKILL.md) | Academic Writing | Research expression |
 | [`giiisp-scientific-image-generation`](giiisp-scientific-image-generation/SKILL.md) | Scientific Image Generation | Research expression |

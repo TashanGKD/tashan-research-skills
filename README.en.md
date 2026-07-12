@@ -41,8 +41,7 @@ The project is supported by the **Panshi AI4Science Ecosystem and Application Mo
 | --- | --- | --- |
 | Scispark | [`skills/scispark`](skills/scispark/SKILL.md) | Generate evidence-tracked research ideas and testable hypotheses from papers or keywords. |
 | Research Baseline Builder | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | Translate a scientific question into data inputs, outputs, baselines, and metrics. |
-| Experiment Design | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | Design statistically sound experiments before data collection: design types, randomization, sample size, power, and analysis plans. |
-| Statistical Analysis | [`skills/statistical-analysis`](skills/statistical-analysis/SKILL.md) | Run the locked analysis plan after data collection: tests, effect sizes, confidence intervals, assumption checks, and multiplicity correction. |
+| Experiment Design & Statistical Analysis | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | Connect pre-collection design, randomization, sample size, power, and preregistration with post-collection confirmatory tests, effect sizes, confidence intervals, and multiplicity correction. |
 
 ### Research expression
 

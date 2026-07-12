@@ -41,8 +41,7 @@
 | --- | --- | --- |
 | 假设生成 | [`skills/scispark`](skills/scispark/SKILL.md) | 基于关键词或论文集合生成带证据追踪的研究想法、假设和机制线索。 |
 | 数据处理 | [`skills/research-baseline-builder`](skills/research-baseline-builder/SKILL.md) | 把科研问题拆成可处理的数据任务，明确输入、输出、baseline 和评估指标。 |
-| 实验设计 | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | 在采集数据之前完成研究设计：设计类型、随机化、样本量、统计功效和分析计划。 |
-| 统计分析 | [`skills/statistical-analysis`](skills/statistical-analysis/SKILL.md) | 数据采集后按分析计划执行验证性统计：检验、效应量、置信区间、前提检查和多重比较校正。 |
+| 实验设计与统计分析 | [`skills/experiment-design`](skills/experiment-design/SKILL.md) | 连通采集前的设计、随机化、样本量、功效与预注册，以及采集后的验证性检验、效应量、置信区间和多重校正。 |
 
 ### 成果表达
 

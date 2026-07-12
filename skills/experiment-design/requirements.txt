@@ -1,3 +1,4 @@
-# experiment-design 脚本依赖
-# power.py 需要 statsmodels；randomization.py / doe_designs.py 仅用标准库，无需额外安装。
+# Runtime dependencies for power.py and run_stat_tests.py.
+pandas>=2.0
+scipy>=1.11
 statsmodels>=0.14
