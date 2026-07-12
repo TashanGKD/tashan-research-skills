@@ -71,6 +71,22 @@ python scripts/filter_science_skills.py \
 
    `--json` 默认保留语义选择所需字段；审计目录时可增加 `--full`。不要为某条查询或某个 skill ID 添加特殊规则。
 
+6. 需要进一步筛查候选质量时，可显式加载 CriticAgent 评分旁车：
+
+```bash
+python scripts/filter_science_skills.py \
+  --domain 生命科学 \
+  --stage 分析验证 \
+  --function 数据处理 \
+  --critic-scorecard data/science_skill_critic_scores.json \
+  --min-source-review-score 80 \
+  --critic-require-full-source \
+  --critic-require-package-pass \
+  --json
+```
+
+   额外证据默认不参与检索和排序。`model_source_review_score` 只表示模型对完整源码的内容评审，不是安装推荐；`metadata_only` 记录的该字段为 `null`，状态为 `unverified`。`static_validation_status`、`behavior_evaluation` 和 `trigger_evaluation` 分层保存，只有三层都通过时 `install_recommendation` 才可能为 `recommend_install`。
+
 ## 判断规则
 
 - 不确定时选择多个合法功能。默认由领域和阶段限定候选，功能只决定优先顺序。
@@ -78,6 +94,7 @@ python scripts/filter_science_skills.py \
 - 研究阶段按主要产物判断，不按工具名称判断。
 - 功能按主要动作判断；agent、API、工具库和 workflow 只是实现形式。
 - `trusted` 优先；`provisional` 需要核对来源；`restricted` 必须明确警示。可信度和质量分只用于直接匹配候选之间的排序，不证明语义相关。
+- 模型源码评审分只用于用户显式要求的二次筛选；它不能代表安装推荐，不能把语义不相关的技能提升为候选，也不能覆盖 `restricted` 警告。
 - 默认模式仍无结果时，说明领域或阶段没有覆盖，向用户追问；不要推荐跨领域或跨阶段的相似项。
 
 ## 回复用户
@@ -88,3 +105,8 @@ python scripts/filter_science_skills.py \
 
 - `data/science_skill_catalog.json`：规范化静态目录，字段为 `domain`、`subdomain`、`stage`、`function`。
 - `scripts/filter_science_skills.py`：确定性三维筛选器，仅依赖 Python 标准库。
+- `data/science_skill_critic_scores.json`：可选 CriticAgent 分层证据旁车，区分源码评审、静态检查、行为测试、触发测试和安装建议。
+- `scripts/score_science_skills.py`：可恢复源码评审器；密钥只从 `ARK_API_KEY` 读取，不写入评分文件。
+- `scripts/finalize_critic_scores.py`：把模型评审结果确定性迁移为不可混淆的 v2 分层证据。
+- `scripts/apply_critic_evaluation.py`：校验源码哈希和静态状态后写入行为/触发证据；未运行正式 CriticAgent 内核的复核不会升级为安装推荐。
+- `data/critic_evaluations/`：逐技能保存可追溯的行为与触发测试报告。

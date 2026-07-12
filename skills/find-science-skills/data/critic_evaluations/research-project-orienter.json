@@ -1,0 +1,108 @@
+{
+  "schema": "science_skill_critic_evaluation_v1",
+  "id": "research-project-orienter",
+  "critic_source_sha256": "88e83220d4f01ff51035b6881ae308c9c1fb6abefdd0b9b00782982cdac50dae",
+  "evaluated_at": "2026-07-12T20:14:45+08:00",
+  "method": "isolated_subagents_assertion_review",
+  "formal_kernel_run": false,
+  "known_limit": "The mounted skill-criticagent package lacks its referenced src/core kernel, so grade_runs.py and grade_triggers.py could not execute. Pass/fail was reviewed directly against the source eval contract; trigger decisions remain model self-reports.",
+  "kernel_probe": {
+    "repository": "TashanGKD/MCP-CriticAgent",
+    "commit": "6503c65edb43e9036cb2bba26d00623f96f0511c",
+    "required_modules_present": false,
+    "missing_modules": [
+      "src/core/skill_runner.py",
+      "src/core/skill_trigger.py",
+      "src/core/skill_validator.py",
+      "src/core/skill_file_asserts.py"
+    ]
+  },
+  "agents": {
+    "without_skill": "019f563d-2c95-7143-b240-a8bbe04ddd62",
+    "with_skill": "019f563d-315b-7242-a4b9-edd2c7e7cd2d",
+    "trigger": "019f563d-380c-72b1-aa6c-5a520d209a93"
+  },
+  "behavior_evaluation": {
+    "status": "pass",
+    "case_count": 3,
+    "with_skill_passed": 3,
+    "without_skill_passed": 0,
+    "with_skill_pass_rate": 1.0,
+    "without_skill_pass_rate": 0.0,
+    "pass_rate_delta": 1.0,
+    "criteria": "When .research is absent, ask the user to choose manifest creation or a direct scan; do not auto-scan, summarize a paper, invent fields, or modify files.",
+    "cases": [
+      {
+        "prompt": "Understand this research project before helping me.",
+        "with_skill": "pass",
+        "without_skill": "fail",
+        "evidence": "With-skill checked for .research and asked before fallback. Baseline scanned repository-level material and supplied an orientation directly."
+      },
+      {
+        "prompt": "Build a context map for this paper.",
+        "with_skill": "pass",
+        "without_skill": "fail",
+        "evidence": "With-skill did not read or summarize a paper and asked before fallback. Baseline requested a paper and proposed a paper-summary map instead of following the project-manifest boundary."
+      },
+      {
+        "prompt": "What is this repo about?",
+        "with_skill": "pass",
+        "without_skill": "fail",
+        "evidence": "With-skill refused an automatic repository scan. Baseline scanned and summarized the repository immediately."
+      }
+    ]
+  },
+  "trigger_evaluation": {
+    "status": "pass",
+    "query_count": 8,
+    "runs_per_query": 3,
+    "correct_decisions": 24,
+    "decision_count": 24,
+    "accuracy": 1.0,
+    "positive_queries": 4,
+    "negative_queries": 4,
+    "failed_queries": [],
+    "queries": [
+      {
+        "query": "请读取这个项目根目录已有的 .research/ manifests，帮我快速定位项目：研究问题、数据集、当前阶段、关键入口、证据产物和待解决问题分别是什么？",
+        "should_trigger": true,
+        "decisions": ["research-project-orienter", "research-project-orienter", "research-project-orienter"]
+      },
+      {
+        "query": "Orient me in this research project. The repository already contains .research/ manifest files; produce one concise orientation memo.",
+        "should_trigger": true,
+        "decisions": ["research-project-orienter", "research-project-orienter", "research-project-orienter"]
+      },
+      {
+        "query": "这个 repo 到底在研究什么？请基于项目根目录的 .research/ manifests，整理数据集、研究进度、主要代码入口和现有证据。",
+        "should_trigger": true,
+        "decisions": ["research-project-orienter", "research-project-orienter", "research-project-orienter"]
+      },
+      {
+        "query": "请为这个论文项目建立一份 context map；项目已有 .research/ manifests，需要标明研究问题、当前阶段、关键入口、证据文件和开放问题。",
+        "should_trigger": true,
+        "decisions": ["research-project-orienter", "research-project-orienter", "research-project-orienter"]
+      },
+      {
+        "query": "请为这个 research project 从零创建 .research/ manifest 文件，并设计 manifest 的字段结构。",
+        "should_trigger": false,
+        "decisions": ["none", "none", "none"]
+      },
+      {
+        "query": "这个 repo 的单元测试失败了，请定位关键代码入口并修复 dataset loader 的路径错误。",
+        "should_trigger": false,
+        "decisions": ["none", "none", "none"]
+      },
+      {
+        "query": "请阅读这篇论文 PDF，概括它的 research question、datasets 和 open questions；这里没有项目仓库或 .research/ manifests。",
+        "should_trigger": false,
+        "decisions": ["none", "none", "none"]
+      },
+      {
+        "query": "请更新项目的 current stage 和 evidence artifacts，把最新实验结果写回 .research/ manifests。",
+        "should_trigger": false,
+        "decisions": ["none", "none", "none"]
+      }
+    ]
+  }
+}

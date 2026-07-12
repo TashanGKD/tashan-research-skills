@@ -227,6 +227,133 @@ def test_unknown_dimension_value_is_rejected_instead_of_silently_relaxed():
         )
 
 
+def test_critic_scores_are_optional_evidence_and_do_not_change_default_order():
+    module = load_module()
+    catalog = module.attach_critic_scores(
+        fixture_catalog(),
+        {
+            "scores": [
+                {
+                    "id": "trusted-low",
+                    "model_source_review_score": 95,
+                    "critic_evidence_level": "full_source",
+                },
+                {
+                    "id": "trusted-high",
+                    "model_source_review_score": None,
+                    "critic_evidence_level": "metadata_only",
+                },
+            ]
+        },
+    )
+    results = module.filter_skills(
+        catalog,
+        domains=["生命科学"],
+        stages=["分析验证"],
+        functions=["数据处理"],
+    )
+    assert [item["id"] for item in results] == [
+        "trusted-high",
+        "trusted-low",
+        "restricted-skill",
+    ]
+    assert results[0]["critic_evidence_level"] == "metadata_only"
+    assert results[1]["model_source_review_score"] == 95
+
+
+def test_min_source_review_score_filters_only_full_source_candidates():
+    module = load_module()
+    catalog = module.attach_critic_scores(
+        fixture_catalog(),
+        {
+            "scores": [
+                {"id": "trusted-low", "model_source_review_score": 91},
+                {"id": "trusted-high", "model_source_review_score": 72},
+            ]
+        },
+    )
+    results = module.filter_skills(
+        catalog,
+        domains=["生命科学"],
+        stages=["分析验证"],
+        functions=["数据处理"],
+        min_source_review_score=80,
+    )
+    assert [item["id"] for item in results] == ["trusted-low"]
+
+
+def test_min_source_review_score_rejects_catalog_without_score_evidence():
+    module = load_module()
+    with pytest.raises(ValueError, match="scorecard"):
+        module.filter_skills(
+            fixture_catalog(),
+            domains=["生命科学"],
+            stages=["分析验证"],
+            functions=["数据处理"],
+            min_source_review_score=80,
+        )
+
+
+def test_full_source_filter_excludes_metadata_only_scores():
+    module = load_module()
+    catalog = module.attach_critic_scores(
+        fixture_catalog(),
+        {
+            "scores": [
+                {
+                    "id": "trusted-low",
+                    "model_source_review_score": 91,
+                    "critic_evidence_level": "full_source",
+                },
+                {
+                    "id": "trusted-high",
+                    "model_source_review_score": None,
+                    "critic_evidence_level": "metadata_only",
+                },
+            ]
+        },
+    )
+    results = module.filter_skills(
+        catalog,
+        domains=["生命科学"],
+        stages=["分析验证"],
+        functions=["数据处理"],
+        min_source_review_score=80,
+        critic_require_full_source=True,
+    )
+    assert [item["id"] for item in results] == ["trusted-low"]
+
+
+def test_package_pass_filter_excludes_content_only_recommendations():
+    module = load_module()
+    catalog = module.attach_critic_scores(
+        fixture_catalog(),
+        {
+            "scores": [
+                {
+                    "id": "trusted-low",
+                    "model_source_review_score": 91,
+                    "static_validation_status": "pass",
+                },
+                {
+                    "id": "trusted-high",
+                    "model_source_review_score": 95,
+                    "static_validation_status": "fail",
+                },
+            ]
+        },
+    )
+    results = module.filter_skills(
+        catalog,
+        domains=["生命科学"],
+        stages=["分析验证"],
+        functions=["数据处理"],
+        min_source_review_score=80,
+        critic_require_package_pass=True,
+    )
+    assert [item["id"] for item in results] == ["trusted-low"]
+
+
 def test_generated_catalog_is_complete_and_uses_normalized_names():
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     assert catalog["schema"] == "science_skill_catalog_v1"
