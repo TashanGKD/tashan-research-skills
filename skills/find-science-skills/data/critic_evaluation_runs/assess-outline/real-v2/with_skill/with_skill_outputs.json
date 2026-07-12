@@ -1,0 +1,19 @@
+{
+  "runs": [
+    {
+      "id": "causal_turnout",
+      "output": "CAUSAL = TRUE\nReport written to case-1/outputs/causal_turnout-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 PASS; 8 PASS; 9 PASS.",
+      "outputs_dir": "C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-1/outputs"
+    },
+    {
+      "id": "descriptive_representation",
+      "output": "CAUSAL = FALSE\nReport written to case-2/outputs/descriptive_representation-outline-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 N/A; 8 PASS; 9 PASS.",
+      "outputs_dir": "C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-2/outputs"
+    },
+    {
+      "id": "skeletal_missing_abstract",
+      "output": "CAUSAL = FALSE\nReport written to case-3/outputs/skeletal-assessment.md. Overall assessments: 1 FAIL; 2 FAIL; 3 FAIL; 4 FAIL; 5 FAIL; 6 FAIL; 7 N/A; 8 PARTIAL; 9 PARTIAL.",
+      "outputs_dir": "C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-3/outputs"
+    }
+  ]
+}

@@ -46,9 +46,10 @@ uv run python -m src.main eval-skill <skill_dir> --strict --json
    having read the skill — use a fresh subagent for it (instructed not to
    read the skill's files), or run it before reading the skill body.
 
-   For each case, produce two answers (with_skill: follow the SKILL.md
-   faithfully, save produced files plus a short `transcript.txt` into a
-   per-case outputs dir), record them in a runs manifest, and grade:
+   Run each case once in each mode. Produce two answers (with_skill: follow
+   the SKILL.md faithfully), execute real reads/writes when the task requires
+   them, save produced files plus a short `transcript.txt` into an isolated
+   per-case outputs dir, record the actual tool calls, and grade:
 
 ```bash
 uv run python skills/skill-criticagent/scripts/grade_runs.py <skill_dir> <manifest.json>
@@ -56,8 +57,18 @@ uv run python skills/skill-criticagent/scripts/grade_runs.py <skill_dir> <manife
 
    Manifest: `{"runs": [{"prompt": "<exact prompt from evals.json>",
    "with_skill": {"output": "..." or "output_file": "<abs path>",
-   "outputs_dir": "<abs path>"}, "without_skill": {...}}]}`. Use absolute
-   paths (forward slashes are fine on Windows).
+   "outputs_dir": "<abs path>", "tool_calls": [<OpenAI-style calls>]},
+   "without_skill": {...}}]}`. Use absolute paths (forward slashes are fine
+   on Windows). A claimed file path in answer text is not evidence: require
+   `file_assertions` against the real outputs directory. A claimed read/write
+   is not evidence: require `tool_assertions` against the recorded calls.
+
+   Before and after the run, hash every source input and `SKILL.md`; source
+   hashes must remain unchanged. Archive the runs manifest, outputs, trace,
+   grader JSON, and hashes. A behavior/trigger pass without this execution
+   evidence is provisional and cannot support **建议安装**. A channel may be
+   `not_applicable` only when the skill contract truly defines no such side
+   effect, with an explicit rationale.
 
 3. **Does it trigger?** Use `<skill_dir>/evals/trigger_queries.json` if
    present; otherwise write ~8 queries yourself (half should trigger with
@@ -111,8 +122,8 @@ misleading behavior). One sentence of reasoning next to the verdict.
 
 If the user asks for a rigorous benchmark, more confidence, or wants to
 iterate on the skill: co-design eval cases with them, expand trigger queries
-to ~20, run multiple iterations per case for stability, and share the full
-JSON reports (`--output`). Do not default to any of this.
+to ~20, and share the full JSON reports (`--output`). Multiple iterations are
+optional stability evidence, not a prerequisite for a complete real run.
 
 ## Grading principles (for anything you grade yourself)
 

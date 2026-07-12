@@ -10,13 +10,14 @@ Manifest format:
   "runs": [
     {
       "prompt": "<exact prompt string from evals.json>",
-      "with_skill":    {"output": "...", "output_file": "path", "outputs_dir": "path"},
-      "without_skill": {"output": "...", "output_file": "path", "outputs_dir": "path"}
+      "with_skill":    {"output": "...", "output_file": "path", "outputs_dir": "path", "tool_calls": []},
+      "without_skill": {"output": "...", "output_file": "path", "outputs_dir": "path", "tool_calls": []}
     }
   ]
 }
 `output_file` (read as text) may replace inline `output`; `outputs_dir` is
 optional and feeds file_assertions (including the transcript.txt convention).
+`tool_calls` accepts OpenAI-style message.tool_calls and feeds tool_assertions.
 """
 
 from __future__ import annotations
@@ -52,6 +53,7 @@ sys.path.insert(0, str(_find_repo_root()))
 
 from src.core.skill_file_asserts import read_outputs_dir  # noqa: E402
 from src.core.skill_runner import ProviderResult, run_skill_evals  # noqa: E402
+from src.core.skill_tool_asserts import parse_tool_calls  # noqa: E402
 
 
 class ManifestProvider:
@@ -85,7 +87,11 @@ class ManifestProvider:
                     if spec.get("outputs_dir")
                     else []
                 )
-                return ProviderResult(output=output, output_files=files)
+                return ProviderResult(
+                    output=output,
+                    output_files=files,
+                    tool_calls=parse_tool_calls(spec.get("tool_calls")),
+                )
         raise SystemExit(
             f"ERROR: no manifest entry matches this case prompt: {prompt[-120:]!r}. "
             "Each manifest run needs the EXACT prompt string from evals.json."

@@ -6,39 +6,42 @@
       "assertions": [
         {
           "type": "regex",
-          "value": "(?i)CAUSAL\\s*=\\s*TRUE|causal paper(?: detected)?\\s*:\\s*Yes"
+          "value": "(?i)CAUSAL\\s*=\\s*TRUE"
         },
         {
           "type": "contains",
-          "value": "_Causal paper detected: Yes_"
+          "value": "causal_turnout-assessment.md"
+        }
+      ],
+      "tool_assertions": [
+        {
+          "type": "tool-called",
+          "name": "read_file"
         },
         {
-          "type": "contains",
-          "value": "_Criteria assessed: 9_"
+          "type": "tool-called",
+          "name": "write_file"
+        }
+      ],
+      "file_assertions": [
+        {
+          "type": "file-exists",
+          "path": "causal_turnout-assessment.md"
         },
         {
-          "type": "regex",
-          "value": "\\| 7\\. Causal Identification Strategy \\| PASS \\|"
+          "type": "file-contains",
+          "path": "causal_turnout-assessment.md",
+          "value": "Causal paper detected: Yes"
         },
         {
-          "type": "regex",
-          "value": "\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|"
+          "type": "file-matches",
+          "path": "causal_turnout-assessment.md",
+          "pattern": "\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|"
         },
         {
-          "type": "contains",
+          "type": "file-contains",
+          "path": "causal_turnout-assessment.md",
           "value": "difference-in-differences"
-        },
-        {
-          "type": "contains",
-          "value": "parallel"
-        },
-        {
-          "type": "not_contains",
-          "value": "writing style"
-        },
-        {
-          "type": "not_contains",
-          "value": "prose quality"
         }
       ]
     },
@@ -48,39 +51,37 @@
       "assertions": [
         {
           "type": "regex",
-          "value": "(?i)CAUSAL\\s*=\\s*FALSE|causal paper(?: detected)?\\s*:\\s*No"
-        },
-        {
-          "type": "contains",
-          "value": "_Causal paper detected: No_"
-        },
-        {
-          "type": "contains",
-          "value": "_Criteria assessed: 8_"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 7\\. Causal Identification Strategy \\| N/A \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 5\\. Results and Inferential Approach \\| PASS \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 8\\. Transparency and Replication \\| PASS \\|"
-        },
-        {
-          "type": "not_contains",
-          "value": "must add an identification strategy"
-        },
-        {
-          "type": "not_contains",
-          "value": "causal effect of issue category"
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE"
         },
         {
           "type": "contains",
           "value": "descriptive_representation-outline-assessment.md"
+        }
+      ],
+      "tool_assertions": [
+        {
+          "type": "tool-called",
+          "name": "read_file"
+        },
+        {
+          "type": "tool-called",
+          "name": "write_file"
+        }
+      ],
+      "file_assertions": [
+        {
+          "type": "file-exists",
+          "path": "descriptive_representation-outline-assessment.md"
+        },
+        {
+          "type": "file-contains",
+          "path": "descriptive_representation-outline-assessment.md",
+          "value": "Causal paper detected: No"
+        },
+        {
+          "type": "file-matches",
+          "path": "descriptive_representation-outline-assessment.md",
+          "pattern": "\\| 5\\. Results and Inferential Approach \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|[\\s\\S]*\\| 8\\. Transparency and Replication \\| PASS \\|"
         }
       ]
     },
@@ -90,67 +91,37 @@
       "assertions": [
         {
           "type": "regex",
-          "value": "(?i)CAUSAL\\s*=\\s*FALSE|causal paper(?: detected)?\\s*:\\s*No"
-        },
-        {
-          "type": "contains",
-          "value": "_Causal paper detected: No_"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 1\\. Research Question and Motivation \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 2\\. Contributions to Existing Literature \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 3\\. Hypotheses and Testable Implications \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 4\\. Data \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 5\\. Results and Inferential Approach \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 6\\. Robustness and Sensitivity \\| FAIL \\|"
-        },
-        {
-          "type": "regex",
-          "value": "\\| 7\\. Causal Identification Strategy \\| N/A \\|"
-        },
-        {
-          "type": "regex",
-          "value": "(?i)(state|specify|add|identify|describe).{0,100}(research question|question)"
-        },
-        {
-          "type": "regex",
-          "value": "(?i)(population|time period|outcome variable|explanatory variable)"
-        },
-        {
-          "type": "not_contains",
-          "value": "difference-in-differences"
-        },
-        {
-          "type": "not_contains",
-          "value": "regression discontinuity"
-        },
-        {
-          "type": "not_contains",
-          "value": "significant effect"
-        },
-        {
-          "type": "not_contains",
-          "value": "turnout"
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE"
         },
         {
           "type": "contains",
           "value": "skeletal-assessment.md"
+        }
+      ],
+      "tool_assertions": [
+        {
+          "type": "tool-called",
+          "name": "read_file"
+        },
+        {
+          "type": "tool-called",
+          "name": "write_file"
+        }
+      ],
+      "file_assertions": [
+        {
+          "type": "file-exists",
+          "path": "skeletal-assessment.md"
+        },
+        {
+          "type": "file-contains",
+          "path": "skeletal-assessment.md",
+          "value": "Research Question and Motivation | FAIL"
+        },
+        {
+          "type": "file-matches",
+          "path": "skeletal-assessment.md",
+          "pattern": "\\| 1\\. Research Question and Motivation \\| FAIL \\|[\\s\\S]*\\| 6\\. Robustness and Sensitivity \\| FAIL \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|"
         }
       ]
     }

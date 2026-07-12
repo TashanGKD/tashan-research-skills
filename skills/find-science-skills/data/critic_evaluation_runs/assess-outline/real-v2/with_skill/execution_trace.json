@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "run_mode": "single_run_real_artifact",
+  "skill_path": "C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md",
+  "skill_sha256": "1CD805C938F04B5236A351DF265BC3F87B28DCA36094EAB87DE9B605693AD297",
+  "cases": [
+    {
+      "id": "causal_turnout",
+      "input_path": "C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/causal_turnout.qmd",
+      "input_sha256_before": "7B1138D785C8D9A4B779AA63C08D73D5BFE069DF7358C6B9D821AC7E38CF6221",
+      "input_sha256_after": "7B1138D785C8D9A4B779AA63C08D73D5BFE069DF7358C6B9D821AC7E38CF6221",
+      "skill_sha256": "1CD805C938F04B5236A351DF265BC3F87B28DCA36094EAB87DE9B605693AD297",
+      "output_relative_path": "case-1/outputs/causal_turnout-assessment.md",
+      "output_sha256": "FE436D4FAB691170A9E66E3730C4588E25F9D78294A340985C87EB701214A15E",
+      "tool_calls": [
+        {
+          "id": "call_case_1_read_skill",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+          }
+        },
+        {
+          "id": "call_case_1_read_input",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/causal_turnout.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_1_write_output",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-1/outputs/causal_turnout-assessment.md\",\"content_sha256\":\"FE436D4FAB691170A9E66E3730C4588E25F9D78294A340985C87EB701214A15E\"}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "descriptive_representation",
+      "input_path": "C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/descriptive_representation.qmd",
+      "input_sha256_before": "158AB7866F777C65775EDE0B09ED0A263CDA378F90F5399FF501B33816ACF31B",
+      "input_sha256_after": "158AB7866F777C65775EDE0B09ED0A263CDA378F90F5399FF501B33816ACF31B",
+      "skill_sha256": "1CD805C938F04B5236A351DF265BC3F87B28DCA36094EAB87DE9B605693AD297",
+      "output_relative_path": "case-2/outputs/descriptive_representation-outline-assessment.md",
+      "output_sha256": "E8FBA2D4656A6735D786D5CE88A978887A7723A723F6C4C5BF355E43ED29F6CE",
+      "tool_calls": [
+        {
+          "id": "call_case_2_read_skill",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+          }
+        },
+        {
+          "id": "call_case_2_read_input",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/descriptive_representation.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_2_write_output",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-2/outputs/descriptive_representation-outline-assessment.md\",\"content_sha256\":\"E8FBA2D4656A6735D786D5CE88A978887A7723A723F6C4C5BF355E43ED29F6CE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "skeletal_missing_abstract",
+      "input_path": "C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/skeletal_missing_abstract.qmd",
+      "input_sha256_before": "B8022DA88CF0DCB3B5CCA0E7B62D61180EABBB6A34D34E3D3654A08145707EEA",
+      "input_sha256_after": "B8022DA88CF0DCB3B5CCA0E7B62D61180EABBB6A34D34E3D3654A08145707EEA",
+      "skill_sha256": "1CD805C938F04B5236A351DF265BC3F87B28DCA36094EAB87DE9B605693AD297",
+      "output_relative_path": "case-3/outputs/skeletal-assessment.md",
+      "output_sha256": "BB6FE4331828DD335609A978E1F35D38484A170BB7E4A02A13D49AC4F6231358",
+      "tool_calls": [
+        {
+          "id": "call_case_3_read_skill",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+          }
+        },
+        {
+          "id": "call_case_3_read_input",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/skeletal_missing_abstract.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_3_write_output",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-3/outputs/skeletal-assessment.md\",\"content_sha256\":\"BB6FE4331828DD335609A978E1F35D38484A170BB7E4A02A13D49AC4F6231358\"}"
+          }
+        }
+      ]
+    }
+  ]
+}

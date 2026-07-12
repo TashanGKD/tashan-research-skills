@@ -18,6 +18,30 @@ SKILL_DIR = SCRIPT_DIR.parent
 DEFAULT_SCORECARD = SKILL_DIR / "data" / "science_skill_critic_scores.json"
 
 
+def execution_evidence_is_complete(report: dict) -> bool:
+    evidence = report.get("execution_evidence")
+    if not isinstance(evidence, dict):
+        return False
+    if evidence.get("single_run") is not True:
+        return False
+    if evidence.get("real_host_execution") is not True:
+        return False
+    if evidence.get("source_invariants_status") != "pass":
+        return False
+    if evidence.get("raw_run_archived") is not True:
+        return False
+    for field in ("artifact_requirement", "tool_trace_status"):
+        status = evidence.get(field)
+        if status == "pass":
+            continue
+        if status != "not_applicable":
+            return False
+        rationale = evidence.get(f"{field}_rationale")
+        if not isinstance(rationale, str) or not rationale.strip():
+            return False
+    return True
+
+
 def apply_report(scorecard: dict, report: dict) -> dict:
     if scorecard.get("schema") != "science_skill_critic_scores_v2":
         raise ValueError("scorecard must use science_skill_critic_scores_v2")
@@ -47,7 +71,10 @@ def apply_report(scorecard: dict, report: dict) -> dict:
         behavior=behavior,
         trigger=trigger,
     )
-    if report.get("formal_kernel_run") is not True:
+    evidence_complete = report.get(
+        "formal_kernel_run"
+    ) is True and execution_evidence_is_complete(report)
+    if not evidence_complete and status == "complete":
         status = "provisional_behavior_and_trigger"
         recommendation = "not_yet_evaluated"
     record.update(
@@ -65,6 +92,7 @@ def apply_report(scorecard: dict, report: dict) -> dict:
                     "known_limit",
                     "kernel_probe",
                     "agents",
+                    "execution_evidence",
                 )
                 if key in report
             },

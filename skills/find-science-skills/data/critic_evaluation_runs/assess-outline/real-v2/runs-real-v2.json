@@ -1,0 +1,169 @@
+{
+  "runs": [
+    {
+      "prompt": "Assess the research outline at C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\causal_turnout.qmd and write the report to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\causal_turnout-assessment.md. Do not modify the source outline.",
+      "with_skill": {
+        "output": "CAUSAL = TRUE\nReport written to case-1/outputs/causal_turnout-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 PASS; 8 PASS; 9 PASS.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/with_skill/case-1/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_1_read_skill",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+            }
+          },
+          {
+            "id": "call_case_1_read_input",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/causal_turnout.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_1_write_output",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-1/outputs/causal_turnout-assessment.md\",\"content_sha256\":\"946405A79DA8A8B2F86AD6A83E0D5EAE2AAD685E6B72A5FFDACA5F60222DC368\"}"
+            }
+          }
+        ]
+      },
+      "without_skill": {
+        "output": "Assessment completed. The outline is coherent and research-ready, with targeted revisions needed for treatment definition, staggered-adoption estimation, identification, geographic linkage, and contextual heterogeneity claims.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/without_skill/case-1/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_1_read_file",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\causal_turnout.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_1_write_file",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-1\\\\outputs\\\\causal_turnout-assessment.md\"}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "Review C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\descriptive_representation.qmd as a paper outline. Use the default output path and leave the input unchanged.",
+      "with_skill": {
+        "output": "CAUSAL = FALSE\nReport written to case-2/outputs/descriptive_representation-outline-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 N/A; 8 PASS; 9 PASS.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/with_skill/case-2/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_2_read_skill",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+            }
+          },
+          {
+            "id": "call_case_2_read_input",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/descriptive_representation.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_2_write_output",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-2/outputs/descriptive_representation-outline-assessment.md\",\"content_sha256\":\"D6775DE0834C6AD5876822C3F5DE2D3CF84AB37F7A591849FF225D24151A314B\"}"
+            }
+          }
+        ]
+      },
+      "without_skill": {
+        "output": "Assessment completed. The descriptive design is coherent and appropriately bounded, but cross-city measurement comparability, archive selection, model hierarchy, and missing-data diagnostics require clarification.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/without_skill/case-2/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_2_read_file",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\descriptive_representation.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_2_write_file",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-2\\\\outputs\\\\descriptive_representation-outline-assessment.md\"}"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "prompt": "Assess C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\skeletal_missing_abstract.qmd and save the assessment to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\skeletal-assessment.md. The file may be incomplete; report only what is supported by the file, do not invent content, and do not modify it.",
+      "with_skill": {
+        "output": "CAUSAL = FALSE\nReport written to case-3/outputs/skeletal-assessment.md. Overall assessments: 1 FAIL; 2 FAIL; 3 FAIL; 4 FAIL; 5 FAIL; 6 FAIL; 7 N/A; 8 PARTIAL; 9 PARTIAL.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/with_skill/case-3/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_3_read_skill",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/assess-outline/SKILL.md\"}"
+            }
+          },
+          {
+            "id": "call_case_3_read_input",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:/Users/16571/work/tashan-skills-maintain/tashan-research-skills/skills/find-science-skills/data/critic_evaluation_runs/assess-outline/fixtures/skeletal_missing_abstract.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_3_write_output",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:/Users/16571/Documents/Codex/2026-07-04/skill/work/criticagent_run/assess-outline-real-v2/case-3/outputs/skeletal-assessment.md\",\"content_sha256\":\"40141525240871CF9BF8E2A1CBB4E27E6F9D6A88B6377D581360DAF856698E4C\"}"
+            }
+          }
+        ]
+      },
+      "without_skill": {
+        "output": "Assessment completed. The current document is only a section skeleton and requires a research question, contribution, ANES scope and variables, research design, results plan, limitations, and reproducibility plan before substantive assessment.",
+        "outputs_dir": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2/without_skill/case-3/outputs",
+        "tool_calls": [
+          {
+            "id": "call_case_3_read_file",
+            "type": "function",
+            "function": {
+              "name": "read_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\skeletal_missing_abstract.qmd\"}"
+            }
+          },
+          {
+            "id": "call_case_3_write_file",
+            "type": "function",
+            "function": {
+              "name": "write_file",
+              "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-3\\\\outputs\\\\skeletal-assessment.md\"}"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

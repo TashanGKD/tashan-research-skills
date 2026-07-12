@@ -9937,9 +9937,9 @@
         "with_skill_pass_rate": 1.0,
         "without_skill_pass_rate": 0.0,
         "pass_rate_delta": 1.0,
-        "non_discriminating_assertions": 13,
+        "non_discriminating_assertions": 9,
         "always_failing_assertions": 0,
-        "evidence": "All three with-skill cases passed and all three baselines failed as complete cases. Non-discriminating assertions were retained only as auxiliary correctness checks."
+        "evidence": "Each case ran once per mode. Both modes performed real reads and writes, while only the with-skill runs produced the required causal classification and structured PASS/PARTIAL/FAIL report semantics. All inputs and the skill source retained identical before/after hashes."
       },
       "trigger_tested": true,
       "trigger_evaluation": {
@@ -9956,8 +9956,8 @@
       "evaluation_status": "complete",
       "install_recommendation": "recommend_install",
       "evaluation_provenance": {
-        "evaluated_at": "2026-07-13T00:20:33+08:00",
-        "method": "isolated_subagents_with_bundled_criticagent_kernel",
+        "evaluated_at": "2026-07-13T01:37:06+08:00",
+        "method": "single_run_isolated_subagents_with_real_files_tool_traces_and_bundled_criticagent_kernel",
         "formal_kernel_run": true,
         "known_limit": "Trigger decisions are model self-reports and may differ from activation behavior in another host model.",
         "kernel_probe": {
@@ -9966,16 +9966,28 @@
           "skill_runner_sha256": "c4e00b6b7fdc2ae6d09aa608359ff921694da3e1db8c542942a666f8c6c4056a",
           "skill_trigger_sha256": "dc63d4b944314d0d0f302052bfde99fe0566629d2c60c870e32af832d49067e8",
           "static_validation_passed": true,
-          "behavior_report_sha256": "d18cb387ab3acbe4b2edeceb7b1eeef2f08a5518da6a81f0f9786b3ef3623ffa",
+          "behavior_report_sha256": "17c078b045999569e0abf2dc111e6476fe0e936609b4056345c77a458f2361d8",
           "trigger_report_sha256": "6ce90a1f2d2b54cffa7990b510e8819dc23797b2c7c5342702a6d0d88b8611ff",
-          "runs_sha256": "24942b2721f88e909a16ceee5728677e6de20b6cd19bb05be14b41367f60c64a",
+          "runs_sha256": "07dcdc3bf979d7daf66dca5e0b6e0cd300b2c41c2f3ec4de76c6b1de0979041f",
           "decisions_sha256": "78a35beffa54f98236d7af36f153e2ff6616b8f9da1a97538368ee7a05c28401"
         },
         "agents": {
           "eval_design": "019f5713-6bfd-7b11-832e-087e6dc81de7",
           "without_skill": "019f5719-fe2c-7802-a0a5-408f29a46ecc",
-          "with_skill": "019f571c-0b56-7340-9f87-18e0c5c07867",
+          "with_skill": "019f575f-ead3-70f0-8dc8-1b1eb315f43d",
+          "without_skill_real_v2": "019f5762-4229-71d1-9ad5-2e68ed33073f",
           "trigger": "019f571a-0c7a-7c60-9ac4-25c8bad3ab2a"
+        },
+        "execution_evidence": {
+          "single_run": true,
+          "real_host_execution": true,
+          "artifact_requirement": "pass",
+          "tool_trace_status": "pass",
+          "source_invariants_status": "pass",
+          "raw_run_archived": true,
+          "archive_root": "skills/find-science-skills/data/critic_evaluation_runs/assess-outline/real-v2",
+          "with_skill_trace_sha256": "62046aff2f6ed6d858b1002f4eab9958e7bf60a92ea5253af5c288080e93456e",
+          "without_skill_trace_sha256": "96a4fbae11b0d15fbd216a6fc09299b11417a2c8ce9f158d93db65bd68ce58a3"
         }
       }
     },
@@ -36601,8 +36613,8 @@
         "negative_queries": 4,
         "failed_queries": []
       },
-      "evaluation_status": "complete",
-      "install_recommendation": "fix_first",
+      "evaluation_status": "provisional_behavior_and_trigger",
+      "install_recommendation": "not_yet_evaluated",
       "evaluation_provenance": {
         "evaluated_at": "2026-07-12T20:45:00+08:00",
         "method": "isolated_subagents_with_original_criticagent_kernel",
@@ -65633,8 +65645,8 @@
           }
         ]
       },
-      "evaluation_status": "complete",
-      "install_recommendation": "recommend_install",
+      "evaluation_status": "provisional_behavior_and_trigger",
+      "install_recommendation": "not_yet_evaluated",
       "evaluation_provenance": {
         "evaluated_at": "2026-07-12T20:14:45+08:00",
         "method": "isolated_subagents_with_original_criticagent_kernel",

@@ -1,0 +1,87 @@
+{
+  "run_mode": "baseline_without_skill",
+  "cases": [
+    {
+      "case_id": "case-1",
+      "input_path": "C:\\Users\\16571\\work\\tashan-skills-maintain\\tashan-research-skills\\skills\\find-science-skills\\data\\critic_evaluation_runs\\assess-outline\\fixtures\\causal_turnout.qmd",
+      "input_sha256_before": "7b1138d785c8d9a4b779aa63c08d73d5bfe069df7358c6b9d821ac7e38cf6221",
+      "input_sha256_after": "7b1138d785c8d9a4b779aa63c08d73d5bfe069df7358c6b9d821ac7e38cf6221",
+      "output_path": "C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-baseline-real-v2\\case-1\\outputs\\causal_turnout-assessment.md",
+      "output_sha256": "8ac63ba40f724e29b08eb87f2d74a9b2a597b7220e89fff173087452ca11f670",
+      "tool_calls": [
+        {
+          "id": "call_case_1_read_file",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\causal_turnout.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_1_write_file",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-1\\\\outputs\\\\causal_turnout-assessment.md\"}"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "case-2",
+      "input_path": "C:\\Users\\16571\\work\\tashan-skills-maintain\\tashan-research-skills\\skills\\find-science-skills\\data\\critic_evaluation_runs\\assess-outline\\fixtures\\descriptive_representation.qmd",
+      "input_sha256_before": "158ab7866f777c65775ede0b09ed0a263cda378f90f5399ff501b33816acf31b",
+      "input_sha256_after": "158ab7866f777c65775ede0b09ed0a263cda378f90f5399ff501b33816acf31b",
+      "output_path": "C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-baseline-real-v2\\case-2\\outputs\\descriptive_representation-outline-assessment.md",
+      "output_sha256": "d1f69de1a3c77e1f03d8f321695b7ecf8ef15362102e3d8e28b019f8cf57b562",
+      "tool_calls": [
+        {
+          "id": "call_case_2_read_file",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\descriptive_representation.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_2_write_file",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-2\\\\outputs\\\\descriptive_representation-outline-assessment.md\"}"
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "case-3",
+      "input_path": "C:\\Users\\16571\\work\\tashan-skills-maintain\\tashan-research-skills\\skills\\find-science-skills\\data\\critic_evaluation_runs\\assess-outline\\fixtures\\skeletal_missing_abstract.qmd",
+      "input_sha256_before": "b8022da88cf0dcb3b5cca0e7b62d61180eabbb6a34d34e3d3654a08145707eea",
+      "input_sha256_after": "b8022da88cf0dcb3b5cca0e7b62d61180eabbb6a34d34e3d3654a08145707eea",
+      "output_path": "C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-baseline-real-v2\\case-3\\outputs\\skeletal-assessment.md",
+      "output_sha256": "1d40219c8245c6c4fcf3bf93e14de98a279ebdfac648b3c7929308cdc6ab3264",
+      "tool_calls": [
+        {
+          "id": "call_case_3_read_file",
+          "type": "function",
+          "function": {
+            "name": "read_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\work\\\\tashan-skills-maintain\\\\tashan-research-skills\\\\skills\\\\find-science-skills\\\\data\\\\critic_evaluation_runs\\\\assess-outline\\\\fixtures\\\\skeletal_missing_abstract.qmd\"}"
+          }
+        },
+        {
+          "id": "call_case_3_write_file",
+          "type": "function",
+          "function": {
+            "name": "write_file",
+            "arguments": "{\"path\":\"C:\\\\Users\\\\16571\\\\Documents\\\\Codex\\\\2026-07-04\\\\skill\\\\work\\\\criticagent_run\\\\assess-outline-baseline-real-v2\\\\case-3\\\\outputs\\\\skeletal-assessment.md\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs_json": {
+    "path": "C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-baseline-real-v2\\outputs.json",
+    "sha256": "afc5c8dda381bc13d4c7ef6ccee5c4c4f5ef4297f87850a31180dcf79b1b934f"
+  }
+}

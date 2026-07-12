@@ -85,7 +85,7 @@ python scripts/filter_science_skills.py \
   --json
 ```
 
-   额外证据默认不参与检索和排序。`model_source_review_score` 只表示模型对完整源码的内容评审，不是安装推荐；`metadata_only` 记录的该字段为 `null`，状态为 `unverified`。`static_validation_status`、`behavior_evaluation` 和 `trigger_evaluation` 分层保存，只有三层都通过时 `install_recommendation` 才可能为 `recommend_install`。
+   额外证据默认不参与检索和排序。`model_source_review_score` 只表示模型对完整源码的内容评审，不是安装推荐；`metadata_only` 记录的该字段为 `null`，状态为 `unverified`。`static_validation_status`、`behavior_evaluation` 和 `trigger_evaluation` 分层保存；即使三层通过，也必须有单轮真实宿主执行、适用的工具/文件断言、输入与技能源码前后哈希不变、原始 run 归档，`install_recommendation` 才可能为 `recommend_install`。多轮稳定性测试不是必需项。
 
 ## 判断规则
 

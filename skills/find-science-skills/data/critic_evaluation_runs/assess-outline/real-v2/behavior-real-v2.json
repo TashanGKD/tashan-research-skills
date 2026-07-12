@@ -1,0 +1,492 @@
+{
+  "skill_path": "skills\\find-science-skills\\data\\critic_evaluation_runs\\assess-outline\\assess-outline",
+  "total_cases": 3,
+  "runs": [
+    {
+      "case_id": "causal_complete_outline",
+      "mode": "with_skill",
+      "prompt": "<skill name=\"assess-outline\">\n<description>Assesses a research paper outline (.qmd file) against structured criteria from Kosuke Imai''s empirical research guide. Evaluates the abstract and section outline for: research question clarity, stated contributions, hypotheses and testable implications, data description, planned results and inferential approach, and robustness checks. Detects causal papers from the abstract and conditionally assesses identification strategy only when causal framing is present. Produces a structured markdown report with PASS/PARTIAL/FAIL assessments and actionable suggestions. Use when asked to assess, evaluate, review, or check a paper outline, abstract-and-outline, or research plan in a .qmd file.</description>\n<instructions>\n# Assess Outline\n\nYou are an expert methodologist and research mentor evaluating a political science or social science research paper outline. Your role is to assess the **structural and substantive completeness** of the outline against the criteria below.\n\nYou are **not** commenting on prose quality, writing style, or the sequence in which the author should produce the paper. Those concerns belong to the writing process, not the outline review.\n\n**You never modify the source file.** All findings are written to a separate report file.\n\n---\n\n## Input Arguments\n\n| Position | Required | Description |\n|----------|----------|-------------|\n| 1 | **Yes** | Path to a `.qmd` file containing an abstract and a detailed outline (section and subsection headings with substantive descriptions of planned content — not a skeleton) |\n| 2 | No | Output report path. Defaults to `<input-basename>-outline-assessment.md` in the same directory |\n\n**Example invocations:**\n```\n/assess-outline paper/paper.qmd\n/assess-outline drafts/outline.qmd reviews/outline-assessment.md\n```\n\n---\n\n## Step-by-Step Workflow\n\n1. **Read** the input `.qmd` file using the `Read` tool.\n2. **Locate the abstract** — look for a section headed \"Abstract\", a YAML `abstract:` field, or the first prose block before section headings.\n3. **Detect causal framing** — Read the abstract carefully. Does it use language such as \"causal effect,\" \"causal inference,\" \"identification strategy,\" \"natural experiment,\" \"instrument,\" \"difference-in-differences,\" \"regression discontinuity,\" \"treatment effect,\" \"exogenous variation,\" or similar? Set `CAUSAL = TRUE` or `CAUSAL = FALSE`. **Print this determination to the console** before proceeding.\n4. **Extract the outline** — identify all section and subsection headings, and any brief notes or bullet points under them.\n5. **Run each assessment criterion** (see below). Skip Criterion 7 if `CAUSAL = FALSE`.\n6. **Run the quality checklist** (see below) before writing.\n7. **Write the report** using the `Write` tool.\n8. **Confirm** to the user: report path and overall PASS/PARTIAL/FAIL per criterion.\n\n---\n\n## Assessment Criteria\n\nFor each criterion, assign one of:\n\n- **PASS** — the outline or abstract clearly addresses this criterion\n- **PARTIAL** — there is relevant content but key elements are missing or underdeveloped\n- **FAIL** — the criterion is not addressed at all\n- **N/A** — criterion does not apply (Criterion 7 only, when `CAUSAL = FALSE`)\n\n---\n\n### 1. Research Question and Motivation\n\n**What to check:**\n- Is a primary research question stated — in the abstract, the introduction outline, or the opening section?\n- Is the motivation articulated — why this question matters, and why a reader outside the author's subfield should care?\n\n**Fail indicators:**\n- No stated research question anywhere in the abstract or outline\n- The abstract describes data or methods but never names a question\n- No motivation is given — only what the paper does, not why it matters\n\n---\n\n### 2. Contributions to Existing Literature\n\n**What to check:**\n- Does the outline indicate what the paper adds to existing knowledge — not just what it does, but what makes it new or different from prior work? The contribution can only be understood in relation to what others have done; a claim of novelty without situating it in prior research is insufficient.\n- If there is a literature review section, does the outline suggest it will be organized around *how this paper differs from prior work* — rather than as a standalone survey summarizing what others have done? A literature review is another vehicle for demonstrating contributions, not a separate catalogue.\n- Does the introduction outline suggest contributions appear **before** the engagement with existing literature — motivation and contributions first, then how the paper differs from prior work, not the reverse?\n- Does the outline indicate the paper will acknowledge prior work directly, explaining specifically how the new methods or findings differ from what has already been done? Ignoring prior work is not acceptable; contributions can only be evaluated against it.\n\n**Fail indicators:**\n- No mention of existing literature anywhere in the outline\n- Literature review section present but framed as a summary of prior work with no stated connection to the paper's own contributions\n- Contributions appear only in a conclusion or final section, or only after a lengthy literature review\n- The outline suggests the literature review precedes any statement of the paper's contributions\n\n---\n\n### 3. Hypotheses and Testable Implications\n\n**What to check:**\n- Are one or more hypotheses stated — in the outline, the abstract, or a dedicated section?\n- Do the hypotheses connect to observable, testable implications?\n\n**Fail indicators:**\n- No hypotheses or theoretical expectations noted anywhere\n- Hypotheses are stated but no link to data, tests, or empirical expectations is indicated\n\n---\n\n### 4. Data\n\n**What to check:**\n- Is there a data section or data description in the outline?\n- Does the outline indicate the population of interest and whether the data reflects it?\n- Are the outcome variable and key explanatory variables named or characterized?\n\n**Fail indicators:**\n- No data section or data description\n- Data described only by name (e.g., \"ANES\") with no note on population, time period, or variables\n\n---\n\n### 5. Results and Inferential Approach\n\n**What to check:**\n- Is there a results section in the outline?\n- Does the outline indicate the primary analysis or inferential procedure to be used?\n- Are the main quantities of interest or findings indicated — even at a high level?\n- Does the abstract state a finding — not only the research question and approach, but the answer?\n\n**Fail indicators:**\n- Results section is present but empty\n- No indication of what inferential method will be used\n- Abstract describes the question and design but never indicates the answer or direction of findings\n\n---\n\n### 6. Robustness and Sensitivity\n\n**What to check:**\n- Does the outline include any robustness checks, sensitivity analyses, or alternative specifications?\n- These may be integrated into the results section or given their own subsection — either is acceptable.\n\n**Fail indicators:**\n- No mention of robustness, sensitivity, or alternative analyses anywhere in the outline\n\n---\n\n### 7. Causal Identification Strategy *(Assessed only if `CAUSAL = TRUE`)*\n\n**What to check:**\n- Is there a section or subsection dedicated to the research design or identification strategy?\n- Does the outline indicate what identifying assumptions are required for the causal claims?\n- Does the outline indicate whether the plausibility of those assumptions will be addressed (e.g., supporting evidence, placebo tests, balance checks)?\n- Are potential threats to identification acknowledged?\n\n**Fail indicators:**\n- No identification strategy section in a paper claiming causal effects\n- Identification strategy is named but no acknowledgment of required assumptions\n- No mention of assumption plausibility or robustness to violations\n\n---\n\n### 8. Transparency and Replication\n\n**What to check:**\n- Does the outline indicate that sufficient detail will be provided for readers to understand and potentially replicate the analysis?\n- Any mention of data availability, replication code, an online appendix, or similar satisfies this criterion.\n\n**Scoring note:** This is a soft criterion. Score PASS if any mention of replication materials, data availability, or appendix exists. Score PARTIAL if methods are outlined but transparency is not addressed. Reserve FAIL only for outlines that are actively opaque about what analysis was conducted.\n\n---\n\n### 9. Section Structure and Ordering\n\n**What to check:**\n- Does the introduction appear before other substantive sections?\n- Does the introduction outline follow the expected ordering: (a) motivation first, then (b) main contributions, then (c) relationship to existing literature — not reversed?\n- Does the overall structure suggest a top-down organization — each section opening with its main message before elaborating?\n\n**Note:** This assesses structural completeness and ordering, not prose or writing quality.\n\n---\n\n## Output Report Format\n\n```markdown\n# Outline Assessment: <filename>\n\n_Generated: <date>_\n_Causal paper detected: Yes / No_\n_Criteria assessed: N_\n\n| Criterion | Assessment |\n|-----------|------------|\n| 1. Research Question and Motivation | PASS / PARTIAL / FAIL |\n| 2. Contributions to Existing Literature | PASS / PARTIAL / FAIL |\n| 3. Hypotheses and Testable Implications | PASS / PARTIAL / FAIL |\n| 4. Data | PASS / PARTIAL / FAIL |\n| 5. Results and Inferential Approach | PASS / PARTIAL / FAIL |\n| 6. Robustness and Sensitivity | PASS / PARTIAL / FAIL |\n| 7. Causal Identification Strategy | PASS / PARTIAL / FAIL / N/A |\n| 8. Transparency and Replication | PASS / PARTIAL / FAIL |\n| 9. Section Structure and Ordering | PASS / PARTIAL / FAIL |\n\n---\n\n## 1. Research Question and Motivation\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[1–3 sentences explaining the assessment. Cite specific language from the abstract or outline\nto support it. If PARTIAL or FAIL, give a concrete, specific suggestion for what the outline\nshould include — not \"add more detail\" but what kind of detail.]\n\n---\n\n## 2. Contributions to Existing Literature\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[...]\n\n---\n\n## [Continue for each assessed criterion]\n```\n\n### Guidance for Report Entries\n\n- Every entry must explain **why** the rating was given — never assign a rating without explanation.\n- For PARTIAL or FAIL, provide a **concrete, specific suggestion**: describe what type of content is missing and what the outline should say to address it.\n- **Do not comment on prose quality, writing style, or the sequence in which the author should produce the paper.** Assess only structural and substantive completeness of the outline.\n- Tone should be **collegial and constructive** — the goal is to help the researcher strengthen the outline, not to evaluate them.\n\n---\n\n## Quality Checklist\n\nBefore writing the report, verify mentally:\n\n```\nOUTLINE ASSESSMENT CHECKLIST\n==============================\n[ ] Causal determination printed to console before assessment began\n[ ] Abstract was located (YAML field, dedicated section, or opening prose block)\n[ ] All section and subsection headings were extracted from the outline\n[ ] Each applicable criterion has been assessed as PASS / PARTIAL / FAIL\n[ ] Criterion 7 is assessed if and only if CAUSAL = TRUE\n[ ] Criterion 7 is marked N/A if and only if CAUSAL = FALSE\n[ ] Every PARTIAL and FAIL entry includes a specific, actionable suggestion\n[ ] No report entries comment on prose style, writing quality, or writing process\n[ ] Summary table at top matches the body assessments\n[ ] Source file was not modified\n```\n</instructions>\n</skill>\n\n---USER REQUEST---\nAssess the research outline at C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\causal_turnout.qmd and write the report to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\causal_turnout-assessment.md. Do not modify the source outline.",
+      "output": "CAUSAL = TRUE\nReport written to case-1/outputs/causal_turnout-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 PASS; 8 PASS; 9 PASS.",
+      "passed": true,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*TRUE",
+          "passed": true,
+          "evidence": "Output matches regex '(?i)CAUSAL\\\\s*=\\\\s*TRUE'"
+        },
+        {
+          "type": "contains",
+          "value": "causal_turnout-assessment.md",
+          "passed": true,
+          "evidence": "Output contains 'causal_turnout-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 2 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file causal_turnout-assessment.md exists",
+          "passed": true,
+          "evidence": "causal_turnout-assessment.md present (3511 chars)"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md contains 'Causal paper detected: Yes'",
+          "passed": true,
+          "evidence": "causal_turnout-assessment.md contains the expected text"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md matches /\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|/",
+          "passed": true,
+          "evidence": "causal_turnout-assessment.md matches at offset 173"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md contains 'difference-in-differences'",
+          "passed": true,
+          "evidence": "causal_turnout-assessment.md contains the expected text"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    },
+    {
+      "case_id": "causal_complete_outline",
+      "mode": "without_skill",
+      "prompt": "---USER REQUEST---\nAssess the research outline at C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\causal_turnout.qmd and write the report to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\causal_turnout-assessment.md. Do not modify the source outline.",
+      "output": "Assessment completed. The outline is coherent and research-ready, with targeted revisions needed for treatment definition, staggered-adoption estimation, identification, geographic linkage, and contextual heterogeneity claims.",
+      "passed": false,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*TRUE",
+          "passed": false,
+          "evidence": "Output does not match regex '(?i)CAUSAL\\\\s*=\\\\s*TRUE'"
+        },
+        {
+          "type": "contains",
+          "value": "causal_turnout-assessment.md",
+          "passed": false,
+          "evidence": "Output does not contain 'causal_turnout-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 1 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file causal_turnout-assessment.md exists",
+          "passed": true,
+          "evidence": "causal_turnout-assessment.md present (4387 chars)"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md contains 'Causal paper detected: Yes'",
+          "passed": false,
+          "evidence": "causal_turnout-assessment.md does not contain 'Causal paper detected: Yes'"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md matches /\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|/",
+          "passed": false,
+          "evidence": "causal_turnout-assessment.md does not match /\\| 1\\. Research Question and Motivation \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| PASS \\|[\\s\\S]*\\| 9\\. Section Structure and Ordering \\| PASS \\|/"
+        },
+        {
+          "type": "file",
+          "value": "causal_turnout-assessment.md contains 'difference-in-differences'",
+          "passed": false,
+          "evidence": "causal_turnout-assessment.md does not contain 'difference-in-differences'"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    },
+    {
+      "case_id": "noncausal_complete_outline",
+      "mode": "with_skill",
+      "prompt": "<skill name=\"assess-outline\">\n<description>Assesses a research paper outline (.qmd file) against structured criteria from Kosuke Imai''s empirical research guide. Evaluates the abstract and section outline for: research question clarity, stated contributions, hypotheses and testable implications, data description, planned results and inferential approach, and robustness checks. Detects causal papers from the abstract and conditionally assesses identification strategy only when causal framing is present. Produces a structured markdown report with PASS/PARTIAL/FAIL assessments and actionable suggestions. Use when asked to assess, evaluate, review, or check a paper outline, abstract-and-outline, or research plan in a .qmd file.</description>\n<instructions>\n# Assess Outline\n\nYou are an expert methodologist and research mentor evaluating a political science or social science research paper outline. Your role is to assess the **structural and substantive completeness** of the outline against the criteria below.\n\nYou are **not** commenting on prose quality, writing style, or the sequence in which the author should produce the paper. Those concerns belong to the writing process, not the outline review.\n\n**You never modify the source file.** All findings are written to a separate report file.\n\n---\n\n## Input Arguments\n\n| Position | Required | Description |\n|----------|----------|-------------|\n| 1 | **Yes** | Path to a `.qmd` file containing an abstract and a detailed outline (section and subsection headings with substantive descriptions of planned content — not a skeleton) |\n| 2 | No | Output report path. Defaults to `<input-basename>-outline-assessment.md` in the same directory |\n\n**Example invocations:**\n```\n/assess-outline paper/paper.qmd\n/assess-outline drafts/outline.qmd reviews/outline-assessment.md\n```\n\n---\n\n## Step-by-Step Workflow\n\n1. **Read** the input `.qmd` file using the `Read` tool.\n2. **Locate the abstract** — look for a section headed \"Abstract\", a YAML `abstract:` field, or the first prose block before section headings.\n3. **Detect causal framing** — Read the abstract carefully. Does it use language such as \"causal effect,\" \"causal inference,\" \"identification strategy,\" \"natural experiment,\" \"instrument,\" \"difference-in-differences,\" \"regression discontinuity,\" \"treatment effect,\" \"exogenous variation,\" or similar? Set `CAUSAL = TRUE` or `CAUSAL = FALSE`. **Print this determination to the console** before proceeding.\n4. **Extract the outline** — identify all section and subsection headings, and any brief notes or bullet points under them.\n5. **Run each assessment criterion** (see below). Skip Criterion 7 if `CAUSAL = FALSE`.\n6. **Run the quality checklist** (see below) before writing.\n7. **Write the report** using the `Write` tool.\n8. **Confirm** to the user: report path and overall PASS/PARTIAL/FAIL per criterion.\n\n---\n\n## Assessment Criteria\n\nFor each criterion, assign one of:\n\n- **PASS** — the outline or abstract clearly addresses this criterion\n- **PARTIAL** — there is relevant content but key elements are missing or underdeveloped\n- **FAIL** — the criterion is not addressed at all\n- **N/A** — criterion does not apply (Criterion 7 only, when `CAUSAL = FALSE`)\n\n---\n\n### 1. Research Question and Motivation\n\n**What to check:**\n- Is a primary research question stated — in the abstract, the introduction outline, or the opening section?\n- Is the motivation articulated — why this question matters, and why a reader outside the author's subfield should care?\n\n**Fail indicators:**\n- No stated research question anywhere in the abstract or outline\n- The abstract describes data or methods but never names a question\n- No motivation is given — only what the paper does, not why it matters\n\n---\n\n### 2. Contributions to Existing Literature\n\n**What to check:**\n- Does the outline indicate what the paper adds to existing knowledge — not just what it does, but what makes it new or different from prior work? The contribution can only be understood in relation to what others have done; a claim of novelty without situating it in prior research is insufficient.\n- If there is a literature review section, does the outline suggest it will be organized around *how this paper differs from prior work* — rather than as a standalone survey summarizing what others have done? A literature review is another vehicle for demonstrating contributions, not a separate catalogue.\n- Does the introduction outline suggest contributions appear **before** the engagement with existing literature — motivation and contributions first, then how the paper differs from prior work, not the reverse?\n- Does the outline indicate the paper will acknowledge prior work directly, explaining specifically how the new methods or findings differ from what has already been done? Ignoring prior work is not acceptable; contributions can only be evaluated against it.\n\n**Fail indicators:**\n- No mention of existing literature anywhere in the outline\n- Literature review section present but framed as a summary of prior work with no stated connection to the paper's own contributions\n- Contributions appear only in a conclusion or final section, or only after a lengthy literature review\n- The outline suggests the literature review precedes any statement of the paper's contributions\n\n---\n\n### 3. Hypotheses and Testable Implications\n\n**What to check:**\n- Are one or more hypotheses stated — in the outline, the abstract, or a dedicated section?\n- Do the hypotheses connect to observable, testable implications?\n\n**Fail indicators:**\n- No hypotheses or theoretical expectations noted anywhere\n- Hypotheses are stated but no link to data, tests, or empirical expectations is indicated\n\n---\n\n### 4. Data\n\n**What to check:**\n- Is there a data section or data description in the outline?\n- Does the outline indicate the population of interest and whether the data reflects it?\n- Are the outcome variable and key explanatory variables named or characterized?\n\n**Fail indicators:**\n- No data section or data description\n- Data described only by name (e.g., \"ANES\") with no note on population, time period, or variables\n\n---\n\n### 5. Results and Inferential Approach\n\n**What to check:**\n- Is there a results section in the outline?\n- Does the outline indicate the primary analysis or inferential procedure to be used?\n- Are the main quantities of interest or findings indicated — even at a high level?\n- Does the abstract state a finding — not only the research question and approach, but the answer?\n\n**Fail indicators:**\n- Results section is present but empty\n- No indication of what inferential method will be used\n- Abstract describes the question and design but never indicates the answer or direction of findings\n\n---\n\n### 6. Robustness and Sensitivity\n\n**What to check:**\n- Does the outline include any robustness checks, sensitivity analyses, or alternative specifications?\n- These may be integrated into the results section or given their own subsection — either is acceptable.\n\n**Fail indicators:**\n- No mention of robustness, sensitivity, or alternative analyses anywhere in the outline\n\n---\n\n### 7. Causal Identification Strategy *(Assessed only if `CAUSAL = TRUE`)*\n\n**What to check:**\n- Is there a section or subsection dedicated to the research design or identification strategy?\n- Does the outline indicate what identifying assumptions are required for the causal claims?\n- Does the outline indicate whether the plausibility of those assumptions will be addressed (e.g., supporting evidence, placebo tests, balance checks)?\n- Are potential threats to identification acknowledged?\n\n**Fail indicators:**\n- No identification strategy section in a paper claiming causal effects\n- Identification strategy is named but no acknowledgment of required assumptions\n- No mention of assumption plausibility or robustness to violations\n\n---\n\n### 8. Transparency and Replication\n\n**What to check:**\n- Does the outline indicate that sufficient detail will be provided for readers to understand and potentially replicate the analysis?\n- Any mention of data availability, replication code, an online appendix, or similar satisfies this criterion.\n\n**Scoring note:** This is a soft criterion. Score PASS if any mention of replication materials, data availability, or appendix exists. Score PARTIAL if methods are outlined but transparency is not addressed. Reserve FAIL only for outlines that are actively opaque about what analysis was conducted.\n\n---\n\n### 9. Section Structure and Ordering\n\n**What to check:**\n- Does the introduction appear before other substantive sections?\n- Does the introduction outline follow the expected ordering: (a) motivation first, then (b) main contributions, then (c) relationship to existing literature — not reversed?\n- Does the overall structure suggest a top-down organization — each section opening with its main message before elaborating?\n\n**Note:** This assesses structural completeness and ordering, not prose or writing quality.\n\n---\n\n## Output Report Format\n\n```markdown\n# Outline Assessment: <filename>\n\n_Generated: <date>_\n_Causal paper detected: Yes / No_\n_Criteria assessed: N_\n\n| Criterion | Assessment |\n|-----------|------------|\n| 1. Research Question and Motivation | PASS / PARTIAL / FAIL |\n| 2. Contributions to Existing Literature | PASS / PARTIAL / FAIL |\n| 3. Hypotheses and Testable Implications | PASS / PARTIAL / FAIL |\n| 4. Data | PASS / PARTIAL / FAIL |\n| 5. Results and Inferential Approach | PASS / PARTIAL / FAIL |\n| 6. Robustness and Sensitivity | PASS / PARTIAL / FAIL |\n| 7. Causal Identification Strategy | PASS / PARTIAL / FAIL / N/A |\n| 8. Transparency and Replication | PASS / PARTIAL / FAIL |\n| 9. Section Structure and Ordering | PASS / PARTIAL / FAIL |\n\n---\n\n## 1. Research Question and Motivation\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[1–3 sentences explaining the assessment. Cite specific language from the abstract or outline\nto support it. If PARTIAL or FAIL, give a concrete, specific suggestion for what the outline\nshould include — not \"add more detail\" but what kind of detail.]\n\n---\n\n## 2. Contributions to Existing Literature\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[...]\n\n---\n\n## [Continue for each assessed criterion]\n```\n\n### Guidance for Report Entries\n\n- Every entry must explain **why** the rating was given — never assign a rating without explanation.\n- For PARTIAL or FAIL, provide a **concrete, specific suggestion**: describe what type of content is missing and what the outline should say to address it.\n- **Do not comment on prose quality, writing style, or the sequence in which the author should produce the paper.** Assess only structural and substantive completeness of the outline.\n- Tone should be **collegial and constructive** — the goal is to help the researcher strengthen the outline, not to evaluate them.\n\n---\n\n## Quality Checklist\n\nBefore writing the report, verify mentally:\n\n```\nOUTLINE ASSESSMENT CHECKLIST\n==============================\n[ ] Causal determination printed to console before assessment began\n[ ] Abstract was located (YAML field, dedicated section, or opening prose block)\n[ ] All section and subsection headings were extracted from the outline\n[ ] Each applicable criterion has been assessed as PASS / PARTIAL / FAIL\n[ ] Criterion 7 is assessed if and only if CAUSAL = TRUE\n[ ] Criterion 7 is marked N/A if and only if CAUSAL = FALSE\n[ ] Every PARTIAL and FAIL entry includes a specific, actionable suggestion\n[ ] No report entries comment on prose style, writing quality, or writing process\n[ ] Summary table at top matches the body assessments\n[ ] Source file was not modified\n```\n</instructions>\n</skill>\n\n---USER REQUEST---\nReview C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\descriptive_representation.qmd as a paper outline. Use the default output path and leave the input unchanged.",
+      "output": "CAUSAL = FALSE\nReport written to case-2/outputs/descriptive_representation-outline-assessment.md. Overall assessments: 1 PASS; 2 PASS; 3 PASS; 4 PASS; 5 PASS; 6 PASS; 7 N/A; 8 PASS; 9 PASS.",
+      "passed": true,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE",
+          "passed": true,
+          "evidence": "Output matches regex '(?i)CAUSAL\\\\s*=\\\\s*FALSE'"
+        },
+        {
+          "type": "contains",
+          "value": "descriptive_representation-outline-assessment.md",
+          "passed": true,
+          "evidence": "Output contains 'descriptive_representation-outline-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 2 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file descriptive_representation-outline-assessment.md exists",
+          "passed": true,
+          "evidence": "descriptive_representation-outline-assessment.md present (3343 chars)"
+        },
+        {
+          "type": "file",
+          "value": "descriptive_representation-outline-assessment.md contains 'Causal paper detected: No'",
+          "passed": true,
+          "evidence": "descriptive_representation-outline-assessment.md contains the expected text"
+        },
+        {
+          "type": "file",
+          "value": "descriptive_representation-outline-assessment.md matches /\\| 5\\. Results and Inferential Approach \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|[\\s\\S]*\\| 8\\. Transparency and Replication \\| PASS \\|/",
+          "passed": true,
+          "evidence": "descriptive_representation-outline-assessment.md matches at offset 352"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    },
+    {
+      "case_id": "noncausal_complete_outline",
+      "mode": "without_skill",
+      "prompt": "---USER REQUEST---\nReview C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\descriptive_representation.qmd as a paper outline. Use the default output path and leave the input unchanged.",
+      "output": "Assessment completed. The descriptive design is coherent and appropriately bounded, but cross-city measurement comparability, archive selection, model hierarchy, and missing-data diagnostics require clarification.",
+      "passed": false,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE",
+          "passed": false,
+          "evidence": "Output does not match regex '(?i)CAUSAL\\\\s*=\\\\s*FALSE'"
+        },
+        {
+          "type": "contains",
+          "value": "descriptive_representation-outline-assessment.md",
+          "passed": false,
+          "evidence": "Output does not contain 'descriptive_representation-outline-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 1 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file descriptive_representation-outline-assessment.md exists",
+          "passed": true,
+          "evidence": "descriptive_representation-outline-assessment.md present (3988 chars)"
+        },
+        {
+          "type": "file",
+          "value": "descriptive_representation-outline-assessment.md contains 'Causal paper detected: No'",
+          "passed": false,
+          "evidence": "descriptive_representation-outline-assessment.md does not contain 'Causal paper detected: No'"
+        },
+        {
+          "type": "file",
+          "value": "descriptive_representation-outline-assessment.md matches /\\| 5\\. Results and Inferential Approach \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|[\\s\\S]*\\| 8\\. Transparency and Replication \\| PASS \\|/",
+          "passed": false,
+          "evidence": "descriptive_representation-outline-assessment.md does not match /\\| 5\\. Results and Inferential Approach \\| PASS \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|[\\s\\S]*\\| 8\\. Transparency and Replication \\| PASS \\|/"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    },
+    {
+      "case_id": "boundary_missing_abstract_skeletal_outline",
+      "mode": "with_skill",
+      "prompt": "<skill name=\"assess-outline\">\n<description>Assesses a research paper outline (.qmd file) against structured criteria from Kosuke Imai''s empirical research guide. Evaluates the abstract and section outline for: research question clarity, stated contributions, hypotheses and testable implications, data description, planned results and inferential approach, and robustness checks. Detects causal papers from the abstract and conditionally assesses identification strategy only when causal framing is present. Produces a structured markdown report with PASS/PARTIAL/FAIL assessments and actionable suggestions. Use when asked to assess, evaluate, review, or check a paper outline, abstract-and-outline, or research plan in a .qmd file.</description>\n<instructions>\n# Assess Outline\n\nYou are an expert methodologist and research mentor evaluating a political science or social science research paper outline. Your role is to assess the **structural and substantive completeness** of the outline against the criteria below.\n\nYou are **not** commenting on prose quality, writing style, or the sequence in which the author should produce the paper. Those concerns belong to the writing process, not the outline review.\n\n**You never modify the source file.** All findings are written to a separate report file.\n\n---\n\n## Input Arguments\n\n| Position | Required | Description |\n|----------|----------|-------------|\n| 1 | **Yes** | Path to a `.qmd` file containing an abstract and a detailed outline (section and subsection headings with substantive descriptions of planned content — not a skeleton) |\n| 2 | No | Output report path. Defaults to `<input-basename>-outline-assessment.md` in the same directory |\n\n**Example invocations:**\n```\n/assess-outline paper/paper.qmd\n/assess-outline drafts/outline.qmd reviews/outline-assessment.md\n```\n\n---\n\n## Step-by-Step Workflow\n\n1. **Read** the input `.qmd` file using the `Read` tool.\n2. **Locate the abstract** — look for a section headed \"Abstract\", a YAML `abstract:` field, or the first prose block before section headings.\n3. **Detect causal framing** — Read the abstract carefully. Does it use language such as \"causal effect,\" \"causal inference,\" \"identification strategy,\" \"natural experiment,\" \"instrument,\" \"difference-in-differences,\" \"regression discontinuity,\" \"treatment effect,\" \"exogenous variation,\" or similar? Set `CAUSAL = TRUE` or `CAUSAL = FALSE`. **Print this determination to the console** before proceeding.\n4. **Extract the outline** — identify all section and subsection headings, and any brief notes or bullet points under them.\n5. **Run each assessment criterion** (see below). Skip Criterion 7 if `CAUSAL = FALSE`.\n6. **Run the quality checklist** (see below) before writing.\n7. **Write the report** using the `Write` tool.\n8. **Confirm** to the user: report path and overall PASS/PARTIAL/FAIL per criterion.\n\n---\n\n## Assessment Criteria\n\nFor each criterion, assign one of:\n\n- **PASS** — the outline or abstract clearly addresses this criterion\n- **PARTIAL** — there is relevant content but key elements are missing or underdeveloped\n- **FAIL** — the criterion is not addressed at all\n- **N/A** — criterion does not apply (Criterion 7 only, when `CAUSAL = FALSE`)\n\n---\n\n### 1. Research Question and Motivation\n\n**What to check:**\n- Is a primary research question stated — in the abstract, the introduction outline, or the opening section?\n- Is the motivation articulated — why this question matters, and why a reader outside the author's subfield should care?\n\n**Fail indicators:**\n- No stated research question anywhere in the abstract or outline\n- The abstract describes data or methods but never names a question\n- No motivation is given — only what the paper does, not why it matters\n\n---\n\n### 2. Contributions to Existing Literature\n\n**What to check:**\n- Does the outline indicate what the paper adds to existing knowledge — not just what it does, but what makes it new or different from prior work? The contribution can only be understood in relation to what others have done; a claim of novelty without situating it in prior research is insufficient.\n- If there is a literature review section, does the outline suggest it will be organized around *how this paper differs from prior work* — rather than as a standalone survey summarizing what others have done? A literature review is another vehicle for demonstrating contributions, not a separate catalogue.\n- Does the introduction outline suggest contributions appear **before** the engagement with existing literature — motivation and contributions first, then how the paper differs from prior work, not the reverse?\n- Does the outline indicate the paper will acknowledge prior work directly, explaining specifically how the new methods or findings differ from what has already been done? Ignoring prior work is not acceptable; contributions can only be evaluated against it.\n\n**Fail indicators:**\n- No mention of existing literature anywhere in the outline\n- Literature review section present but framed as a summary of prior work with no stated connection to the paper's own contributions\n- Contributions appear only in a conclusion or final section, or only after a lengthy literature review\n- The outline suggests the literature review precedes any statement of the paper's contributions\n\n---\n\n### 3. Hypotheses and Testable Implications\n\n**What to check:**\n- Are one or more hypotheses stated — in the outline, the abstract, or a dedicated section?\n- Do the hypotheses connect to observable, testable implications?\n\n**Fail indicators:**\n- No hypotheses or theoretical expectations noted anywhere\n- Hypotheses are stated but no link to data, tests, or empirical expectations is indicated\n\n---\n\n### 4. Data\n\n**What to check:**\n- Is there a data section or data description in the outline?\n- Does the outline indicate the population of interest and whether the data reflects it?\n- Are the outcome variable and key explanatory variables named or characterized?\n\n**Fail indicators:**\n- No data section or data description\n- Data described only by name (e.g., \"ANES\") with no note on population, time period, or variables\n\n---\n\n### 5. Results and Inferential Approach\n\n**What to check:**\n- Is there a results section in the outline?\n- Does the outline indicate the primary analysis or inferential procedure to be used?\n- Are the main quantities of interest or findings indicated — even at a high level?\n- Does the abstract state a finding — not only the research question and approach, but the answer?\n\n**Fail indicators:**\n- Results section is present but empty\n- No indication of what inferential method will be used\n- Abstract describes the question and design but never indicates the answer or direction of findings\n\n---\n\n### 6. Robustness and Sensitivity\n\n**What to check:**\n- Does the outline include any robustness checks, sensitivity analyses, or alternative specifications?\n- These may be integrated into the results section or given their own subsection — either is acceptable.\n\n**Fail indicators:**\n- No mention of robustness, sensitivity, or alternative analyses anywhere in the outline\n\n---\n\n### 7. Causal Identification Strategy *(Assessed only if `CAUSAL = TRUE`)*\n\n**What to check:**\n- Is there a section or subsection dedicated to the research design or identification strategy?\n- Does the outline indicate what identifying assumptions are required for the causal claims?\n- Does the outline indicate whether the plausibility of those assumptions will be addressed (e.g., supporting evidence, placebo tests, balance checks)?\n- Are potential threats to identification acknowledged?\n\n**Fail indicators:**\n- No identification strategy section in a paper claiming causal effects\n- Identification strategy is named but no acknowledgment of required assumptions\n- No mention of assumption plausibility or robustness to violations\n\n---\n\n### 8. Transparency and Replication\n\n**What to check:**\n- Does the outline indicate that sufficient detail will be provided for readers to understand and potentially replicate the analysis?\n- Any mention of data availability, replication code, an online appendix, or similar satisfies this criterion.\n\n**Scoring note:** This is a soft criterion. Score PASS if any mention of replication materials, data availability, or appendix exists. Score PARTIAL if methods are outlined but transparency is not addressed. Reserve FAIL only for outlines that are actively opaque about what analysis was conducted.\n\n---\n\n### 9. Section Structure and Ordering\n\n**What to check:**\n- Does the introduction appear before other substantive sections?\n- Does the introduction outline follow the expected ordering: (a) motivation first, then (b) main contributions, then (c) relationship to existing literature — not reversed?\n- Does the overall structure suggest a top-down organization — each section opening with its main message before elaborating?\n\n**Note:** This assesses structural completeness and ordering, not prose or writing quality.\n\n---\n\n## Output Report Format\n\n```markdown\n# Outline Assessment: <filename>\n\n_Generated: <date>_\n_Causal paper detected: Yes / No_\n_Criteria assessed: N_\n\n| Criterion | Assessment |\n|-----------|------------|\n| 1. Research Question and Motivation | PASS / PARTIAL / FAIL |\n| 2. Contributions to Existing Literature | PASS / PARTIAL / FAIL |\n| 3. Hypotheses and Testable Implications | PASS / PARTIAL / FAIL |\n| 4. Data | PASS / PARTIAL / FAIL |\n| 5. Results and Inferential Approach | PASS / PARTIAL / FAIL |\n| 6. Robustness and Sensitivity | PASS / PARTIAL / FAIL |\n| 7. Causal Identification Strategy | PASS / PARTIAL / FAIL / N/A |\n| 8. Transparency and Replication | PASS / PARTIAL / FAIL |\n| 9. Section Structure and Ordering | PASS / PARTIAL / FAIL |\n\n---\n\n## 1. Research Question and Motivation\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[1–3 sentences explaining the assessment. Cite specific language from the abstract or outline\nto support it. If PARTIAL or FAIL, give a concrete, specific suggestion for what the outline\nshould include — not \"add more detail\" but what kind of detail.]\n\n---\n\n## 2. Contributions to Existing Literature\n\n**Assessment: PASS / PARTIAL / FAIL**\n\n[...]\n\n---\n\n## [Continue for each assessed criterion]\n```\n\n### Guidance for Report Entries\n\n- Every entry must explain **why** the rating was given — never assign a rating without explanation.\n- For PARTIAL or FAIL, provide a **concrete, specific suggestion**: describe what type of content is missing and what the outline should say to address it.\n- **Do not comment on prose quality, writing style, or the sequence in which the author should produce the paper.** Assess only structural and substantive completeness of the outline.\n- Tone should be **collegial and constructive** — the goal is to help the researcher strengthen the outline, not to evaluate them.\n\n---\n\n## Quality Checklist\n\nBefore writing the report, verify mentally:\n\n```\nOUTLINE ASSESSMENT CHECKLIST\n==============================\n[ ] Causal determination printed to console before assessment began\n[ ] Abstract was located (YAML field, dedicated section, or opening prose block)\n[ ] All section and subsection headings were extracted from the outline\n[ ] Each applicable criterion has been assessed as PASS / PARTIAL / FAIL\n[ ] Criterion 7 is assessed if and only if CAUSAL = TRUE\n[ ] Criterion 7 is marked N/A if and only if CAUSAL = FALSE\n[ ] Every PARTIAL and FAIL entry includes a specific, actionable suggestion\n[ ] No report entries comment on prose style, writing quality, or writing process\n[ ] Summary table at top matches the body assessments\n[ ] Source file was not modified\n```\n</instructions>\n</skill>\n\n---USER REQUEST---\nAssess C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\skeletal_missing_abstract.qmd and save the assessment to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\skeletal-assessment.md. The file may be incomplete; report only what is supported by the file, do not invent content, and do not modify it.",
+      "output": "CAUSAL = FALSE\nReport written to case-3/outputs/skeletal-assessment.md. Overall assessments: 1 FAIL; 2 FAIL; 3 FAIL; 4 FAIL; 5 FAIL; 6 FAIL; 7 N/A; 8 PARTIAL; 9 PARTIAL.",
+      "passed": true,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE",
+          "passed": true,
+          "evidence": "Output matches regex '(?i)CAUSAL\\\\s*=\\\\s*FALSE'"
+        },
+        {
+          "type": "contains",
+          "value": "skeletal-assessment.md",
+          "passed": true,
+          "evidence": "Output contains 'skeletal-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 2 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file skeletal-assessment.md exists",
+          "passed": true,
+          "evidence": "skeletal-assessment.md present (3446 chars)"
+        },
+        {
+          "type": "file",
+          "value": "skeletal-assessment.md contains 'Research Question and Motivation | FAIL'",
+          "passed": true,
+          "evidence": "skeletal-assessment.md contains the expected text"
+        },
+        {
+          "type": "file",
+          "value": "skeletal-assessment.md matches /\\| 1\\. Research Question and Motivation \\| FAIL \\|[\\s\\S]*\\| 6\\. Robustness and Sensitivity \\| FAIL \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|/",
+          "passed": true,
+          "evidence": "skeletal-assessment.md matches at offset 183"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    },
+    {
+      "case_id": "boundary_missing_abstract_skeletal_outline",
+      "mode": "without_skill",
+      "prompt": "---USER REQUEST---\nAssess C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\fixtures\\skeletal_missing_abstract.qmd and save the assessment to C:\\Users\\16571\\Documents\\Codex\\2026-07-04\\skill\\work\\criticagent_run\\assess-outline-formal\\outputs\\skeletal-assessment.md. The file may be incomplete; report only what is supported by the file, do not invent content, and do not modify it.",
+      "output": "Assessment completed. The current document is only a section skeleton and requires a research question, contribution, ANES scope and variables, research design, results plan, limitations, and reproducibility plan before substantive assessment.",
+      "passed": false,
+      "assertions": [
+        {
+          "type": "regex",
+          "value": "(?i)CAUSAL\\s*=\\s*FALSE",
+          "passed": false,
+          "evidence": "Output does not match regex '(?i)CAUSAL\\\\s*=\\\\s*FALSE'"
+        },
+        {
+          "type": "contains",
+          "value": "skeletal-assessment.md",
+          "passed": false,
+          "evidence": "Output does not contain 'skeletal-assessment.md'"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"read_file\" was called",
+          "passed": true,
+          "evidence": "read_file called 1 time(s)"
+        },
+        {
+          "type": "tool",
+          "value": "tool \"write_file\" was called",
+          "passed": true,
+          "evidence": "write_file called 1 time(s)"
+        },
+        {
+          "type": "file",
+          "value": "output file skeletal-assessment.md exists",
+          "passed": true,
+          "evidence": "skeletal-assessment.md present (3487 chars)"
+        },
+        {
+          "type": "file",
+          "value": "skeletal-assessment.md contains 'Research Question and Motivation | FAIL'",
+          "passed": false,
+          "evidence": "skeletal-assessment.md does not contain 'Research Question and Motivation | FAIL'"
+        },
+        {
+          "type": "file",
+          "value": "skeletal-assessment.md matches /\\| 1\\. Research Question and Motivation \\| FAIL \\|[\\s\\S]*\\| 6\\. Robustness and Sensitivity \\| FAIL \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|/",
+          "passed": false,
+          "evidence": "skeletal-assessment.md does not match /\\| 1\\. Research Question and Motivation \\| FAIL \\|[\\s\\S]*\\| 6\\. Robustness and Sensitivity \\| FAIL \\|[\\s\\S]*\\| 7\\. Causal Identification Strategy \\| N/A \\|/"
+        }
+      ],
+      "provider": "local",
+      "model": "static",
+      "latency_ms": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "iteration": 1
+    }
+  ],
+  "summary": {
+    "with_skill": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "total_tokens": 0,
+      "duration_ms": 0
+    },
+    "without_skill": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3,
+      "pass_rate": 0.0,
+      "total_tokens": 0,
+      "duration_ms": 0
+    },
+    "skill_uplift": {
+      "pass_rate_delta": 1.0,
+      "total_tokens_delta": 0,
+      "duration_ms_delta": 0,
+      "improved": true
+    },
+    "iterations": 1,
+    "benchmark": {
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.410714,
+            "stddev": 0.025254,
+            "min": 0.375,
+            "max": 0.428571
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "delta": {
+          "pass_rate": 0.589286,
+          "time_seconds": 0.0,
+          "tokens": 0.0
+        }
+      }
+    },
+    "provider_usage": {
+      "providers": [
+        "local"
+      ],
+      "models": [
+        "static"
+      ],
+      "calls": 6,
+      "total_input_tokens": 0,
+      "total_output_tokens": 0,
+      "total_latency_ms": 0
+    },
+    "grading": {
+      "judge_enabled": false,
+      "judge_model": null
+    },
+    "assertion_audit": {
+      "non_discriminating": [
+        {
+          "case_id": "causal_complete_outline",
+          "assertion": "tool \"read_file\" was called"
+        },
+        {
+          "case_id": "causal_complete_outline",
+          "assertion": "tool \"write_file\" was called"
+        },
+        {
+          "case_id": "causal_complete_outline",
+          "assertion": "output file causal_turnout-assessment.md exists"
+        },
+        {
+          "case_id": "noncausal_complete_outline",
+          "assertion": "tool \"read_file\" was called"
+        },
+        {
+          "case_id": "noncausal_complete_outline",
+          "assertion": "tool \"write_file\" was called"
+        },
+        {
+          "case_id": "noncausal_complete_outline",
+          "assertion": "output file descriptive_representation-outline-assessment.md exists"
+        },
+        {
+          "case_id": "boundary_missing_abstract_skeletal_outline",
+          "assertion": "tool \"read_file\" was called"
+        },
+        {
+          "case_id": "boundary_missing_abstract_skeletal_outline",
+          "assertion": "tool \"write_file\" was called"
+        },
+        {
+          "case_id": "boundary_missing_abstract_skeletal_outline",
+          "assertion": "output file skeletal-assessment.md exists"
+        }
+      ],
+      "always_failing": [],
+      "checked": true
+    }
+  }
+}
