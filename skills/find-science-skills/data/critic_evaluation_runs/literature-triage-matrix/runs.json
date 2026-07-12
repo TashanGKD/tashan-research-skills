@@ -1,0 +1,40 @@
+{
+  "runs": [
+    {
+      "prompt": "Make a literature matrix for the papers in cluster llm-agents-software-engineering.",
+      "with_skill": {
+        "output": "Cannot create the matrix from available evidence. No paper rows were fabricated and no files were modified."
+      },
+      "without_skill": {
+        "output": "I cannot construct an evidence-based matrix because the cluster contents are unavailable."
+      }
+    },
+    {
+      "prompt": "Compare these papers by method, data, claims, and limitations.",
+      "with_skill": {
+        "output": "No comparison can be produced because these papers cannot be resolved to a known paper set."
+      },
+      "without_skill": {
+        "output": "I cannot compare unspecified papers without inventing evidence."
+      }
+    },
+    {
+      "prompt": "Help me decide which papers are central to my review.",
+      "with_skill": {
+        "output": "Centrality cannot be ranked without paper records. No relevance labels were assigned."
+      },
+      "without_skill": {
+        "output": "Centrality cannot be assigned until the papers are available."
+      }
+    },
+    {
+      "prompt": "Refresh the literature matrix; I added 5 papers to Zotero.",
+      "with_skill": {
+        "output": "Refresh not performed. Zotero access could not be verified. No files were modified."
+      },
+      "without_skill": {
+        "output": "Refresh not completed because Zotero access could not be established."
+      }
+    }
+  ]
+}

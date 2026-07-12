@@ -1,0 +1,32 @@
+{
+  "skill_name": "research-project-orienter",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Understand this research project before helping me.",
+      "expectations": [
+        "contains: This project doesn't have a `.research/` manifest yet.",
+        "contains: research-context-compressor",
+        "contains: Which do you prefer?"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a context map for this paper.",
+      "expectations": [
+        "contains: This project doesn't have a `.research/` manifest yet.",
+        "contains: research-context-compressor",
+        "contains: Which do you prefer?"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What is this repo about?",
+      "expectations": [
+        "contains: This project doesn't have a `.research/` manifest yet.",
+        "contains: research-context-compressor",
+        "contains: Which do you prefer?"
+      ]
+    }
+  ]
+}

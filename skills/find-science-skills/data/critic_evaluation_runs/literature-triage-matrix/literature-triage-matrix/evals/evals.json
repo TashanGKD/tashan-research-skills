@@ -1,0 +1,37 @@
+{
+  "skill_name": "literature-triage-matrix",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Make a literature matrix for the papers in cluster llm-agents-software-engineering.",
+      "expectations": [
+        "contains: [literature-triage-matrix]",
+        "contains: Wrote/appended:"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Compare these papers by method, data, claims, and limitations.",
+      "expectations": [
+        "contains: [literature-triage-matrix]",
+        "contains: Wrote/appended:"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Help me decide which papers are central to my review.",
+      "expectations": [
+        "contains: [literature-triage-matrix]",
+        "contains: Wrote/appended:"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Refresh the literature matrix; I added 5 papers to Zotero.",
+      "expectations": [
+        "contains: [literature-triage-matrix]",
+        "contains: Wrote/appended:"
+      ]
+    }
+  ]
+}

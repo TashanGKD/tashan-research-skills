@@ -1,0 +1,74 @@
+[
+  {
+    "query": "Turn my Zotero collection into a matrix comparing methods, datasets, findings, and limitations.",
+    "should_trigger": true,
+    "decisions": [
+      "literature-triage-matrix",
+      "literature-triage-matrix",
+      "literature-triage-matrix"
+    ]
+  },
+  {
+    "query": "I gave you 12 papers; make a compact cross-paper comparison table.",
+    "should_trigger": true,
+    "decisions": [
+      "literature-triage-matrix",
+      "literature-triage-matrix",
+      "literature-triage-matrix"
+    ]
+  },
+  {
+    "query": "Compare my Obsidian paper folder and identify central review papers.",
+    "should_trigger": true,
+    "decisions": [
+      "literature-triage-matrix",
+      "literature-triage-matrix",
+      "literature-triage-matrix"
+    ]
+  },
+  {
+    "query": "Refresh the existing literature matrix with five new Zotero papers.",
+    "should_trigger": true,
+    "decisions": [
+      "literature-triage-matrix",
+      "literature-triage-matrix",
+      "literature-triage-matrix"
+    ]
+  },
+  {
+    "query": "Write a narrative literature review.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "Summarize this single paper.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "Search for papers and find a research gap.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "Extract claims from my manuscript and check citations.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  }
+]

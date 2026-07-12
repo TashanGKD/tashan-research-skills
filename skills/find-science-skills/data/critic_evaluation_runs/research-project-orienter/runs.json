@@ -1,0 +1,31 @@
+{
+  "runs": [
+    {
+      "prompt": "Understand this research project before helping me.",
+      "with_skill": {
+        "output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?"
+      },
+      "without_skill": {
+        "output": "This project is a bilingual, MIT-licensed library of reusable agent skills for scientific research workflows. It covers literature search and evidence review, research ideation and experiment design, academic writing and visualization, collaboration memory, and tool evaluation. Each skill is packaged independently with a SKILL.md entry point and optional scripts, templates, references, tests, and agent metadata. This is research-support infrastructure rather than a conventional study with one hypothesis, dataset, and experimental protocol."
+      }
+    },
+    {
+      "prompt": "Build a context map for this paper.",
+      "with_skill": {
+        "output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?"
+      },
+      "without_skill": {
+        "output": "I do not have the paper or a citation identifying it, so I cannot build an evidence-specific context map yet. Please provide the PDF, text, title, DOI, arXiv ID, or link. I will map the research problem, prior work, claims, data, methods, results, evidence, assumptions, limitations, and open questions."
+      }
+    },
+    {
+      "prompt": "What is this repo about?",
+      "with_skill": {
+        "output": "This project doesn't have a `.research/` manifest yet. I can create one first using `research-context-compressor` (takes about 30 seconds and writes three small YAML files), or I can fall back to scanning the repository directly (slower and uses more tokens). Which do you prefer?"
+      },
+      "without_skill": {
+        "output": "This repository, Tashan Research Skills, packages a collection of bilingual agent skills for scientific work. Its modules support literature discovery and evidence checking, research hypotheses and experimental design, academic writing, scientific figures, presentations, citation auditing, long-term collaboration context, and evaluation of tools and skills."
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "query": "Is applying LLMs to automate qualitative coding a research gap worth pursuing for my master thesis?",
+    "should_trigger": true,
+    "decisions": [
+      "gap-to-topic",
+      "gap-to-topic",
+      "gap-to-topic"
+    ]
+  },
+  {
+    "query": "Help me choose one defensible thesis topic in agent-based flood modelling and give me a go/no-go assessment.",
+    "should_trigger": true,
+    "decisions": [
+      "gap-to-topic",
+      "gap-to-topic",
+      "gap-to-topic"
+    ]
+  },
+  {
+    "query": "Has someone already studied using digital twins to optimize emergency evacuation, or is there still a viable contribution?",
+    "should_trigger": true,
+    "decisions": [
+      "gap-to-topic",
+      "gap-to-topic",
+      "gap-to-topic"
+    ]
+  },
+  {
+    "query": "Vet this proposed PhD topic before I commit: federated learning for rare-disease diagnosis.",
+    "should_trigger": true,
+    "decisions": [
+      "gap-to-topic",
+      "gap-to-topic",
+      "gap-to-topic"
+    ]
+  },
+  {
+    "query": "Write a systematic literature review of agent-based flood modelling.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "I selected my topic. Design the experiment and statistical analysis plan.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "Summarize these 30 papers and produce a thematic evidence table.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "My topic is approved. Draft the methods section.",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  }
+]

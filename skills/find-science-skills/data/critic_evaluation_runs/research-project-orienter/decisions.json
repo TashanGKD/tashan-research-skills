@@ -1,0 +1,74 @@
+[
+  {
+    "query": "请读取这个项目根目录已有的 .research/ manifests，帮我快速定位项目：研究问题、数据集、当前阶段、关键入口、证据产物和待解决问题分别是什么？",
+    "should_trigger": true,
+    "decisions": [
+      "research-project-orienter",
+      "research-project-orienter",
+      "research-project-orienter"
+    ]
+  },
+  {
+    "query": "Orient me in this research project. The repository already contains .research/ manifest files; produce one concise orientation memo.",
+    "should_trigger": true,
+    "decisions": [
+      "research-project-orienter",
+      "research-project-orienter",
+      "research-project-orienter"
+    ]
+  },
+  {
+    "query": "这个 repo 到底在研究什么？请基于项目根目录的 .research/ manifests，整理数据集、研究进度、主要代码入口和现有证据。",
+    "should_trigger": true,
+    "decisions": [
+      "research-project-orienter",
+      "research-project-orienter",
+      "research-project-orienter"
+    ]
+  },
+  {
+    "query": "请为这个论文项目建立一份 context map；项目已有 .research/ manifests，需要标明研究问题、当前阶段、关键入口、证据文件和开放问题。",
+    "should_trigger": true,
+    "decisions": [
+      "research-project-orienter",
+      "research-project-orienter",
+      "research-project-orienter"
+    ]
+  },
+  {
+    "query": "请为这个 research project 从零创建 .research/ manifest 文件，并设计 manifest 的字段结构。",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "这个 repo 的单元测试失败了，请定位关键代码入口并修复 dataset loader 的路径错误。",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "请阅读这篇论文 PDF，概括它的 research question、datasets 和 open questions；这里没有项目仓库或 .research/ manifests。",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  },
+  {
+    "query": "请更新项目的 current stage 和 evidence artifacts，把最新实验结果写回 .research/ manifests。",
+    "should_trigger": false,
+    "decisions": [
+      "none",
+      "none",
+      "none"
+    ]
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "runs": [
+    {
+      "prompt": "Is this research gap worth pursuing — applying LLMs to X?",
+      "with_skill": {
+        "output": "I cannot assess an unspecified X or make the final worth pursuing decision. Please define X. I can then assemble a screening-grade three-gate dossier. The final decision remains with you and your advisor. No literature search has been performed for this underspecified prompt."
+      },
+      "without_skill": {
+        "output": "Indeterminate as stated because X is undefined. Pursue it only if a preliminary review confirms an unresolved limitation and feasible evaluation."
+      }
+    },
+    {
+      "prompt": "Help me pick a thesis topic in agent-based flood modelling.",
+      "with_skill": {
+        "output": "First narrow the candidate space rather than selecting a topic prematurely. I will not invent a thesis topic or make the final selection for you. No literature search has been performed yet."
+      },
+      "without_skill": {
+        "output": "Recommended topic: Empirical validation and uncertainty analysis of LLM-driven household agents in coupled flood-risk models."
+      }
+    },
+    {
+      "prompt": "Has someone already done this idea?",
+      "with_skill": {
+        "output": "The idea is not present in this standalone prompt. The result cannot prove universal absence. No search results or references are being claimed here."
+      },
+      "without_skill": {
+        "output": "Cannot determine without the actual idea. Provide a one-sentence claim and search exact precedents and close variants."
+      }
+    }
+  ]
+}

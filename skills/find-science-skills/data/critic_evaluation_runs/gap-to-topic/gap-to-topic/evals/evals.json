@@ -1,0 +1,29 @@
+{
+  "skill_name": "gap-to-topic",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Is this research gap worth pursuing — applying LLMs to X?",
+      "expectations": [
+        "contains: final decision remains with you and your advisor",
+        "contains: No literature search has been performed"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Help me pick a thesis topic in agent-based flood modelling.",
+      "expectations": [
+        "contains: I will not invent a thesis topic",
+        "contains: No literature search has been performed"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Has someone already done this idea?",
+      "expectations": [
+        "contains: cannot prove universal absence",
+        "contains: No search results or references are being claimed"
+      ]
+    }
+  ]
+}

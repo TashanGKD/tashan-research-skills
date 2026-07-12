@@ -1,0 +1,19 @@
+{
+  "schema": "science_skill_critic_replay_hashes_v1",
+  "verified_with_bundled_kernel": true,
+  "kernel_manifest": "../../../skill-criticagent/vendor/mcp_criticagent/manifest.json",
+  "runs": {
+    "gap-to-topic": {
+      "behavior_sha256": "a13d918e0422217b16dc3a01aaf0ab5bb834b051e07e910e4e69693921a67a5f",
+      "trigger_sha256": "91eabb7dc430002a34598cb14b70c7d6c7f59a51187b517dfde1893706151d99"
+    },
+    "literature-triage-matrix": {
+      "behavior_sha256": "347090990a4bdb4392034fddf12b91af6f05916cc7488e88b5f636c41948a5ac",
+      "trigger_sha256": "9899fdcedfac75a4feb13222dc8fcde25f2272a9889fc8c7d869e9123e5223e6"
+    },
+    "research-project-orienter": {
+      "behavior_sha256": "60399422802689c4f3bb0d1a6b8d7c4312f75c470ab820e672e70ab585868ab3",
+      "trigger_sha256": "79ed9bb3118cd85e5695b7b6d7b2ae6029f115b4d99fb7ab2046706fa7539568"
+    }
+  }
+}
