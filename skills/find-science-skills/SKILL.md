@@ -1,141 +1,90 @@
 ---
 name: find-science-skills
-description: 发现并推荐科研/学术/实验/仿真类 agent skill 的科研版 find-skills。当用户问"怎么做 X 科研任务""有没有做 X 的 skill""帮我找一个文献/仿真/实验/数据分析的技能"，或想扩展科研能力、想知道某方向该装哪个 skill 时使用。基于他山托管的科研技能图谱检索（技能↔技能关系 + CriticAgent 质量分 + 深度评测），每次用前可 git 拉取最新版本。数据源是本项目自建、清洗去重后的科研 registry，而非通用 skill 市场。
+description: Use when a user asks which research, academic, experimental, simulation, analysis, writing, or publication skill is available for a scientific task.
 ---
 
-# Find Science Skills（科研版 find-skills）
+# Find Science Skills
 
-对标 `vercel-labs/skills` 的 `npx skills find`，但数据源是他山自建、清洗去重后的**科研技能图谱**
-（约 1400 个 canonical 科研技能，5 功能家族 / 12 功能组）。相比纯关键词检索，它带三层优化：
+把用户需求判断为“领域 × 研究阶段 × 功能分工”，再调用静态目录筛选器。宿主模型负责理解需求；脚本执行确定性漏斗：领域和阶段是硬边界，功能默认作为排序偏好，避免复合任务因功能判断偏差而漏掉正确技能。
 
-1. **证据排序**：命中度 + CriticAgent 质量分 + 深度评测结论 + 多仓库共识 + stars，不只看关键词。
-2. **图感知推荐（skill graph）**：每个命中带出它的图邻居——同类可替代 / 同仓库配套 / 工作流下一步，
-   帮 agent 组出一条连贯的技能序列，而不是给一堆孤立结果。
-3. **轻量语义扩展**：对冷冻电镜、有限元、DFT、分子动力学、单细胞、时间序列等高频科研表达做中英同义扩展，
-   缓解纯 lexical 检索漏召回或被泛词带偏的问题；无需额外依赖，可用 `--no-semantic` 关闭。
+## 工作流
 
-技能图谱数据托管在本仓库 `github.com/TashanGKD/tashan-research-skills`，随仓库持续更新；
-每次使用前用 `--update` 先 `git pull`，即可拿到最新的技能库再检索。
-
-## 何时使用
-
-- 用户问"怎么做 X"（X = 常见科研任务：查文献、跑 DFT、单细胞分析、分子对接、写论文…）
-- 用户说"有没有做 X 的 skill / 帮我找个 X 技能"
-- 用户想按能力簇浏览（12 功能组：论文检索 / 综述阅读 / 数据库检索 / 智能体编排 / 建模仿真 /
-  仪器实验 / 数据处理 / 统计分析 / 论文写作 / 引用管理 / 投稿评审 / 可视化展示）
-- 用户想知道某方向该装什么、或某个技能有哪些配套/替代
-
-## 工作流（先更新，再检索）
-
-### 0. 确保技能库最新
-本 skill 的数据（`data/skill_graph_index.json`）随本仓库分发。第一次用前若还没拉取仓库：
+1. 首次使用或不确定合法分类时，读取分类目录：
 
 ```bash
-git clone https://github.com/TashanGKD/tashan-research-skills
-cd tashan-research-skills/skills/find-science-skills
+python scripts/filter_science_skills.py --list-dimensions
 ```
 
-之后每次检索加 `--update`，脚本会先对本仓库 `git pull --ff-only` 再检索（拉不动时自动回退到本地数据）：
+2. 先判断领域和阶段，再查看该漏斗中实际存在的功能组：
 
 ```bash
-python scripts/find_skills.py --update "single cell rna"
+python scripts/filter_science_skills.py \
+  --domain 生命科学 \
+  --stage 分析验证 \
+  --list-functions
 ```
 
-### 1. 理解需求
-识别科研领域（材料/生信/CFD…）、具体任务（查文献/跑仿真/做图…）、大概落在哪个功能组。
+3. 只从返回的实际功能组中选择。结合用户需求和代表技能判断主功能与合理的次功能：
 
-### 2. 先看能力簇 leaderboard
-`--list-capabilities` 列出 12 功能组及各组高分代表。头部（统计分析、建模仿真、智能体编排）供给足；
-尾部（仪器实验）稀缺，命中率低时提醒用户。
+- **领域**：研究对象所属领域；必要时再选二级领域。
+- **研究阶段**：发现获取、构思设计、执行采集、分析验证、表达发表。
+- **功能分工**：检索获取、阅读提取、证据综合、问题构思、研究设计、流程规划、模拟建模、实验执行、数据采集、数据处理、分析推断、领域解释、验证评测、可视化、科研写作、引用管理、投稿评审。
 
-### 3. 检索
-用具体关键词而非泛词："single cell rna" 优于 "bio"；"DFT" 优于 "计算"。命不中时换同义词或加 `-c` 能力过滤。
-
-### 4. 荐前核证据（不要只看排名）
-- **质量分**：CriticAgent 综合分（合规+证据+置信+卫生+深评），≥70 绿、50-70 黄、<50 红。
-- **深评结论**：带 `[深评:建议安装]` 是端到端跑过"带/不带对比+触发测试"的最强信号；`[深评:先修复]` 要警示。
-- **repo_count**：多个仓库都提供 → 更成熟通用。
-- **stars**：来源仓库星数，可信度参考；只是发现信号，不等于真实使用量。
-- **[待复核]**：分类置信低，推荐时说明"分类可能不准"。
-
-### 5. 用图邻居组方案（skill graph 的价值）
-命中一个技能后，用 `--graph` 或 `--show <id>` 看它的：
-- **可替代**：同功能组的替代品，给用户备选。
-- **同仓库配套**：常一起用的技能，一并推荐。
-- **工作流下一步**：研究流程里的下一环（发现→构想→执行→分析→发表），把整条链串起来。
-
-### 6. 呈现给用户
-给出：技能名 + 功能组/学科、来源仓库 + stars + 质量分、示例 `SKILL.md` 路径、获取方式，
-并按需附上"可搭配 / 可替代 / 下一步"。
-
-## 命令速查
+4. 确信主/次功能后使用严格筛选，避免候选过多。多选参数可重复，也可用逗号分隔：
 
 ```bash
-python scripts/find_skills.py "single cell rna"            # 关键词检索（证据排序）
-python scripts/find_skills.py --update "molecular docking" # 先更新数据再检索
-python scripts/find_skills.py "DFT 第一性原理" -n 5 --graph # 展开图邻居
-python scripts/find_skills.py --capability 建模仿真 -n 10   # 按能力簇过滤（中英别名）
-python scripts/find_skills.py --owner Hello-QM "vasp"      # 按 owner 过滤
-python scripts/find_skills.py --list-capabilities          # 能力簇 leaderboard
-python scripts/find_skills.py --show diffdock              # 查看单技能及其图邻居
-python scripts/find_skills.py "cryo em" --json             # 机器可读（含邻居 id）
-python scripts/find_skills.py "冷冻电镜" --no-semantic       # 只用原始关键词，便于排查排序
-python scripts/search_wiki.py "冷冻电镜 EMDB"                # 搜静态 Wiki 解释页
-python scripts/search_wiki.py "引用管理 bibtex" --type skill # 只搜 skill 证据页
-python scripts/build_wiki.py                               # 维护者：重建静态 Wiki + 图谱页
-python scripts/bench_retrieval.py                          # 维护者：跑基础/中等/复杂检索 bench
-python scripts/bench_retrieval.py --holdout                # 维护者：跑非门控薄弱查询观察集
+python scripts/filter_science_skills.py \
+  --domain 生命科学 \
+  --stage 分析验证 \
+  --function 数据处理 \
+  --strict-function \
+  --json
 ```
 
-示例回复：
-
-```
-找到适合的科研 skill：
-「diffdock」——分子对接（建模仿真 / 药物发现），来自 K-Dense-AI/scientific-agent-skills（30.2k★，3 仓库，质量分 66）。
-路径：skills/diffdock/SKILL.md
-可替代：autodock-vina-docking；下一步可接可视化/写作类技能。
-获取：git clone https://github.com/K-Dense-AI/scientific-agent-skills 后取该路径。
-```
-
-### 没找到时
-1. 说明科研 registry 里没有现成的；
-2. 用通用能力直接帮用户完成任务；
-3. 若是高频科研需求，指向"可转化科研工具"（从对应工具 README 起草新 `SKILL.md`）。
-
-## 数据与更新
-
-- `data/skill_graph_index.json`：技能图谱（节点=技能、边=技能↔技能关系，含质量分/深评）。
-- `data/skill_graph_view.json`：静态图谱页使用的瘦图数据。
-- `data/data_version.json`：数据版本（技能数 / 边数 / 生成时间）。
-- `wiki/`：Karpathy-style LLM Wiki，可读解释层；包含索引、概览、能力组页、学科页和每个 skill 的证据页。
-- `wiki/search_index.json`：静态 Wiki 搜索索引，供 `scripts/search_wiki.py` 使用。
-- `site/graph.html`：无需数据库的静态可视化入口；本地打开或经 GitHub Pages 托管均可浏览。
-- `data/retrieval_bench.json`：100+ case 检索质量基准，按基础/中等/复杂分层，并覆盖典型与混淆科研需求；同时评估安装推荐与 Wiki 搜索。
-- `data/retrieval_bench_report.json`：最近一次 bench 结果；维护排序逻辑、语义扩展或 Wiki 生成后应刷新。
-- `data/retrieval_holdout.json`：非门控观察集，记录当前薄弱、缺技能或易误召回查询；用于指导下一轮打磨，不阻塞发布。
-- `data/retrieval_holdout_report.json`：最近一次 holdout 结果；失败清单即后续排序/registry 扩容候选。
-- `data/retrieval_gaps.json`：由 holdout 暴露出的 registry/ranking/data 缺口清单；`__missing_*__` 占位目标必须在这里登记。
-- 数据由 TopicLab 科研技能发现流水线定期重建并推送进本仓库；用户侧只需 `git pull`（或 `--update`）即可拿到最新版本。
-- 脚本仅依赖 Python 标准库，无需安装额外包即可检索；语义扩展在脚本内完成，不依赖运行时 API key。
-
-## 静态 Wiki 与可视化
-
-本 skill 不建数据库。机器检索走 `data/skill_graph_index.json` + `scripts/find_skills.py`；
-人读解释走 `wiki/`；Wiki 页面检索走 `wiki/search_index.json` + `scripts/search_wiki.py`；
-全局关系浏览走 `site/graph.html`。维护者更新数据后运行：
+若功能边界仍不确定，去掉 `--strict-function`。脚本会保留同领域、同阶段候选，并把所选功能排在前面：
 
 ```bash
-python scripts/build_wiki.py
-python scripts/bench_retrieval.py
-python scripts/bench_retrieval.py --holdout
+python scripts/filter_science_skills.py \
+  --domain 生命科学 \
+  --stage 分析验证 \
+  --function 数据处理 \
+  --json
 ```
 
-`build_wiki.py` 会从 `data/skill_graph_index.json` 重新生成 `wiki/`、`wiki/search_index.json`、`data/skill_graph_view.json` 和 `site/graph.html`。
-随后用 `bench_retrieval.py` 确认安装推荐和 Wiki 搜索仍达到发布阈值，并用 `--holdout` 查看非门控薄弱查询。
-如果只是在 GitHub 上挂载本 skill，
-用户无需运行生成器或 bench，直接使用随仓库分发的静态产物即可。
+大组可增加二级领域：
 
-## 与通用 skill 市场的关系
+```bash
+python scripts/filter_science_skills.py \
+  --domain 生命科学 \
+  --subdomain 生物信息学 \
+  --stage 分析验证 \
+  --function 数据处理 \
+  --json
+```
 
-通用/前端/DevOps 需求转向 `vercel-labs/skills`（`npx skills find`）或 `skills.sh`。
-本 skill 只覆盖**科研/学术/实验/仿真**方向，数据来自 GitHub 上真实的科研 `SKILL.md` 仓库并经清洗去重与质量评测。
+5. 对候选做语义复核，不把脚本顺序当成相关性排名：
+
+   - 研究对象或数据类型必须直接匹配 `summary` 或 `task`；
+   - 请求的动作或产物也必须直接匹配；
+   - 两类证据缺一不可；最多推荐 5 个；
+   - 没有直接匹配时返回“目录未覆盖”或追问，不得用高质量但无关的技能补位。
+
+   `--json` 默认保留语义选择所需字段；审计目录时可增加 `--full`。不要为某条查询或某个 skill ID 添加特殊规则。
+
+## 判断规则
+
+- 不确定时选择多个合法功能。默认由领域和阶段限定候选，功能只决定优先顺序。
+- 不要选择当前领域和阶段下未返回的功能；需要的动作若未出现，检查相邻的实际功能组或向用户追问。
+- 研究阶段按主要产物判断，不按工具名称判断。
+- 功能按主要动作判断；agent、API、工具库和 workflow 只是实现形式。
+- `trusted` 优先；`provisional` 需要核对来源；`restricted` 必须明确警示。可信度和质量分只用于直接匹配候选之间的排序，不证明语义相关。
+- 默认模式仍无结果时，说明领域或阶段没有覆盖，向用户追问；不要推荐跨领域或跨阶段的相似项。
+
+## 回复用户
+
+先说明识别出的领域、阶段和功能，再列出最多 5 个直接匹配技能。每项至少包含：技能名、匹配证据、主要用途、可信状态、来源仓库和 `SKILL.md` 路径。没有直接匹配时明确说明缺口。结果较多时按二级领域、数据类型和工具约束继续筛选，但不要修改目录规则。
+
+## 文件
+
+- `data/science_skill_catalog.json`：规范化静态目录，字段为 `domain`、`subdomain`、`stage`、`function`。
+- `scripts/filter_science_skills.py`：确定性三维筛选器，仅依赖 Python 标准库。
