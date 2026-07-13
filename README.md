@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-18-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/%E6%A8%A1%E5%9D%97-5-0B2545.svg)](#技能矩阵)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,9 +21,31 @@
 
 ## 项目概览
 
-仓库里是我们自己开发的 17 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
+仓库里是我们自己开发的 18 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
 
 项目由 **磐石 AI4Science 生态与应用模式研究项目** 支持。
+
+## 科研技能发现
+
+[`find-science-skills`](skills/find-science-skills/SKILL.md) 用于从外部科研技能目录中筛选适合当前任务的能力。宿主模型先判断“研究领域 × 研究阶段 × 功能分工”，再调用仅依赖 Python 标准库的确定性筛选器缩小范围；不需要后端服务或 API 密钥。
+
+当前静态目录包含 1,391 个候选技能，覆盖 9 个一级领域、42 个二级领域、5 个研究阶段和 17 个功能组。领域和阶段限定检索边界，功能可作为排序偏好或严格过滤条件。脚本返回的是待语义复核候选，不把目录顺序冒充相关性结论；宿主模型最终只推荐研究对象和预期产物都直接匹配的技能，找不到时明确报告目录缺口。
+
+```powershell
+# 查看合法分类
+python .\skills\find-science-skills\scripts\filter_science_skills.py --list-dimensions
+
+# 查看指定领域和阶段下实际存在的功能组
+python .\skills\find-science-skills\scripts\filter_science_skills.py `
+  --domain 生命科学 --stage 分析验证 --list-functions
+
+# 严格筛选并输出机器可读结果
+python .\skills\find-science-skills\scripts\filter_science_skills.py `
+  --domain 生命科学 --subdomain 生物信息学 --stage 分析验证 `
+  --function 数据处理 --strict-function --json
+```
+
+完整判断规则、可信状态和回复格式见 [`skills/find-science-skills/SKILL.md`](skills/find-science-skills/SKILL.md)。
 
 ## 技能矩阵
 
@@ -31,6 +53,7 @@
 
 | 技能 | 路径 | 用途 |
 | --- | --- | --- |
+| 技能发现 | [`skills/find-science-skills`](skills/find-science-skills/SKILL.md) | 按研究领域、研究阶段和功能分工筛选 1,391 个外部科研技能，并保留来源与可信状态供宿主模型复核。 |
 | 论文检索 | [`skills/giiisp-paper-search-apis`](skills/giiisp-paper-search-apis/SKILL.md) | 基于 Giiisp 和开放论文数据源，快速查找候选文献，并整理可核验的论文列表。 |
 | 深度研究 | [`skills/sci-employee-deep-research`](skills/sci-employee-deep-research/SKILL.md) | 围绕研究问题拆关键词、找证据、梳理引用，并标出结论的证据边界。 |
 | 论文审查 | [`skills/thesis-audit-reviewer`](skills/thesis-audit-reviewer/SKILL.md) | 审查论文或学位论文中的事实、方法、引用、证据边界和完成度。 |

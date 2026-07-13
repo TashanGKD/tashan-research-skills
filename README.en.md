@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-17-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-18-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/Modules-5-0B2545.svg)](#skill-matrix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,9 +21,31 @@
 
 ## Overview
 
-This repository holds 17 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
+This repository holds 18 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
 
 The project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
+
+## Scientific Skill Discovery
+
+[`find-science-skills`](skills/find-science-skills/SKILL.md) finds external research skills for a concrete task. The host model identifies the research domain, research stage, and functional role, then invokes a deterministic, standard-library-only filter to narrow the catalog. It requires no backend service or API key.
+
+The static catalog currently contains 1,391 candidates across 9 top-level domains, 42 subdomains, 5 research stages, and 17 function groups. Domain and stage define the retrieval boundary; function can be either a ranking preference or a strict filter. Results remain candidates for semantic review rather than a claim that catalog order equals relevance. The host recommends only skills whose research object and expected output both match directly, and reports a catalog gap when none do.
+
+```powershell
+# Inspect the supported taxonomy
+python .\skills\find-science-skills\scripts\filter_science_skills.py --list-dimensions
+
+# Inspect functions available for a domain and stage
+python .\skills\find-science-skills\scripts\filter_science_skills.py `
+  --domain 生命科学 --stage 分析验证 --list-functions
+
+# Apply strict filtering and return machine-readable output
+python .\skills\find-science-skills\scripts\filter_science_skills.py `
+  --domain 生命科学 --subdomain 生物信息学 --stage 分析验证 `
+  --function 数据处理 --strict-function --json
+```
+
+See [`skills/find-science-skills/SKILL.md`](skills/find-science-skills/SKILL.md) for the decision rules, readiness states, and response contract.
 
 ## Skill Matrix
 
@@ -31,6 +53,7 @@ The project is supported by the **Panshi AI4Science Ecosystem and Application Mo
 
 | Skill | Path | What it does |
 | --- | --- | --- |
+| Find Science Skills | [`skills/find-science-skills`](skills/find-science-skills/SKILL.md) | Filter 1,391 external research skills by domain, research stage, and functional role while preserving source and readiness metadata for host-model review. |
 | Paper Search | [`skills/giiisp-paper-search-apis`](skills/giiisp-paper-search-apis/SKILL.md) | Search Giiisp and open paper sources, then return verifiable candidate papers. |
 | Deep Research | [`skills/sci-employee-deep-research`](skills/sci-employee-deep-research/SKILL.md) | Break down a research question, collect evidence, and produce a traceable research report. |
 | Thesis Audit Reviewer | [`skills/thesis-audit-reviewer`](skills/thesis-audit-reviewer/SKILL.md) | Audit thesis or manuscript claims, evidence, references, methods, and completion gates. |
