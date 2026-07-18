@@ -51,6 +51,9 @@ skills:
   - id: manim-agent
     category: research-expression
     entrypoint: skills/manim-agent/SKILL.md
+  - id: practical-course-producer
+    category: research-expression
+    entrypoint: skills/practical-course-producer/SKILL.md
   - id: papercheck
     category: collaboration-memory
     entrypoint: skills/papercheck/SKILL.md

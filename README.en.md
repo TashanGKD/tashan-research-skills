@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-18-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-19-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/Modules-5-0B2545.svg)](#skill-matrix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## Overview
 
-This repository holds 18 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
+This repository holds 19 research agent skills we built ourselves, organized into five groups: literature evidence, research ideation, research expression, collaboration memory, and tool evaluation. Each skill is one folder with a `SKILL.md` entrypoint; its scripts, templates, and tests sit in the same directory. Copy a folder into your agent's skills directory and it is ready to use.
 
 The project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
@@ -76,6 +76,7 @@ See [`skills/find-science-skills/SKILL.md`](skills/find-science-skills/SKILL.md)
 | Scientific Image Generation | [`skills/giiisp-scientific-image-generation`](skills/giiisp-scientific-image-generation/SKILL.md) | Turn paper paragraphs, mechanisms, and experiment flows into scientific image briefs and runs. |
 | Visual Deck Builder | [`skills/visual-deck-builder`](skills/visual-deck-builder/SKILL.md) | Build image-model-driven PPT decks from topics, papers, reports, notes, or style references. |
 | Manim Agent | [`skills/manim-agent`](skills/manim-agent/SKILL.md) | Create, review, and package mathematical or technical explainer videos. |
+| Practical Course Producer | [`skills/practical-course-producer`](skills/practical-course-producer/SKILL.md) | Turn tool workflows with observable state changes and real verification into reproducible practical course videos. |
 
 ### Collaboration memory
 

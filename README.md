@@ -9,7 +9,7 @@
 [简体中文](README.md) · [English](README.en.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-18-2E74B5.svg)](skills/README.md)
+[![Skills](https://img.shields.io/badge/Skills-19-2E74B5.svg)](skills/README.md)
 [![Modules](https://img.shields.io/badge/%E6%A8%A1%E5%9D%97-5-0B2545.svg)](#技能矩阵)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@
 
 ## 项目概览
 
-仓库里是我们自己开发的 18 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
+仓库里是我们自己开发的 19 个科研 agent skills，按文献证据、研究构思、成果表达、协作沉淀、工具测评五类整理。每个技能是一个独立文件夹，入口是 `SKILL.md`，配套的脚本、模板和测试放在同一目录，复制进 agent 的 skills 目录就能用。
 
 项目由 **磐石 AI4Science 生态与应用模式研究项目** 支持。
 
@@ -76,6 +76,7 @@ python .\skills\find-science-skills\scripts\filter_science_skills.py `
 | 科研绘图 | [`skills/giiisp-scientific-image-generation`](skills/giiisp-scientific-image-generation/SKILL.md) | 把论文段落、机制描述或实验流程转成科研图像生成任务。 |
 | PPT 制作 | [`skills/visual-deck-builder`](skills/visual-deck-builder/SKILL.md) | 把主题、论文、报告或笔记整理成结构清晰、视觉完整的演示文稿。 |
 | 讲解视频 | [`skills/manim-agent`](skills/manim-agent/SKILL.md) | 生成数学、公式或技术概念的讲解动画，可按需要加入配音。 |
+| 实操课程 | [`skills/practical-course-producer`](skills/practical-course-producer/SKILL.md) | 把带有真实状态变化和验证步骤的工具工作流制作成可复现的实操课程视频。 |
 
 ### 协作沉淀
 

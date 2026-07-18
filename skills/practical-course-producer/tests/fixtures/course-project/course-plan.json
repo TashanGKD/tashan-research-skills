@@ -1,0 +1,17 @@
+{
+  "slug": "public-workflow-course",
+  "video": {
+    "width": 320,
+    "height": 180,
+    "fps": 30,
+    "sample_rate": 48000
+  },
+  "scenes": [
+    {
+      "id": "verified-workflow",
+      "source": "recordings/demo.mp4",
+      "start": 0,
+      "duration": 0.6
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Practical Course Producer"
+  short_description: "把可执行的科研或软件工具流程制作为可验证的实操课程视频"
+  default_prompt: "Use $practical-course-producer to turn this executable workflow into a publishable hands-on course with real operation evidence, verification, and reproducible media audit."
+
+policy:
+  allow_implicit_invocation: true

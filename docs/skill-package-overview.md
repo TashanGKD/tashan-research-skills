@@ -40,6 +40,7 @@
 | 科研绘图 | [`skills/giiisp-scientific-image-generation`](../skills/giiisp-scientific-image-generation/SKILL.md) | 把论文段落、机制描述或实验流程转成科研图像生成任务。 |
 | PPT 制作 | [`skills/visual-deck-builder`](../skills/visual-deck-builder/SKILL.md) | 把主题、论文或报告整理成结构清晰、视觉完整的演示文稿。 |
 | 讲解视频 | [`skills/manim-agent`](../skills/manim-agent/SKILL.md) | 生成数学、公式或技术概念的讲解动画，可按需要加入配音。 |
+| 实操课程 | [`skills/practical-course-producer`](../skills/practical-course-producer/SKILL.md) | 把具有真实起始状态、工具操作、状态变化和验证步骤的工作流制作成可复现的课程视频。 |
 
 ### 协作沉淀
 

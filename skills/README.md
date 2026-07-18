@@ -17,6 +17,7 @@ Each folder contains one skill entrypoint named `SKILL.md`.
 | [`giiisp-scientific-image-generation`](giiisp-scientific-image-generation/SKILL.md) | Scientific Image Generation | Research expression |
 | [`visual-deck-builder`](visual-deck-builder/SKILL.md) | Visual Deck Builder | Research expression |
 | [`manim-agent`](manim-agent/SKILL.md) | Manim Agent | Research expression |
+| [`practical-course-producer`](practical-course-producer/SKILL.md) | Practical Course Producer | Research expression |
 | [`papercheck`](papercheck/SKILL.md) | PaperCheck | Collaboration memory |
 | [`cognitive-profile`](cognitive-profile/SKILL.md) | Cognitive Profile | Collaboration memory |
 | [`research-dream`](research-dream/SKILL.md) | Research Dream (companion Dream layer of Cognitive Profile, not listed separately) | Collaboration memory |

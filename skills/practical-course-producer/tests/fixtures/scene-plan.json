@@ -1,0 +1,23 @@
+{
+  "slug": "course-smoke",
+  "video": {
+    "width": 320,
+    "height": 180,
+    "fps": 30,
+    "sample_rate": 48000
+  },
+  "scenes": [
+    {
+      "id": "with-audio",
+      "source": "with-audio.mp4",
+      "start": 0.1,
+      "duration": 0.6
+    },
+    {
+      "id": "without-audio",
+      "source": "without-audio.mp4",
+      "start": 0.1,
+      "duration": 0.5
+    }
+  ]
+}
