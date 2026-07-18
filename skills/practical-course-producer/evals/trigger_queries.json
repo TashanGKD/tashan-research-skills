@@ -1,0 +1,12 @@
+[
+  {"query": "把这个 Git 仓库里定位回归、修复并复测的全过程录成一条实操课程视频", "should_trigger": true},
+  {"query": "用真实浏览器操作演示 Zotero 导入、修正元数据并验证导出，做成三分钟教程", "should_trigger": true},
+  {"query": "Record a real Claude Code session that creates a skill, inspects the files, fixes a validator failure, and reruns the check", "should_trigger": true},
+  {"query": "I have terminal recordings and narration; assemble them into a reproducible hands-on course and audit the final media", "should_trigger": true},
+  {"query": "用 Manim 做一个傅里叶变换核心直觉的 concept explainer", "should_trigger": false},
+  {"query": "Explain the concept of dark matter in a short animated video with no software demonstration", "should_trigger": false},
+  {"query": "帮我把这个 MP4 的静音删掉并调一下颜色，不需要设计课程", "should_trigger": false},
+  {"query": "把这篇论文整理成十页汇报 PPT", "should_trigger": false},
+  {"query": "Write a lesson plan for teaching Git, but do not create or record a video", "should_trigger": false},
+  {"query": "做一条产品发布宣传片，加入品牌动画和口号", "should_trigger": false}
+]

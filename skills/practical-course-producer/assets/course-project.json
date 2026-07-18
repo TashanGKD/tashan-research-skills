@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "slug": "replace-with-course-slug",
+  "topic": "State the method or tool being taught",
+  "audience": "State who should be able to follow the course",
+  "language": "zh-CN",
+  "target_duration_seconds": 300,
+  "aspect_ratio": "16:9",
+  "artifacts": {
+    "lesson_plan": "lesson-plan.md",
+    "interaction_plan": "interaction-plan.md",
+    "recording_checklist": "recording-checklist.md",
+    "narration": "narration.md",
+    "scene_plan": "course-plan.json",
+    "final_video": "outputs/course_v001.mp4",
+    "run_manifest": "outputs/course_v001.run.json",
+    "audit": "audit.md"
+  }
+}

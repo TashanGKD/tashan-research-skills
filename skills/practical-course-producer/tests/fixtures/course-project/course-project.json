@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "slug": "public-workflow-course",
+  "topic": "Build and verify a reusable command-line workflow",
+  "audience": "Researchers who maintain small automation projects",
+  "language": "en",
+  "target_duration_seconds": 0.6,
+  "aspect_ratio": "16:9",
+  "artifacts": {
+    "lesson_plan": "lesson-plan.md",
+    "interaction_plan": "interaction-plan.md",
+    "recording_checklist": "recording-checklist.md",
+    "narration": "narration.md",
+    "scene_plan": "course-plan.json",
+    "final_video": "outputs/pending.mp4",
+    "run_manifest": "outputs/pending.run.json",
+    "audit": "audit.md"
+  }
+}
