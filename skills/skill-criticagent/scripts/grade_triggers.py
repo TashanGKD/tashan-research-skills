@@ -82,6 +82,19 @@ def main() -> None:
         "--distractors-root", help="scan this directory for sibling-skill distractors"
     )
     parser.add_argument("--output", help="also write the full result JSON here")
+    parser.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="print only pass counts and accuracy while --output retains full JSON",
+    )
+    parser.add_argument(
+        "--report-only",
+        action="store_true",
+        help=(
+            "emit quality findings without returning a failing process status; "
+            "use when a supervising CriticAgent must adjudicate an imperfect result"
+        ),
+    )
     args = parser.parse_args()
 
     entries = json.loads(Path(args.decisions).read_text(encoding="utf-8"))
@@ -119,10 +132,19 @@ def main() -> None:
         runs_per_query=runs_per_query,
         threshold=args.threshold,
     )
-    payload = json.dumps(result.to_dict(), ensure_ascii=False, indent=2)
+    result_dict = result.to_dict()
+    payload = json.dumps(result_dict, ensure_ascii=False, indent=2)
     if args.output:
         Path(args.output).write_text(payload, encoding="utf-8")
-    print(payload)
+    if args.summary_only:
+        compact = {
+            "passed": result.summary["passed"],
+            "total": result.summary["total"],
+            "accuracy": result.summary["accuracy"],
+        }
+        print(json.dumps(compact, ensure_ascii=False, indent=2))
+    else:
+        print(payload)
 
     if result.summary["accuracy"] < 1.0:
         print(
@@ -130,7 +152,8 @@ def main() -> None:
             "— review the failed queries above.",
             file=sys.stderr,
         )
-        sys.exit(1)
+        if not args.report_only:
+            sys.exit(1)
 
 
 if __name__ == "__main__":

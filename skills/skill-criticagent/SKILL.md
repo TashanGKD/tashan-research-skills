@@ -70,19 +70,35 @@ uv run python skills/skill-criticagent/scripts/grade_runs.py <skill_dir> <manife
    `not_applicable` only when the skill contract truly defines no such side
    effect, with an explicit rationale.
 
+   In this repository, AgentScope + OpenAI-compatible provider runs use
+   `skills/find-science-skills/scripts/run_agentscope_critic_provider.py`.
+   It mounts the skill outside an isolated evaluation workspace, confines
+   Write to that workspace, permits Read in the workspace and read-only mounted
+   skill source, and permits Bash only for exact commands declared by the case.
+   The complete run has a separate wall-clock limit. Provider, permission,
+   timeout, or transport failures are execution failures and must not be scored
+   as skill-quality failures.
+
 3. **Does it trigger?** Use `<skill_dir>/evals/trigger_queries.json` if
    present; otherwise write ~8 queries yourself (half should trigger with
    varied phrasing, half near-misses that share keywords but need something
-   else). For each query, decide 3 times independently whether you would
-   activate the skill given only its name+description in your catalog, then
-   score:
+   else). For collection-scale quick evaluation, decide once per query whether
+   you would activate the skill given only its name+description in your
+   catalog, then score. Batch all queries in one isolated decision call when
+   practical; preserve one decision per query in the grader input:
 
 ```bash
 uv run python skills/skill-criticagent/scripts/grade_triggers.py <skill_dir> <decisions.json>
 ```
 
+   When a supervising CriticAgent is re-adjudicating archived evidence, add
+   `--report-only`: imperfect trigger accuracy still prints the same quality
+   RED and `VERDICT HINT`, but it does not masquerade as a provider/tool
+   execution failure. Keep the default failing exit code for standalone gates.
+
    Decisions: `[{"query": "...", "should_trigger": true, "decisions":
-   ["<skill-name>", "none", "<skill-name>"]}]`.
+   ["<skill-name>"]}]`. Repeat each query three times only for deep evaluation,
+   borderline results, or an explicit stability request.
 
 ## The report (this is the deliverable)
 
@@ -122,8 +138,9 @@ misleading behavior). One sentence of reasoning next to the verdict.
 
 If the user asks for a rigorous benchmark, more confidence, or wants to
 iterate on the skill: co-design eval cases with them, expand trigger queries
-to ~20, and share the full JSON reports (`--output`). Multiple iterations are
-optional stability evidence, not a prerequisite for a complete real run.
+to ~20, repeat each trigger decision three times, and share the full JSON
+reports (`--output`). Multiple behavior iterations remain optional stability
+evidence, not a prerequisite for a complete real run.
 
 ## Grading principles (for anything you grade yourself)
 

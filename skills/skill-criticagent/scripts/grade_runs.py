@@ -103,6 +103,11 @@ def main() -> None:
     parser.add_argument("skill_dir", help="skill directory containing evals/evals.json")
     parser.add_argument("manifest", help="runs manifest JSON (see module docstring)")
     parser.add_argument("--output", help="also write the full result JSON here")
+    parser.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="print a compact deterministic summary while --output retains full JSON",
+    )
     args = parser.parse_args()
 
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
@@ -119,12 +124,37 @@ def main() -> None:
             f"ERROR: {exc}. The skill needs evals/evals.json — write eval cases "
             "first (see the skill-criticagent SKILL.md quick-evaluation step 2)."
         )
-    payload = json.dumps(result.to_dict(), ensure_ascii=False, indent=2)
+    result_dict = result.to_dict()
+    payload = json.dumps(result_dict, ensure_ascii=False, indent=2)
     if args.output:
         Path(args.output).write_text(payload, encoding="utf-8")
-    print(payload)
 
     summary = result.summary
+    if args.summary_only:
+        audit = summary.get("assertion_audit", {})
+        compact = {
+            "with_skill": {
+                "passed": summary["with_skill"]["passed"],
+                "total": summary["with_skill"]["total"],
+            },
+            "without_skill": {
+                "passed": summary["without_skill"]["passed"],
+                "total": summary["without_skill"]["total"],
+            },
+            "skill_uplift": {
+                "pass_rate_delta": summary.get("skill_uplift", {}).get(
+                    "pass_rate_delta"
+                )
+            },
+            "assertion_audit": {
+                "non_discriminating_count": len(audit.get("non_discriminating", [])),
+                "always_failing_count": len(audit.get("always_failing", [])),
+            },
+        }
+        print(json.dumps(compact, ensure_ascii=False, indent=2))
+    else:
+        print(payload)
+
     uplift = summary.get("skill_uplift", {})
     if uplift.get("pass_rate_delta", 1) <= 0:
         print(
