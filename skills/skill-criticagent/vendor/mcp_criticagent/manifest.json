@@ -1,0 +1,13 @@
+{
+  "schema": "vendored_mcp_criticagent_kernel_v1",
+  "source": "tashan-research-skills/skill-criticagent",
+  "files": {
+    "src/__init__.py": "6aa334b974e98861ceeef013019880e4f3493a7021195a7d71a553229c0d062a",
+    "src/core/__init__.py": "76d0cd47d6b8cf4fe232fc7e9559b4184b9cfeac3f3af97ec9acfcffa21396ab",
+    "src/core/skill_file_asserts.py": "ffaa16ca9abdfefe4a6c7454a85e339b03fbd3a7824730595ce83d818660fa62",
+    "src/core/skill_runner.py": "2a9520ed8818a58c8a23c4995743e7cea0fc55706ba7b8283ebe669eea1c5383",
+    "src/core/skill_tool_asserts.py": "dc1ec74d1f77c503924d02542e85b3791c622026b256c35f0e00b1b4e1bafe86",
+    "src/core/skill_trigger.py": "ad4c332fe890dd82db9b079da294243c84e8157985461194e561a871393ac5ce",
+    "src/core/skill_validator.py": "209c345b8ed06445096e4cfd3eab2487c6b555336d2c2bd450175883881ecf6d"
+  }
+}
