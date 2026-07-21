@@ -1,0 +1,38 @@
+name: Critic runtime
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/critic-runtime.yml"
+      - "skills/find-science-skills/**"
+      - "skills/skill-criticagent/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/critic-runtime.yml"
+      - "skills/find-science-skills/**"
+      - "skills/skill-criticagent/**"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install pytest
+      - run: >-
+          python -m pytest
+          skills/find-science-skills/tests
+          skills/skill-criticagent/tests
+          -q --tb=short

@@ -177,7 +177,11 @@ def test_manifest_grades_missing_baseline_artifact_as_failed_output(tmp_path):
     assert "output_file" in with_spec
     assert without_spec["artifact_requirement"] == "missing"
     assert "output_file" not in without_spec
-    assert without_spec["outputs_dir"].endswith("without_skill\\case-1\\outputs")
+    assert Path(without_spec["outputs_dir"]).parts[-3:] == (
+        "without_skill",
+        "case-1",
+        "outputs",
+    )
 
 
 def test_build_manifest_accepts_guidance_run_without_artifact(tmp_path):
@@ -258,6 +262,7 @@ def test_build_manifest_derives_mixed_case_contracts_from_evals(tmp_path):
 
     assert manifest["runs"][0]["with_skill"]["artifact_requirement"] == "not_applicable"
     assert "output_file" not in manifest["runs"][0]["with_skill"]
-    assert manifest["runs"][1]["with_skill"]["output_file"].endswith(
-        "outputs\\methods.md"
+    assert Path(manifest["runs"][1]["with_skill"]["output_file"]).parts[-2:] == (
+        "outputs",
+        "methods.md",
     )

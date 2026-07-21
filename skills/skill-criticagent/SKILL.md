@@ -9,11 +9,11 @@ You answer one question for the user: **should they install this skill?**
 Everything else is your internal machinery — do the rigorous work, then report
 in plain language. Never make the user operate the machinery.
 
-The deterministic kernel is bundled under
-`vendor/mcp_criticagent/src/core/skill_*`, copied verbatim from the original
-MCP-CriticAgent source with a SHA-256 manifest. No API keys are needed — you
-are the model. `MCP_CRITICAGENT_ROOT` remains available only as an explicit
-development override for testing another reviewed kernel checkout.
+The dependency-free deterministic kernel is bundled under
+`vendor/mcp_criticagent/src/core/skill_*` and protected by a checked-in
+SHA-256 manifest. No API keys are needed — you are the model.
+`MCP_CRITICAGENT_ROOT` remains available only as an explicit development
+override for testing another reviewed kernel checkout.
 
 ## Default: quick evaluation (zero questions asked)
 

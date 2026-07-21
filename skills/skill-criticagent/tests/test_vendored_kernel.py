@@ -20,6 +20,56 @@ def test_vendored_kernel_matches_manifest():
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected, relative
 
 
+def test_vendored_validator_rejects_embedded_secret(tmp_path):
+    sys.path.insert(0, str(VENDOR_ROOT))
+    try:
+        from src.core.skill_validator import validate_skill_dir
+
+        skill = tmp_path / "unsafe-skill"
+        skill.mkdir()
+        (skill / "SKILL.md").write_text(
+            "---\nname: unsafe-skill\ndescription: Unsafe test skill.\n---\n",
+            encoding="utf-8",
+        )
+        secret = "sk-" + "abcdefghijklmnopqrstuvwxyz123456"
+        (skill / "config.py").write_text(
+            f'api_key = "{secret}"\n',
+            encoding="utf-8",
+        )
+        result = validate_skill_dir(skill, strict=True).to_dict()
+    finally:
+        sys.path.remove(str(VENDOR_ROOT))
+
+    assert result["valid"] is False
+    assert any(item["severity"] == "high" for item in result["summary"]["security_findings"])
+
+
+def test_vendored_validator_accepts_multiline_frontmatter(tmp_path):
+    sys.path.insert(0, str(VENDOR_ROOT))
+    try:
+        from src.core.skill_trigger import load_catalog_entry
+        from src.core.skill_validator import validate_skill_dir
+
+        skill = tmp_path / "multiline-skill"
+        skill.mkdir()
+        (skill / "SKILL.md").write_text(
+            "---\n"
+            "name: multiline-skill\n"
+            "description: |\n"
+            "  First line.\n"
+            "  Second line.\n"
+            "---\n",
+            encoding="utf-8",
+        )
+        result = validate_skill_dir(skill, strict=True).to_dict()
+        catalog_entry = load_catalog_entry(skill)
+    finally:
+        sys.path.remove(str(VENDOR_ROOT))
+
+    assert result["valid"] is True
+    assert catalog_entry.description == "First line.\nSecond line."
+
+
 def test_grading_scripts_find_bundled_kernel_without_environment():
     environment = os.environ.copy()
     environment.pop("MCP_CRITICAGENT_ROOT", None)
