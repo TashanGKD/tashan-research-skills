@@ -3,12 +3,14 @@ name: Critic runtime
 on:
   pull_request:
     paths:
+      - ".gitattributes"
       - ".github/workflows/critic-runtime.yml"
       - "skills/find-science-skills/**"
       - "skills/skill-criticagent/**"
   push:
     branches: [main]
     paths:
+      - ".gitattributes"
       - ".github/workflows/critic-runtime.yml"
       - "skills/find-science-skills/**"
       - "skills/skill-criticagent/**"

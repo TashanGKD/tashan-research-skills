@@ -11,6 +11,13 @@ SKILL_DIR = pathlib.Path(__file__).resolve().parents[1]
 VENDOR_ROOT = SKILL_DIR / "vendor" / "mcp_criticagent"
 
 
+def _utf8_subprocess_environment():
+    environment = os.environ.copy()
+    environment["PYTHONUTF8"] = "1"
+    environment["PYTHONIOENCODING"] = "utf-8"
+    return environment
+
+
 def test_vendored_kernel_matches_manifest():
     manifest = json.loads((VENDOR_ROOT / "manifest.json").read_text(encoding="utf-8"))
     assert manifest["schema"] == "vendored_mcp_criticagent_kernel_v1"
@@ -71,7 +78,7 @@ def test_vendored_validator_accepts_multiline_frontmatter(tmp_path):
 
 
 def test_grading_scripts_find_bundled_kernel_without_environment():
-    environment = os.environ.copy()
+    environment = _utf8_subprocess_environment()
     environment.pop("MCP_CRITICAGENT_ROOT", None)
     for script_name in ("grade_runs.py", "grade_triggers.py"):
         completed = subprocess.run(
@@ -168,6 +175,7 @@ def test_graders_can_print_compact_summary_and_archive_full_result(tmp_path):
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=_utf8_subprocess_environment(),
         timeout=30,
     )
     assert behavior.returncode == 0, behavior.stderr
@@ -195,6 +203,7 @@ def test_graders_can_print_compact_summary_and_archive_full_result(tmp_path):
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=_utf8_subprocess_environment(),
         timeout=30,
     )
     assert trigger.returncode == 0, trigger.stderr
@@ -242,6 +251,7 @@ def test_trigger_grader_report_only_preserves_quality_red_without_host_failure(t
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=_utf8_subprocess_environment(),
         timeout=30,
     )
     report_only = subprocess.run(
@@ -256,6 +266,7 @@ def test_trigger_grader_report_only_preserves_quality_red_without_host_failure(t
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=_utf8_subprocess_environment(),
         timeout=30,
     )
 
@@ -366,6 +377,7 @@ def test_grade_runs_passes_manifest_tool_calls_and_real_files(tmp_path):
         capture_output=True,
         text=True,
         encoding="utf-8",
+        env=_utf8_subprocess_environment(),
         timeout=30,
     )
     assert completed.returncode == 0, completed.stderr
