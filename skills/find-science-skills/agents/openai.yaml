@@ -2,7 +2,7 @@ interface:
   display_name: "科研 Skill / MCP 发现"
   short_description: "按领域、研究阶段和功能查找科研 Skill 或 MCP"
   brand_color: "#4F8FF7"
-  default_prompt: "Use $find-science-skills to classify the resource type, domain, research stage, and function, then recommend at most five Skills or MCPs whose summaries directly match both the research object and requested action; return a coverage gap when none do."
+  default_prompt: "Use $find-science-skills to classify the domain, research stage, and function. Search Skills by default; search MCPs when requested, and use both catalogs only when the user explicitly asks for both. Recommend at most five direct matches or return a coverage gap."
 
 policy:
   allow_implicit_invocation: true

@@ -5,7 +5,7 @@ description: Use when a user asks which research Skill, MCP service, academic wo
 
 # Find Science Skill / MCP
 
-把用户需求判断为“资源类型 × 领域 × 研究阶段 × 功能分工”，再调用静态目录筛选器。资源类型可选 `skill`、`mcp` 或 `all`；默认同时查找 Skill 和 MCP。宿主模型负责理解需求，脚本只做确定性分类过滤，不需要后端服务或 API 密钥。
+把用户需求判断为“资源类型 × 领域 × 研究阶段 × 功能分工”，再调用静态目录筛选器。资源类型可选 `skill`、`mcp` 或 `all`；默认只查找 Skill，明确要求 MCP 时查 MCP，明确要求两者时才同时查找。宿主模型负责理解需求，脚本只做确定性分类过滤，不需要后端服务或 API 密钥。
 
 ## 工作流
 
@@ -19,13 +19,13 @@ python scripts/filter_science_resources.py --list-dimensions
 
 - 用户明确说“技能”“方法”“工作流”时使用 `--resource skill`。
 - 用户明确说“MCP”“服务”“可连接工具”时使用 `--resource mcp`。
-- 用户只描述科研任务时使用 `--resource all`，不要擅自排除任一资源类型。
+- 用户明确说“Skill 和 MCP”“两类资源”“都找”时使用 `--resource all`。
+- 用户只描述科研任务、没有指定资源类型时使用默认的 `--resource skill`。
 
 3. 先判断领域和阶段，再查看该漏斗中实际存在的功能组：
 
 ```bash
 python scripts/filter_science_resources.py \
-  --resource all \
   --domain 生命科学 \
   --stage 分析验证 \
   --list-functions
@@ -67,6 +67,7 @@ python scripts/filter_science_resources.py \
 - 不要选择当前领域和阶段下未返回的功能。需要的动作未出现时，检查相邻的实际功能组或向用户追问。
 - `trusted` 优先；`provisional` 需要核对来源；`restricted` 必须明确警示。可信状态和质量分只用于直接匹配候选之间的排序，不证明语义相关。
 - MCP 的目录记录只证明身份、科研适配和来源信息，不证明已经安装、可连接、运行可靠、安全或科研结论正确。
+- `--resource all` 必须保留每项的 `resource_type`，分别呈现 Skill 路径和 MCP canonical URL，不要把两类资源混成同一种能力。
 - 安装命令、传输方式、许可证等字段为空时直接说明“目录未记录”，不要猜测。
 - 默认模式仍无结果时，说明领域或阶段没有覆盖，不要推荐跨领域或跨阶段的相似项。
 
