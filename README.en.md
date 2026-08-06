@@ -25,22 +25,23 @@ This repository holds 19 research agent skills we built ourselves, organized int
 
 The project is supported by the **Panshi AI4Science Ecosystem and Application Model Research Project**.
 
-## Scientific Skill Discovery
+## Scientific Skill / MCP Discovery
 
-[`find-science-skills`](skills/find-science-skills/SKILL.md) finds external research skills for a concrete task. The host model identifies the research domain, research stage, and functional role, then invokes a deterministic, standard-library-only filter to narrow the catalog. It requires no backend service or API key.
+[`find-science-skills`](skills/find-science-skills/SKILL.md) finds research Skills or MCPs for a concrete task. The host model identifies the resource type, research domain, research stage, and functional role, then invokes a deterministic, standard-library-only filter to narrow the catalog. It requires no backend service or API key.
 
-The static catalog currently contains 1,391 candidates across 9 top-level domains, 42 subdomains, 5 research stages, and 17 function groups. Domain and stage define the retrieval boundary; function can be either a ranking preference or a strict filter. Results remain candidates for semantic review rather than a claim that catalog order equals relevance. The host recommends only skills whose research object and expected output both match directly, and reports a catalog gap when none do.
+The static catalogs currently contain 1,391 Skills and 5,643 active research MCPs across a shared taxonomy of 9 top-level domains, 42 subdomains, 5 research stages, and 17 function groups. Domain and stage define the retrieval boundary; function can be either a ranking preference or a strict filter. Results remain candidates for semantic review rather than a claim that catalog order equals relevance. The host recommends only resources whose research object and expected output both match directly, and reports a catalog gap when none do.
 
 ```powershell
 # Inspect the supported taxonomy
-python .\skills\find-science-skills\scripts\filter_science_skills.py --list-dimensions
+python .\skills\find-science-skills\scripts\filter_science_resources.py --list-dimensions
 
 # Inspect functions available for a domain and stage
-python .\skills\find-science-skills\scripts\filter_science_skills.py `
-  --domain 生命科学 --stage 分析验证 --list-functions
+python .\skills\find-science-skills\scripts\filter_science_resources.py `
+  --resource all --domain 生命科学 --stage 分析验证 --list-functions
 
 # Apply strict filtering and return machine-readable output
-python .\skills\find-science-skills\scripts\filter_science_skills.py `
+python .\skills\find-science-skills\scripts\filter_science_resources.py `
+  --resource mcp `
   --domain 生命科学 --subdomain 生物信息学 --stage 分析验证 `
   --function 数据处理 --strict-function --json
 ```
@@ -53,7 +54,7 @@ See [`skills/find-science-skills/SKILL.md`](skills/find-science-skills/SKILL.md)
 
 | Skill | Path | What it does |
 | --- | --- | --- |
-| Find Science Skills | [`skills/find-science-skills`](skills/find-science-skills/SKILL.md) | Filter 1,391 external research skills by domain, research stage, and functional role while preserving source and readiness metadata for host-model review. |
+| Find Science Skill / MCP | [`skills/find-science-skills`](skills/find-science-skills/SKILL.md) | Filter 1,391 research Skills and 5,643 active research MCPs by domain, research stage, and functional role while preserving source and readiness metadata for host-model review. |
 | Paper Search | [`skills/giiisp-paper-search-apis`](skills/giiisp-paper-search-apis/SKILL.md) | Search Giiisp and open paper sources, then return verifiable candidate papers. |
 | Deep Research | [`skills/sci-employee-deep-research`](skills/sci-employee-deep-research/SKILL.md) | Break down a research question, collect evidence, and produce a traceable research report. |
 | Thesis Audit Reviewer | [`skills/thesis-audit-reviewer`](skills/thesis-audit-reviewer/SKILL.md) | Audit thesis or manuscript claims, evidence, references, methods, and completion gates. |
