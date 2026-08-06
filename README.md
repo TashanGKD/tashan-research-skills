@@ -29,6 +29,8 @@
 
 [`find-science-skills`](skills/find-science-skills/SKILL.md) 用于从科研目录中查找适合当前任务的 Skill 或 MCP。宿主模型先判断“资源类型 × 研究领域 × 研究阶段 × 功能分工”，再调用仅依赖 Python 标准库的确定性筛选器缩小范围；不需要后端服务或 API 密钥。
 
+未指定资源类型时默认搜索 Skill；明确要求 MCP 时搜索 MCP，明确要求两者时使用 `--resource all` 同时搜索并保留资源类型。
+
 当前静态目录包含 1,391 个 Skill 和 5,643 个活动科研 MCP，共用 9 个一级领域、42 个二级领域、5 个研究阶段和 17 个功能组。领域和阶段限定检索边界，功能可作为排序偏好或严格过滤条件。脚本返回的是待语义复核候选，不把目录顺序冒充相关性结论；宿主模型最终只推荐研究对象和预期产物都直接匹配的资源，找不到时明确报告目录缺口。
 
 ```powershell
@@ -37,7 +39,12 @@ python .\skills\find-science-skills\scripts\filter_science_resources.py --list-d
 
 # 查看指定领域和阶段下实际存在的功能组
 python .\skills\find-science-skills\scripts\filter_science_resources.py `
-  --resource all --domain 生命科学 --stage 分析验证 --list-functions
+  --domain 生命科学 --stage 分析验证 --list-functions
+
+# 同时搜索 Skill 和 MCP
+python .\skills\find-science-skills\scripts\filter_science_resources.py `
+  --resource all --domain 生命科学 --stage 分析验证 `
+  --function 数据处理 --strict-function --json
 
 # 严格筛选并输出机器可读结果
 python .\skills\find-science-skills\scripts\filter_science_resources.py `

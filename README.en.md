@@ -29,6 +29,8 @@ The project is supported by the **Panshi AI4Science Ecosystem and Application Mo
 
 [`find-science-skills`](skills/find-science-skills/SKILL.md) finds research Skills or MCPs for a concrete task. The host model identifies the resource type, research domain, research stage, and functional role, then invokes a deterministic, standard-library-only filter to narrow the catalog. It requires no backend service or API key.
 
+When no resource type is specified, discovery defaults to Skills. Use MCP-only search when requested, and `--resource all` only when the user explicitly asks for both resource types.
+
 The static catalogs currently contain 1,391 Skills and 5,643 active research MCPs across a shared taxonomy of 9 top-level domains, 42 subdomains, 5 research stages, and 17 function groups. Domain and stage define the retrieval boundary; function can be either a ranking preference or a strict filter. Results remain candidates for semantic review rather than a claim that catalog order equals relevance. The host recommends only resources whose research object and expected output both match directly, and reports a catalog gap when none do.
 
 ```powershell
@@ -37,7 +39,12 @@ python .\skills\find-science-skills\scripts\filter_science_resources.py --list-d
 
 # Inspect functions available for a domain and stage
 python .\skills\find-science-skills\scripts\filter_science_resources.py `
-  --resource all --domain 生命科学 --stage 分析验证 --list-functions
+  --domain 生命科学 --stage 分析验证 --list-functions
+
+# Search Skills and MCPs together
+python .\skills\find-science-skills\scripts\filter_science_resources.py `
+  --resource all --domain 生命科学 --stage 分析验证 `
+  --function 数据处理 --strict-function --json
 
 # Apply strict filtering and return machine-readable output
 python .\skills\find-science-skills\scripts\filter_science_resources.py `

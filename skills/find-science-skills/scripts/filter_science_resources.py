@@ -113,7 +113,7 @@ def function_options(
     domains: Iterable[str],
     stages: Iterable[str],
     subdomains: Iterable[str] = (),
-    resource: str = "all",
+    resource: str = "skill",
 ) -> list[dict]:
     dimensions = catalog["dimensions"]
     selected_domains = _values(domains)
@@ -160,7 +160,7 @@ def filter_resources(
     stages: Iterable[str],
     functions: Iterable[str],
     subdomains: Iterable[str] = (),
-    resource: str = "all",
+    resource: str = "skill",
     function_mode: str = "strict",
 ) -> list[dict]:
     dimensions = catalog["dimensions"]
@@ -221,7 +221,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="按统一科研分类筛选 Skill 和 MCP。")
     parser.add_argument("--skill-catalog", type=pathlib.Path, default=DEFAULT_SKILL_CATALOG)
     parser.add_argument("--mcp-catalog", type=pathlib.Path, default=DEFAULT_MCP_CATALOG)
-    parser.add_argument("--resource", choices=("all", "skill", "mcp"), default="all")
+    parser.add_argument("--resource", choices=("all", "skill", "mcp"), default="skill")
     parser.add_argument("--domain", action="append", help="一级领域，可重复或用逗号分隔")
     parser.add_argument("--subdomain", action="append", help="可选二级领域，可重复或用逗号分隔")
     parser.add_argument("--stage", action="append", help="研究阶段，可重复或用逗号分隔")

@@ -56,9 +56,21 @@ def fixture_catalog():
     }
 
 
-def test_default_resource_mode_returns_skill_and_mcp():
+def test_default_resource_mode_returns_only_skills():
     results = load_module().filter_resources(
         fixture_catalog(),
+        domains=["生命科学"],
+        stages=["分析验证"],
+        functions=["数据处理"],
+        function_mode="prefer",
+    )
+    assert [item["id"] for item in results] == ["sequence-skill"]
+
+
+def test_all_resource_mode_returns_skill_and_mcp():
+    results = load_module().filter_resources(
+        fixture_catalog(),
+        resource="all",
         domains=["生命科学"],
         stages=["分析验证"],
         functions=["数据处理"],
@@ -81,6 +93,7 @@ def test_resource_filter_can_select_only_mcp():
 def test_function_options_report_counts_by_resource_type():
     options = load_module().function_options(
         fixture_catalog(),
+        resource="all",
         domains=["生命科学"],
         stages=["分析验证"],
     )
@@ -105,6 +118,7 @@ def test_function_options_report_counts_by_resource_type():
 def test_payload_preserves_resource_type_and_type_counts():
     results = load_module().filter_resources(
         fixture_catalog(),
+        resource="all",
         domains=["生命科学"],
         stages=["分析验证"],
         functions=["数据处理"],
@@ -113,6 +127,12 @@ def test_payload_preserves_resource_type_and_type_counts():
     payload = load_module().result_payload({}, results, function_mode="prefer")
     assert payload["counts"] == {"skill": 1, "mcp": 1}
     assert {item["resource_type"] for item in payload["resources"]} == {"skill", "mcp"}
+
+
+def test_cli_parser_defaults_to_skill_and_accepts_explicit_all():
+    parser = load_module().build_parser()
+    assert parser.parse_args([]).resource == "skill"
+    assert parser.parse_args(["--resource", "all"]).resource == "all"
 
 
 def test_static_catalogs_share_dimensions_and_expected_counts():
